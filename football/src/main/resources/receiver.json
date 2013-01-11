@@ -1,0 +1,7 @@
+{"mongo":{
+    "address":"mongo-bus",
+        "host":"rm4",
+        "port":15000,
+        "db_name":"fb"
+}
+}

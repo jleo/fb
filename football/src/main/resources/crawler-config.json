@@ -1,0 +1,11 @@
+{
+    "batch":10,
+    "zk":{
+    "url":"rm4:2181"
+},
+    "kafka":{
+    "host":"rm4",
+        "port":2181,
+        "serializer":"kafka.serializer.StringEncoder"
+}
+}
