@@ -60,5 +60,6 @@ save.drop()
 def converted = finalResult.collect {
     new BasicDBObject(it)
 }
+
 save.insert(converted)
 

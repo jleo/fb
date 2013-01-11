@@ -12,7 +12,7 @@ class TodayMatchController {
 
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.sort = 'time'
+        params.sort = "time"
         params.order = "asc"
         [matchInstanceList: TodayMatch.list(params), matchInstanceTotal: TodayMatch.count()]
     }
@@ -111,8 +111,8 @@ class TodayMatchController {
         def matchId = params.matchId
 
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        params.sort = 'time'
-        params.order = "desc"
+        params.sort = "time"
+        params.order = "asc"
 
         if (cid && cid != "-1" && matchId) {
             def count = TodayMatch.countByMatchIdAndCid(matchId, cid)
