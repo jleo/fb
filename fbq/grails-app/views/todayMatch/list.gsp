@@ -1,4 +1,4 @@
-<%@ page import="cn.com.admaster.storm.jleo.TodayMatch" %>
+<%@ page import="org.TodayMatch" %>
 <!doctype html>
 <html>
 <head>

@@ -37,6 +37,10 @@ class TodayMatch {
     String wa2
     String pa2
     String la2
+    Float h1
+    Float h2
+    Integer ch
+    Integer abFlag
 
     static constraints = {
         returnRate(nullable:true)
