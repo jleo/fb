@@ -1,4 +1,4 @@
-package org.jleo
+package org
 
 import org.bson.types.ObjectId
 
