@@ -1,4 +1,4 @@
-package org.jleo
+package org
 
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.mongodb.core.query.Order

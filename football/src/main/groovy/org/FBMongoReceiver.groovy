@@ -1,4 +1,4 @@
-package org.jleo.fb.crawler
+package org
 
 import com.google.common.collect.ImmutableMap
 import kafka.consumer.Consumer

@@ -1,3 +1,4 @@
+package org
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -5,7 +6,7 @@
  * Time: 下午10:07
  * To change this template use File | Settings | File Templates.
  */
-class CompanyMapping {
+class HandicapMapping {
     def static mapping = [:]
 
     static {

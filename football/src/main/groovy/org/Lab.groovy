@@ -1,4 +1,4 @@
-package org.jleo.fb.crawler
+package org
 
 /**
  * Created with IntelliJ IDEA.

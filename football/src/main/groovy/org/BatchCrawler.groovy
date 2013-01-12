@@ -1,3 +1,5 @@
+package org
+
 import com.mongodb.BasicDBObject
 import com.mongodb.Mongo
 import com.netflix.curator.framework.CuratorFrameworkFactory

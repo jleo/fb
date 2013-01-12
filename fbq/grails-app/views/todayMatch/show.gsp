@@ -1,5 +1,5 @@
 
-<%@ page import="org.jleo.Match" %>
+<%@ page import="org.Match" %>
 <!doctype html>
 <html>
 	<head>
