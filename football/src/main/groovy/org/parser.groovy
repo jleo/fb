@@ -9,9 +9,7 @@ package org
 import com.mongodb.BasicDBObject
 import com.mongodb.Mongo
 
-def toReturnRate = { w1, p1, l1 ->
-    return Double.parseDouble(w1) * Double.parseDouble(p1) * Double.parseDouble(l1) / (Double.parseDouble(w1) * Double.parseDouble(p1) + Double.parseDouble(w1) * Double.parseDouble(l1) + Double.parseDouble(l1) * Double.parseDouble(p1))
-}
+
 
 db = new Mongo("rm4", 15000).getDB("fb");
 
@@ -19,6 +17,10 @@ def collection = db.getCollection("fbraw")
 
 def start = Date.parse("yyyy-MM-dd", "2013-01-07")
 def end = Date.parse("yyyy-MM-dd", "2013-01-10")
+
+def toReturnRate = { w1, p1, l1 ->
+    return Double.parseDouble(w1) * Double.parseDouble(p1) * Double.parseDouble(l1) / (Double.parseDouble(w1) * Double.parseDouble(p1) + Double.parseDouble(w1) * Double.parseDouble(l1) + Double.parseDouble(l1) * Double.parseDouble(p1))
+}
 
 def join = { Object... obj ->
     def sum = ""
@@ -29,7 +31,6 @@ def join = { Object... obj ->
             sum += ""
         }
     }
-
 }
 def index = 0
 (start..end).each { date ->

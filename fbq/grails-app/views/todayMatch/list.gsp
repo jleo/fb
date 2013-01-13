@@ -1,6 +1,6 @@
 <%@ page import="org.TodayMatch" %>
 <!doctype html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'match.label', default: 'Match')}"/>
@@ -18,16 +18,18 @@
                                                               args="[entityName]"/></g:link></li>
     </ul>
 </div>
-<g:form action="query" name="query">
+<br/>
+<g:form action="query" name="query" style="padding-left: 20px">
     <span>比赛Id</span>&nbsp;&nbsp;<g:textField name="matchId" value="${query?.matchId}"></g:textField>
     <span>菠菜公司</span>&nbsp;&nbsp;
-    <g:select name="cid" noSelection="${["-1": '']}" from="${ CompanyMapping.mapping}"
-                                           optionKey="key"
-                                           optionValue="value" value="${query?.cid}">
+    <g:select name="cid" noSelection="${["-1": '']}" from="${CompanyMapping.mapping}"
+              optionKey="key"
+              optionValue="value" value="${query?.cid}">
 
-</g:select>
+    </g:select>
     <g:submitButton name="提交"></g:submitButton>
 </g:form>
+                                                               <legend/>
 <div id="list-match" class="content scaffold-list" role="main">
     <h1><g:message code="default.list.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
@@ -41,8 +43,11 @@
 
             <g:sortableColumn property="wr" title="赢"/>
             <g:sortableColumn property="pr" title="平"/>
-
             <g:sortableColumn property="lr" title="负"/>
+
+            <g:sortableColumn property="h1" title="让赢"/>
+            <g:sortableColumn property="h2" title="让负"/>
+            <g:sortableColumn property="ch" title="盘口"/>
 
             <g:sortableColumn property="matchId" title="比赛场号"/>
 
@@ -60,6 +65,19 @@
                 <td>${fieldValue(bean: matchInstance, field: "w1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "p1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "l1")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h1")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h2")}</td>
+                <g:if test="${matchInstance.ch}">
+                    <g:if test="${matchInstance.abFlag}">
+                        <td>${org.HandicapMapping.GoalCn[matchInstance.ch]}</td>
+                    </g:if>
+                    <g:else>
+                        <td>受${org.HandicapMapping.GoalCn[matchInstance.ch]}</td>
+                    </g:else>
+                </g:if>
+                <g:else>
+                    <td></td>
+                </g:else>
                 <td>${fieldValue(bean: matchInstance, field: "matchId")}</td>
                 <td>${CompanyMapping.mapping.get(Integer.parseInt(matchInstance.cid))}</td>
                 <td>${matchInstance.time}</td>
