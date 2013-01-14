@@ -13,30 +13,30 @@ class Match {
     Double lr
     String matchId
     String cid
-    String w1
-    String p1
-    String l1
-    String w2
-    String p2
-    String l2
+    float w1
+    float p1
+    float l1
+    float w2
+    float p2
+    float l2
     String mtype
-    String time
+    Date time
     String tidA
     String tNameA
     String tidB
     String tNameB
     String tRankA
     String tRankB
-    String resultRA
-    String resultRB
+    int resultRA
+    int resultRB
     String resultPA
     String resultPB
-    String wa1
-    String pa1
-    String la1
-    String wa2
-    String pa2
-    String la2
+    float wa1
+    float pa1
+    float la1
+    float wa2
+    float pa2
+    float la2
 
     static constraints = {
         returnRate(nullable:true)

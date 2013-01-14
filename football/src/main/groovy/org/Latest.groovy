@@ -63,6 +63,9 @@ def finalResult = odd.collect { cmId, oddData ->
     def matchId = oddData[0]
     def cId = oddData[1]
 
+    if (!matcher[matchId])
+        return
+
     def abFlag = [* matcher[matchId]][18] as int
     def handicapInfo = [* handicap[matchId + "," + cId]]
 
@@ -83,9 +86,9 @@ def finalResult = odd.collect { cmId, oddData ->
             h2 = handicapInfo[4] as float
     }
 
-    def r = [* oddData, * matcher[matchId], * handicap[matchId + "," + cId]]
+    def r = [* oddData, * matcher[matchId]]
     if (r[19])
-        return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": r[3], 'p1': r[4], 'l1': r[5], 'w2': r[6], 'p2': r[7], 'l2': r[8], "mtype": join(r[15], r[16], r[17]), 'time': r[19], 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "resultRA": r[33], "resultRB": r[34], "resultPA": r[35], "resultPB": r[36], "wa1": r[40], "pa1": r[41], "la1": r[42], "wa2": r[43], "pa2": r[44], "la2": r[45]]
+        return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": r[3] as float, 'p1': r[4] as float, 'l1': r[5] as float, 'w2': r[6] as float, 'p2': r[7] as float, 'l2': r[8] as float, "mtype": join(r[15], r[16], r[17]), 'time': Date.parse("yyyy-MM-dd HH:mm:ss",r[19]), 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "wa1": r[34] as float, "pa1": r[35] as float, "la1": r[36] as float, "wa2": r[37] as float, "pa2": r[38] as float, "la2": r[39] as float]
     else
         return null
 }
@@ -115,16 +118,13 @@ matcher = [:]
 odd = [:]
 handicap = [:]
 
-def start = Date.parse("yyyy-MM-dd", "2013-01-10")
+def start = new Date()-2
 def end = new Date()
 
 def index = 0
 (start..end).each {
     println it
     save = db.getCollection("result")
-
-
-
 
     def cal = new GregorianCalendar()
     cal.setTime(it)
@@ -197,6 +197,9 @@ def index = 0
 
         def abFlag = null
 
+        if (!matcher[matchId])
+            return null
+
         if([* matcher[matchId]][18])
             abFlag = [* matcher[matchId]][18] as int
 
@@ -221,8 +224,9 @@ def index = 0
 
         def r = [* oddData, * matcher[matchId], * handicap[matchId + "," + cId]]
         def rr = toReturnRate(r[3], r[4], r[5])
+
         if (r[19])
-            return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": r[3], 'p1': r[4], 'l1': r[5], 'w2': r[6], 'p2': r[7], 'l2': r[8], "mtype": join(r[15], r[16], r[17]), 'time': r[19], 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "resultRA": r[33], "resultRB": r[34], "resultPA": r[35], "resultPB": r[36], "wa1": r[40], "pa1": r[41], "la1": r[42], "wa2": r[43], "pa2": r[44], "la2": r[45]]
+            return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": r[3] as float, 'p1': r[4] as float, 'l1': r[5] as float, 'w2': r[6] as float, 'p2': r[7] as float, 'l2': r[8] as float, "mtype": join(r[15], r[16], r[17]), 'time': Date.parse("yyyy-MM-dd HH:mm:ss",r[19]), 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "resultRA": r[33] as int, "resultRB": r[34] as int, "resultPA": r[35]  as int, "resultPB": r[36] as int, "wa1": r[40] as float, "pa1": r[41] as float, "la1": r[42] as float, "wa2": r[43] as float, "pa2": r[44] as float, "la2": r[45] as float]
         else
             return null
     }

@@ -115,13 +115,13 @@ class MatchController {
         params.sort = 'time'
         params.order = "desc"
 
-        if (cid != "-1" && matchId) {
+        if (cid && cid != "-1" && matchId) {
             def count = Match.countByMatchIdAndCid(matchId, cid)
             render(view: 'list', model: [query: [cid: cid, matchId: matchId],matchInstanceList: Match.findAllByMatchIdAndCid(matchId, params), matchInstanceTotal: count])
-        } else if (cid != -1 && !matchId) {
+        } else if (cid && cid != -1 && !matchId) {
             def count = Match.countByCid(cid)
             render(view: 'list', model: [query: [cid: cid],matchInstanceList: Match.findAllByCid(cid, params), matchInstanceTotal: count])
-        }else if(cid == -1 && !matchId){
+        }else if((!cid || cid == -1) && !matchId){
             def count = Match.count()
             render(view: 'list', model: [query: [cid: cid],matchInstanceList: Match.findAll(params), matchInstanceTotal: count])
         }
