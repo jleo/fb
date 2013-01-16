@@ -97,7 +97,7 @@ println finalResult
 
 db = new Mongo("rm4", 15000).getDB("fb");
 
-def save = db.getCollection("resultnew")
+def save = db.getCollection("resultnew2")
 save.drop()
 
 def converted = finalResult.collect {

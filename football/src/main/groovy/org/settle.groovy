@@ -74,34 +74,53 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
     int clientId = it.get("clientId") as int
     float bet = it.get("bet") as float
     int betOn = it.get("betOn")    //0主1客
+    Integer betType = it.get("betType")    //0亚1欧
 
     def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId))
-    int type = matchInfo.get("ch") as int
 
-    float h1 = matchInfo.get("h1") as float
-    float h2 = matchInfo.get("h2") as float
+
+
 
     int resultRA = matchInfo.get("resultRA") as int
     int resultRB = matchInfo.get("resultRB") as int
 
     int abFlag = matchInfo.get("abFlag") as int  //0主 1客
 
-    float result = handicap(type, resultRA, resultRB, abFlag, betOn)
-
+    def delta = null;
     def transactionCollection = db.getCollection("transaction")
 
-    def delta = null;
+    if (betType == 0) {
+        int type = matchInfo.get("ch") as int
 
-    if (result == 0) {
-        delta = 0
-    }
+        float h1 = matchInfo.get("h1") as float
+        float h2 = matchInfo.get("h2") as float
 
-    if (result > 0) {
-        delta = bet * result * (betOn == 1 ? h1 : h2)
-    }
+        float result = handicap(type, resultRA, resultRB, abFlag, betOn)
+        if (result == 0) {
+            delta = 0
+        }
 
-    if (result < 0) {
-        delta = bet * result
+        if (result > 0) {
+            delta = bet * result * ((betOn == 1 ? h1 : h2) - 1)
+        }
+
+        if (result < 0) {
+            delta = bet * result
+        }
+    } else {
+        float w2 = matchInfo.get("w2") as float
+        float p2 = matchInfo.get("p2") as float
+        float l2 = matchInfo.get("l2") as float
+
+        if (resultRA == resultRB && betOn == 0) {
+            delta = bet * (p2 - 1)
+        } else if (resultRA > resultRB && betOn == 1) {
+            delta = bet * (w2 - 1)
+        } else if (resultRA < resultRB && betOn == -1) {
+            delta = bet * (l2 - 1)
+        } else {
+            delta = -bet
+        }
     }
 
     transactionCollection.save(new BasicDBObject()
@@ -109,8 +128,10 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
             .append("bet", bet)
             .append("delta", delta)
             .append("clientId", clientId)
+            .append("resultRA", resultRA)
+            .append("resultRB", resultRB)
 
     )
 
-    betCollection.update(it, new BasicDBObject().append("\$set",new BasicDBObject("status","processed")))
+    betCollection.update(it, new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
 }
