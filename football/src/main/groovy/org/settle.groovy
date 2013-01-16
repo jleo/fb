@@ -11,75 +11,126 @@ import com.mongodb.Mongo
  * Let's RocknRoll
  */
 
-def handicap = { type, scoreA, scoreB, abFlag, betOn ->
-    if (abFlag == 1) {
-        def temp = scoreA
-        scoreA = scoreB
-        scoreB = temp
-    }
+def GoalCn = new String[41];
 
-    if (betOn == 1) {
-        def temp = scoreA
-        scoreA = scoreB
-        scoreB = temp
-    }
+    GoalCn[0] = "平手";
+    GoalCn[1] = "平手/半球";
+    GoalCn[2] = "半球";
+    GoalCn[3] = "半球/一球";
+    GoalCn[4] = "一球";
+    GoalCn[5] = "一球/球半";
+    GoalCn[6] = "球半";
+    GoalCn[7] = "球半/两球";
+    GoalCn[8] = "两球";
+    GoalCn[9] = "两球/两球半";
+    GoalCn[10] = "两球半";
+    GoalCn[11] = "两球半/三球";
+    GoalCn[12] = "三球";
+    GoalCn[13] = "三球/三球半";
+    GoalCn[14] = "三球半";
+    GoalCn[15] = "三球半/四球";
+    GoalCn[16] = "四球";
+    GoalCn[17] = "四球/四球半";
+    GoalCn[18] = "四球半";
+    GoalCn[19] = "四球半/五球";
+    GoalCn[20] = "五球";
+    GoalCn[21] = "五球/五球半";
+    GoalCn[22] = "五球半";
+    GoalCn[23] = "五球半/六球";
+    GoalCn[24] = "六球";
+    GoalCn[25] = "六球/六球半";
+    GoalCn[26] = "六球半";
+    GoalCn[27] = "六球半/七球";
+    GoalCn[28] = "七球";
+    GoalCn[29] = "七球/七球半";
+    GoalCn[30] = "七球半";
+    GoalCn[31] = "七球半/八球";
+    GoalCn[32] = "八球";
+    GoalCn[33] = "八球/八球半";
+    GoalCn[34] = "八球半";
+    GoalCn[35] = "八球半/九球";
+    GoalCn[36] = "九球";
+    GoalCn[37] = "九球/九球半";
+    GoalCn[38] = "九球半";
+    GoalCn[39] = "九球半/十球";
+    GoalCn[40] = "十球";
+
+def handicap = { type, scoreA, scoreB, abFlag, betOn ->
+
+
+    def result = null
 
     if (type % 4 == 0) {
         def handicap = type / 4
+        if (abFlag == 1)
+            handicap = -handicap
         if (scoreA - handicap == scoreB)
-            return 0;
+            result = 0;
         if (scoreA - handicap > scoreB)
-            return 1
+            result = 1
         if (scoreA - handicap < scoreB)
-            return -1
+            result = -1
     }
     if (type % 4 == 1) {
         def handicap = type / 4
+        if (abFlag == 1)
+            handicap = -handicap
+
         if (scoreA - handicap == scoreB)
-            return -0.5;
+            result = -0.5;
         if (scoreA - handicap > scoreB)
-            return 1
+            result = 1
         if (scoreA - handicap < scoreB)
-            return -1
+            result = -1
     }
     if (type % 4 == 2) {
         def handicap = type / 4
+        if (abFlag == 1)
+            handicap = -handicap
+
         if (scoreA - handicap == scoreB)
-            return -1;
+            result = -1;
         if (scoreA - handicap > scoreB)
-            return 1
+            result = 1
         if (scoreA - handicap < scoreB)
-            return -1
+            result = -1
     }
 
     if (type % 4 == 3) {
         def handicap = type / 4 + 1
+        if (abFlag == 1)
+            handicap = -handicap
+
         if (scoreA - handicap == scoreB)
-            return 0.5;
+            result = 0.5;
         if (scoreA - handicap > scoreB)
-            return 1
+            result = 1
         if (scoreA - handicap < scoreB)
-            return -1
+            result = -1
     }
 
+    if (betOn == 0) {
+        return result
+    } else {
+        return -result
+    }
 }
 
 db = new Mongo("rm4", 15000).getDB("fb");
 
 def betCollection = db.getCollection("bet")
 
-betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
+def transactionCollection = db.getCollection("transaction")
+transactionCollection.drop()
+
+betCollection.find(new BasicDBObject()).each { it ->
     String matchId = it.get("matchId")
-    String cid = it.get("cid")
     int clientId = it.get("clientId") as int
     float bet = it.get("bet") as float
     int betOn = it.get("betOn")    //0主1客
     Integer betType = it.get("betType")    //0亚1欧
 
-    def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId))
-
-
-
+    def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
 
     int resultRA = matchInfo.get("resultRA") as int
     int resultRB = matchInfo.get("resultRB") as int
@@ -87,7 +138,7 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
     int abFlag = matchInfo.get("abFlag") as int  //0主 1客
 
     def delta = null;
-    def transactionCollection = db.getCollection("transaction")
+
 
     if (betType == 0) {
         int type = matchInfo.get("ch") as int
@@ -101,12 +152,17 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
         }
 
         if (result > 0) {
-            delta = bet * result * ((betOn == 1 ? h1 : h2) - 1)
+            delta = bet * result * ((betOn == 1 ? h1 : h2))
         }
 
         if (result < 0) {
             delta = bet * result
         }
+        def prefix = abFlag==0?"":"受让"
+        it.removeField("_id")
+        it.removeField("cid")
+        it.betOnDisplay = betOn == 0?"主":"客"
+        it.typeDispaly = prefix+GoalCn[type]
     } else {
         float w2 = matchInfo.get("w2") as float
         float p2 = matchInfo.get("p2") as float
@@ -123,6 +179,8 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
         }
     }
 
+
+
     transactionCollection.save(new BasicDBObject()
             .append("matchId", matchId)
             .append("bet", bet)
@@ -130,6 +188,7 @@ betCollection.find(new BasicDBObject().append("status", "new")).each { it ->
             .append("clientId", clientId)
             .append("resultRA", resultRA)
             .append("resultRB", resultRB)
+            .append("betInfo",it)
 
     )
 
