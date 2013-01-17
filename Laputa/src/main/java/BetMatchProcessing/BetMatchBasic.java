@@ -26,6 +26,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing{
         betQuery.put("clientId", clientId);
         betQuery.put("betOn", betOn);
         betQuery.put("bet", bet);
+        betQuery.put("betType", 0);
         betQuery.put("status", "new");
         betQuery.put("aid", aid);
         betQuery.put("expectation", expectation);
