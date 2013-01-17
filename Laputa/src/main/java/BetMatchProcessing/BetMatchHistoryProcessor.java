@@ -20,10 +20,20 @@ public class BetMatchHistoryProcessor {
 
     public static void main(String[] args){
         BetMatchHistoryProcessor betMatchHistoryProcessor = new BetMatchHistoryProcessor();
-        betMatchHistoryProcessor.betBatchMatchHandicapGuarantee();
+        double seedExpectation = 0.0;
+        double seedProbability = 0.5;
+        int loopingExpectation = 20;
+        int loppingProbability = 10;
+        for (int i = 1; i < loopingExpectation; ++i){
+            for (int j = 0; j < loppingProbability; ++i){
+                betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
+                seedProbability = seedExpectation + j * 0.02;
+            }
+            seedExpectation = seedExpectation + i * 0.005;
+        }
     }
 
-    public void betBatchMatchHandicapGuarantee(){
+    public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability){
         iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
         HandicapProcessing hp = new HandicapProcessing();
 
@@ -60,7 +70,7 @@ public class BetMatchHistoryProcessor {
             if (isBet != 0){
                 continue;
             }
-            isBet = bmp.betMatch(0.03, 0.58, 10, hp);
+            isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
             if (isBet ==0){
                 ++BetOnMatch;
             }

@@ -34,7 +34,6 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         }
     }
 
-    @Override
     public void processBasicData(double win, double push, double lose, double winFactor, double pushFactor, double loseFactor) {
         setDBConnection(mongoDBHost, mongoDBPort, mongoDBName);
 
@@ -194,7 +193,6 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         dbUtil.closeConnection();
     }
 
-    @Override
     public BasicData getBasicData() {
         return basicData;
     }

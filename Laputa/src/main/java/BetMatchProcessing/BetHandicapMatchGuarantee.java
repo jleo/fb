@@ -15,7 +15,6 @@ import com.mongodb.DBObject;
  */
 public class BetHandicapMatchGuarantee extends BetMatchBasic {
 
-    @Override
     public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {
         String aid = "Guarantee" + String.valueOf(minExpectation) + String.valueOf(minProbability);
         if (handicapProcessing.getWinExpectation() > minExpectation && (handicapProcessing.getWinProbability() +
