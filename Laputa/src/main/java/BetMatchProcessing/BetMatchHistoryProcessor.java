@@ -7,7 +7,10 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,14 +21,14 @@ import java.util.List;
  */
 public class BetMatchHistoryProcessor {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         BetMatchHistoryProcessor betMatchHistoryProcessor = new BetMatchHistoryProcessor();
         double seedExpectation = 0.0;
         double seedProbability = 0.5;
         int loopingExpectation = 20;
         int loppingProbability = 10;
-        for (int i = 1; i < loopingExpectation; ++i){
-            for (int j = 0; j < loppingProbability; ++i){
+        for (int i = 1; i < loopingExpectation; ++i) {
+            for (int j = 0; j < loppingProbability; ++i) {
                 betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
                 seedProbability = seedExpectation + j * 0.02;
             }
@@ -33,56 +36,76 @@ public class BetMatchHistoryProcessor {
         }
     }
 
-    public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability){
-        iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
-        HandicapProcessing hp = new HandicapProcessing();
+    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability) {
+
+        List<Future> futures = new ArrayList<Future>();
 
         List<DBObject> matchList = getAllBettingMatch();
         System.out.println(matchList.size());
-        int ProcessingMatch = 0;
-        int BetOnMatch = 0;
-        for (DBObject match: matchList){
-            System.out.println("\n*_*_*_*_*_*_*_*_*_*");
-            System.out.println("Processing match: " + ProcessingMatch);
-            ++ProcessingMatch;
-            double win = ((Number)match.get("w1")).doubleValue();
-            double push = ((Number)match.get("p1")).doubleValue();
-            double lose = ((Number)match.get("l1")).doubleValue();
-            double winRate = ((Number)match.get("h1")).doubleValue();
-            double loseRate = ((Number)match.get("h2")).doubleValue();
+        final int[] ProcessingMatch = {0};
+        final int[] BetOnMatch = {0};
+        for (final DBObject match : matchList) {
 
-            String matchId = (String)match.get("matchId");
-            double ch = ((Number)match.get("ch")).doubleValue();
-            String cid = (String)match.get("cid");
-            int abFlag = ((Number)match.get("abFlag")).intValue();
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
+                    HandicapProcessing hp = new HandicapProcessing();
 
-            double handicap = getHandicap(ch, abFlag);
-            if (handicap == -999){
-                System.out.println("ERROR handicap!");
-                continue;
-            }
-            if (handicap >=3 || handicap <= -3){
-                System.out.println("The handicap is out of range: " + handicap);
-                continue;
-            }
-            hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid);
-            int isBet = hp.getResult(10000, 10, false);
-            if (isBet != 0){
-                continue;
-            }
-            isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
-            if (isBet ==0){
-                ++BetOnMatch;
+                    System.out.println("\n*_*_*_*_*_*_*_*_*_*");
+                    System.out.println("Processing match: " + ProcessingMatch[0]);
+                    ++ProcessingMatch[0];
+                    double win = ((Number) match.get("w1")).doubleValue();
+                    double push = ((Number) match.get("p1")).doubleValue();
+                    double lose = ((Number) match.get("l1")).doubleValue();
+                    double winRate = ((Number) match.get("h1")).doubleValue();
+                    double loseRate = ((Number) match.get("h2")).doubleValue();
+
+                    String matchId = (String) match.get("matchId");
+                    double ch = ((Number) match.get("ch")).doubleValue();
+                    String cid = (String) match.get("cid");
+                    int abFlag = ((Number) match.get("abFlag")).intValue();
+
+                    double handicap = getHandicap(ch, abFlag);
+                    if (handicap == -999) {
+                        System.out.println("ERROR handicap!");
+                        return;
+                    }
+                    if (handicap >= 3 || handicap <= -3) {
+                        System.out.println("The handicap is out of range: " + handicap);
+                        return;
+                    }
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid);
+                    int isBet = hp.getResult(10000, 10, false);
+                    if (isBet != 0) {
+                        return;
+                    }
+                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
+                    if (isBet == 0) {
+                        ++BetOnMatch[0];
+                    }
+                }
+            };
+        }
+        int index = 0;
+        for (Future f : futures) {
+            try {
+                f.get();
+                System.out.println("done with" + index++);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
         }
-        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch);
+
+        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0]);
     }
 
     private double getHandicap(double type, int abFlag) {
         double handicap = type / 4.0;
-        if (abFlag == 1){
+        if (abFlag == 1) {
             return handicap;
-        } else if (abFlag == 2){
+        } else if (abFlag == 2) {
             return handicap * -1;
         } else {
             return -999;
@@ -93,12 +116,12 @@ public class BetMatchHistoryProcessor {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
-        query.put("ch", new BasicDBObject("$ne",null));
+        query.put("ch", new BasicDBObject("$ne", null));
         query.put("cid", cid);
 
-        try{
+        try {
             query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-01-01 00:00:00")));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -113,7 +136,7 @@ public class BetMatchHistoryProcessor {
         field.put("p1", 1);
         field.put("l1", 1);
 
-        MongoDBUtil dbUtil= new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
+        MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
         dbUtil.getConnection();
