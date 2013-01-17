@@ -1,6 +1,5 @@
 package HandicapProcessing;
 
-import com.apple.eawt.AppEvent;
 
 /**
  * Created with IntelliJ IDEA.
