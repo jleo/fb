@@ -9,6 +9,8 @@ import com.mongodb.DBObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created with IntelliJ IDEA.
@@ -115,7 +117,6 @@ public class BetMatchHistoryProcessor {
         field.put("w1", 1);
         field.put("p1", 1);
         field.put("l1", 1);
-        field.put("time", 1);
 
         MongoDBUtil dbUtil= new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),

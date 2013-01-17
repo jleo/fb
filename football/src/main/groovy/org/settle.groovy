@@ -2,6 +2,7 @@ package org
 
 import com.mongodb.BasicDBObject
 import com.mongodb.Mongo
+import org.bson.types.ObjectId
 
 /**
  * Created with IntelliJ IDEA.
@@ -142,7 +143,7 @@ betCollection.find(new BasicDBObject("status", "new")).each { it ->
 
     def delta = null;
 
-
+    ObjectId oid = it.get("_id")
     if (betType == 0) {
         int type = matchInfo.get("ch") as int
 
@@ -162,6 +163,7 @@ betCollection.find(new BasicDBObject("status", "new")).each { it ->
             delta = bet * result
         }
         def prefix = abFlag == 0 ? "" : "受让"
+
         it.removeField("_id")
         it.removeField("cid")
         it.betOnDisplay = betOn == 0 ? "主" : "客"
@@ -192,5 +194,5 @@ betCollection.find(new BasicDBObject("status", "new")).each { it ->
             .append("betInfo", it)
     )
 
-    betCollection.update(it, new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
+    betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
 }
