@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -20,6 +22,7 @@ import java.util.concurrent.Future;
  * To change this template use File | Settings | File Templates.
  */
 public class BetMatchHistoryProcessor {
+    ExecutorService executorService = Executors.newFixedThreadPool(20);
 
     public static void main(String[] args) {
         BetMatchHistoryProcessor betMatchHistoryProcessor = new BetMatchHistoryProcessor();
@@ -29,6 +32,7 @@ public class BetMatchHistoryProcessor {
         int loppingProbability = 10;
         for (int i = 1; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++i) {
+                System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
                 betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
                 seedProbability = seedExpectation + j * 0.02;
             }
@@ -85,6 +89,7 @@ public class BetMatchHistoryProcessor {
                     }
                 }
             };
+            executorService.submit(runnable);
         }
         int index = 0;
         for (Future f : futures) {
@@ -103,10 +108,10 @@ public class BetMatchHistoryProcessor {
 
     private double getHandicap(double type, int abFlag) {
         double handicap = type / 4.0;
-        if (abFlag == 1) {
+        if (abFlag == 0) {    //history 0 主
             return handicap;
-        } else if (abFlag == 2) {
-            return handicap * -1;
+        } else if (abFlag == 1) {
+            return handicap * -1;           //history 1客
         } else {
             return -999;
         }
