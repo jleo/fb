@@ -3,6 +3,8 @@ package HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
 
+import java.util.Date;
+
 /**
  * Created with IntelliJ IDEA.
  * User: snowhyzhang
@@ -24,8 +26,10 @@ public class MatchInformation {
     private String clientId;
     private String cid;
 
+    private Date matchTime;
+
     public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                            String matchId, String clientId, String cid) {
+                            String matchId, String clientId, String cid, Date matchTime) {
         this.win = win;
         this.push = push;
         this.lose = lose;
@@ -35,6 +39,28 @@ public class MatchInformation {
         this.matchId = matchId;
         this.clientId = clientId;
         this.cid = cid;
+        this.matchTime = matchTime;
+    }
+
+    public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
+                            String matchId, String clientId, String cid){
+        this.win = win;
+        this.push = push;
+        this.lose = lose;
+        this.handicap = handicap;
+        this.winRate = winRate;
+        this.loseRate = loseRate;
+        this.matchId = matchId;
+        this.clientId = clientId;
+        this.cid = cid;
+    }
+
+    public Date getMatchTime() {
+        return matchTime;
+    }
+
+    public void setMatchTime(Date matchTime) {
+        this.matchTime = matchTime;
     }
 
     public String getMatchId() {

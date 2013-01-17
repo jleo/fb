@@ -8,6 +8,7 @@ import com.mongodb.DBObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -42,10 +43,10 @@ public class BetMatchHistoryProcessor {
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability) {
 
-        List<Future> futures = new ArrayList<Future>();
-
         List<DBObject> matchList = getAllBettingMatch();
         System.out.println(matchList.size());
+
+        List<Future> futures = new ArrayList<Future>();
         final int[] ProcessingMatch = {0};
         final int[] BetOnMatch = {0};
         for (final DBObject match : matchList) {
@@ -54,6 +55,7 @@ public class BetMatchHistoryProcessor {
                 public void run() {
                     iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
                     HandicapProcessing hp = new HandicapProcessing();
+                    bmp.setCollection(Props.getProperty("MatchHistoryBet"));
 
                     System.out.println("\n*_*_*_*_*_*_*_*_*_*");
                     System.out.println("Processing match: " + ProcessingMatch[0]);
@@ -68,6 +70,7 @@ public class BetMatchHistoryProcessor {
                     double ch = ((Number) match.get("ch")).doubleValue();
                     String cid = (String) match.get("cid");
                     int abFlag = ((Number) match.get("abFlag")).intValue();
+                    Date matchTime = ((Date) match.get("time"));
 
                     double handicap = getHandicap(ch, abFlag);
                     if (handicap == -999) {
@@ -78,7 +81,7 @@ public class BetMatchHistoryProcessor {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
-                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid);
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime);
                     int isBet = hp.getResult(10000, 10, false);
                     if (isBet != 0) {
                         return;
@@ -89,12 +92,14 @@ public class BetMatchHistoryProcessor {
                     }
                 }
             };
-            executorService.submit(runnable);
+            Future f = executorService.submit(runnable);
+            futures.add(f);
         }
         int index = 0;
         for (Future f : futures) {
             try {
-                f.get();
+                if (f != null)
+                    f.get();
                 System.out.println("done with" + index++);
             } catch (InterruptedException e) {
                 e.printStackTrace();

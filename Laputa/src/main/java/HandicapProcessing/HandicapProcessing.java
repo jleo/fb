@@ -7,9 +7,9 @@ import Util.MongoDBUtil;
 import Util.Props;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.mongodb.Mongo;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -133,14 +133,17 @@ public class HandicapProcessing implements iHandicapProcessing {
         this.loseFactor = loseFactor;
     }
 
-    @Override
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                         String matchId, String clientId, String cid) {
+                         String matchId, String clientId, String cid, Date date) {
 
+        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, date);
+    }
+
+    public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
+                         String matchId, String clientId, String cid){
         matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid);
     }
 
-    @Override
     public int getResult(int supportDegree, int supportIncreaseCount, boolean display) {
 
         clearInfo();
@@ -472,7 +475,6 @@ public class HandicapProcessing implements iHandicapProcessing {
 
     }
 
-    @Override
     public void saveMatchResult(String matchName, String betWinOrLose, String resultWinOrLose, double betMoney, double resultGain) {
         System.out.println("Saving Match: " + matchName);
 
