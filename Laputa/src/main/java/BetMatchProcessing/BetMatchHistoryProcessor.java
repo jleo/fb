@@ -7,6 +7,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,6 +38,7 @@ public class BetMatchHistoryProcessor {
         iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
         HandicapProcessing hp = new HandicapProcessing();
 
+        bmp.setCollection(Props.getProperty("betHistory"));
         List<DBObject> matchList = getAllBettingMatch();
         System.out.println(matchList.size());
         int ProcessingMatch = 0;
@@ -55,6 +57,7 @@ public class BetMatchHistoryProcessor {
             double ch = ((Number)match.get("ch")).doubleValue();
             String cid = (String)match.get("cid");
             int abFlag = ((Number)match.get("abFlag")).intValue();
+            Date matchTime = ((Date)match.get("time"));
 
             double handicap = getHandicap(ch, abFlag);
             if (handicap == -999){
@@ -65,7 +68,7 @@ public class BetMatchHistoryProcessor {
                 System.out.println("The handicap is out of range: " + handicap);
                 continue;
             }
-            hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid);
+            hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime);
             int isBet = hp.getResult(10000, 10, false);
             if (isBet != 0){
                 continue;
@@ -112,6 +115,7 @@ public class BetMatchHistoryProcessor {
         field.put("w1", 1);
         field.put("p1", 1);
         field.put("l1", 1);
+        field.put("time", 1);
 
         MongoDBUtil dbUtil= new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),

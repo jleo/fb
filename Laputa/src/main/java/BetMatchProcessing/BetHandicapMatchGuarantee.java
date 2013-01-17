@@ -24,7 +24,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     "0", baseMoney, aid, handicapProcessing.getWinExpectation(),
                     (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                            + handicapProcessing.getDrawProbability()));
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime());
             return 0;
         } else if (handicapProcessing.getLoseExpectation() > minExpectation && (handicapProcessing.getLoseProbability()
                 + handicapProcessing.getLoseHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability){
@@ -33,7 +33,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     "1", baseMoney, aid, handicapProcessing.getLoseExpectation(),
                     (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                            + handicapProcessing.getDrawProbability()));
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime());
             return 0;
         }
 

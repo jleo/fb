@@ -11,6 +11,8 @@ import HandicapProcessing.HandicapProcessing;
  */
 public interface iBetMatchProcessing {
 
+    public void setCollection(String collection);
+
     public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing);
 
 }

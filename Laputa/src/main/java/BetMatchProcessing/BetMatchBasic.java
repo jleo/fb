@@ -1,9 +1,12 @@
 package BetMatchProcessing;
 
+import HandicapProcessing.HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,8 +17,14 @@ import com.mongodb.DBObject;
  */
 public abstract class BetMatchBasic implements iBetMatchProcessing{
 
+    protected String matchBetCollection;
+
+    public void setCollection(String collection){
+        this.matchBetCollection = collection;
+    }
+
     protected void betOnMatch(String matchId, String cid, String clientId, String betOn, double bet, String aid,
-                            double expectation, double probability){
+                            double expectation, double probability, Date matchTime){
         DBObject matchIdQuery = new BasicDBObject("matchId", matchId);
         matchIdQuery.put("aid", aid);
         matchIdQuery.put("cid", cid);
@@ -31,12 +40,13 @@ public abstract class BetMatchBasic implements iBetMatchProcessing{
         betQuery.put("aid", aid);
         betQuery.put("expectation", expectation);
         betQuery.put("probability", probability);
+        betQuery.put("matchTime", matchTime);
 
         MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
         dbUtil.getConnection();
 
-        dbUtil.upsert(matchIdQuery, betQuery, false, Props.getProperty("MatchBet"));
+        dbUtil.upsert(matchIdQuery, betQuery, false, matchBetCollection);
 
         dbUtil.closeConnection();
     }

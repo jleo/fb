@@ -7,6 +7,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -26,8 +27,8 @@ public class BetMatchBatchProcessor {
 
     public static void main(String args[]) {
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
-        double minExpectation = 0.03;
-        double minProbability = 0.58;
+        double minExpectation = -0.1;
+        double minProbability = 0.5;
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
@@ -49,6 +50,7 @@ public class BetMatchBatchProcessor {
                     iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
                     HandicapProcessing hp = new HandicapProcessing();
 
+                    bmp.setCollection(Props.getProperty("MatchBatchBet"));
                     System.out.println("\n*_*_*_*_*_*_*_*_*_*");
                     System.out.println("Processing match: " + processingMatch);
                     ++processingMatch;
@@ -62,6 +64,7 @@ public class BetMatchBatchProcessor {
                     double ch = ((Number) match.get("ch")).doubleValue();
                     String cid = (String) match.get("cid");
                     int abFlag = ((Number) match.get("abFlag")).intValue();
+                    Date matchTime = ((Date)match.get("time"));
 
                     double handicap = getHandicap(ch, abFlag);
                     if (handicap == -999) {
@@ -72,7 +75,7 @@ public class BetMatchBatchProcessor {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
-                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid);
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime);
                     int isBet = hp.getResult(10000, 10, false);
                     if (isBet != 0) {
                         return;
@@ -129,6 +132,7 @@ public class BetMatchBatchProcessor {
         field.put("w1", 1);
         field.put("p1", 1);
         field.put("l1", 1);
+        field.put("time", 1);
 
         MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
