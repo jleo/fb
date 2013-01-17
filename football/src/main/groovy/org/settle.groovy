@@ -123,7 +123,7 @@ def betCollection = db.getCollection("bet")
 def transactionCollection = db.getCollection("transaction")
 transactionCollection.drop()
 
-betCollection.find(new BasicDBObject()).each { it ->
+betCollection.find(new BasicDBObject("status", "new")).each { it ->
     String matchId = it.get("matchId")
     String clientId = it.get("clientId") as String
     float bet = it.get("bet") as float
@@ -131,6 +131,9 @@ betCollection.find(new BasicDBObject()).each { it ->
     Integer betType = it.get("betType")    //0亚1欧
 
     def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
+
+    if (!matchInfo)
+        return
 
     int resultRA = matchInfo.get("resultRA") as int
     int resultRB = matchInfo.get("resultRB") as int
@@ -158,11 +161,11 @@ betCollection.find(new BasicDBObject()).each { it ->
         if (result < 0) {
             delta = bet * result
         }
-        def prefix = abFlag==0?"":"受让"
+        def prefix = abFlag == 0 ? "" : "受让"
         it.removeField("_id")
         it.removeField("cid")
-        it.betOnDisplay = betOn == 0?"主":"客"
-        it.typeDispaly = prefix+GoalCn[type]
+        it.betOnDisplay = betOn == 0 ? "主" : "客"
+        it.typeDispaly = prefix + GoalCn[type]
     } else {
         float w2 = matchInfo.get("w2") as float
         float p2 = matchInfo.get("p2") as float
@@ -186,7 +189,7 @@ betCollection.find(new BasicDBObject()).each { it ->
             .append("clientId", clientId)
             .append("resultRA", resultRA)
             .append("resultRB", resultRB)
-            .append("betInfo",it)
+            .append("betInfo", it)
     )
 
     betCollection.update(it, new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
