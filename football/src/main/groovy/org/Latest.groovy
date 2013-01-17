@@ -87,10 +87,12 @@ def finalResult = odd.collect { cmId, oddData ->
     }
 
     def r = [* oddData, * matcher[matchId]]
-    if (r[19])
+    if (r[19] && r[3] && r[4] && r[5] && r[6] && r[7] && r[8] && r[34] && r[35] && r[36] && r[37] && r[38] && r[39])
         return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": r[3] as float, 'p1': r[4] as float, 'l1': r[5] as float, 'w2': r[6] as float, 'p2': r[7] as float, 'l2': r[8] as float, "mtype": join(r[15], r[16], r[17]), 'time': Date.parse("yyyy-MM-dd HH:mm:ss",r[19]), 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "wa1": r[34] as float, "pa1": r[35] as float, "la1": r[36] as float, "wa2": r[37] as float, "pa2": r[38] as float, "la2": r[39] as float]
-    else
+    else{
+        println "nima"
         return null
+    }
 }
 
 println finalResult
