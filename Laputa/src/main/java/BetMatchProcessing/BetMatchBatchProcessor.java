@@ -15,11 +15,11 @@ import java.util.List;
  * Time: 上午12:35
  * To change this template use File | Settings | File Templates.
  */
-public class BetMatchProcessor {
+public class BetMatchBatchProcessor {
 
     public static void main(String args[]){
-        BetMatchProcessor betMatchProcessor = new BetMatchProcessor();
-        betMatchProcessor.betBatchMatchHandicapGuarantee();
+        BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee();
     }
 
     public void betBatchMatchHandicapGuarantee(){
@@ -27,12 +27,12 @@ public class BetMatchProcessor {
         HandicapProcessing hp = new HandicapProcessing();
 
         List<DBObject> matchList = getAllBettingMatch();
-        int betOnMatch = 0;
-        System.out.println("Getting " + matchList.size() + " matches....");
+        int ProcessingMatch = 0;
+        int BetOnMatch = 0;
         for (DBObject match: matchList){
             System.out.println("\n*_*_*_*_*_*_*_*_*_*");
-            System.out.println("Processing match: " + betOnMatch);
-            ++betOnMatch;
+            System.out.println("Processing match: " + ProcessingMatch);
+            ++ProcessingMatch;
             double win = ((Number)match.get("w1")).doubleValue();
             double push = ((Number)match.get("p1")).doubleValue();
             double lose = ((Number)match.get("l1")).doubleValue();
@@ -59,11 +59,11 @@ public class BetMatchProcessor {
                 continue;
             }
             isBet = bmp.betMatch(0.03, 0.58, 10, hp);
-            if (isBet !=0){
-                continue;
+            if (isBet ==0){
+                ++BetOnMatch;
             }
         }
-        System.out.println("\n****\nBet on match: " + betOnMatch);
+        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch);
     }
 
     private double getHandicap(double type, int abFlag) {
@@ -79,9 +79,11 @@ public class BetMatchProcessor {
 
     private List<DBObject> getAllBettingMatch() {
         String cid = Props.getProperty("betCId");
+
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne",null));
         query.put("cid", cid);
+
         DBObject field = new BasicDBObject();
         field.put("h1", 1);
         field.put("h2", 1);
