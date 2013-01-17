@@ -120,6 +120,7 @@ public class BetMatchBatchProcessor {
 
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne", null));
+        query.put("abFlag", new BasicDBObject("$ne", null));
         query.put("cid", cid);
 
         DBObject field = new BasicDBObject();

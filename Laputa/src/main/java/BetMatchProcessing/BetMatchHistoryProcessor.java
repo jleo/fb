@@ -127,6 +127,7 @@ public class BetMatchHistoryProcessor {
 
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne", null));
+        query.put("abFlag", new BasicDBObject("$ne", null));
         query.put("cid", cid);
 
         try {
