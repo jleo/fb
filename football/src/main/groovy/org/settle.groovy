@@ -125,7 +125,7 @@ transactionCollection.drop()
 
 betCollection.find(new BasicDBObject()).each { it ->
     String matchId = it.get("matchId")
-    int clientId = it.get("clientId") as int
+    String clientId = it.get("clientId") as String
     float bet = it.get("bet") as float
     int betOn = it.get("betOn")    //0主1客
     Integer betType = it.get("betType")    //0亚1欧
@@ -179,8 +179,6 @@ betCollection.find(new BasicDBObject()).each { it ->
         }
     }
 
-
-
     transactionCollection.save(new BasicDBObject()
             .append("matchId", matchId)
             .append("bet", bet)
@@ -189,7 +187,6 @@ betCollection.find(new BasicDBObject()).each { it ->
             .append("resultRA", resultRA)
             .append("resultRB", resultRB)
             .append("betInfo",it)
-
     )
 
     betCollection.update(it, new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
