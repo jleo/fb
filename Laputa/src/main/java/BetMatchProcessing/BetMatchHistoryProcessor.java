@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  * To change this template use File | Settings | File Templates.
  */
 public class BetMatchHistoryProcessor {
-    ExecutorService executorService = Executors.newFixedThreadPool(20);
+    ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
     public static void main(String[] args) {
         BetMatchHistoryProcessor betMatchHistoryProcessor = new BetMatchHistoryProcessor();
