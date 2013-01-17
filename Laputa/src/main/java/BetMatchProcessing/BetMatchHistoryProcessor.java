@@ -40,7 +40,7 @@ public class BetMatchHistoryProcessor {
         iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
         HandicapProcessing hp = new HandicapProcessing();
 
-        bmp.setCollection(Props.getProperty("betHistory"));
+        bmp.setCollection(Props.getProperty("MatchHistoryBet"));
         List<DBObject> matchList = getAllBettingMatch();
         System.out.println(matchList.size());
         int ProcessingMatch = 0;
