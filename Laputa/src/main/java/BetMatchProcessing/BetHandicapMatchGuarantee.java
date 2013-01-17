@@ -1,10 +1,6 @@
 package BetMatchProcessing;
 
 import HandicapProcessing.HandicapProcessing;
-import Util.MongoDBUtil;
-import Util.Props;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 
 /**
  * Created with IntelliJ IDEA.

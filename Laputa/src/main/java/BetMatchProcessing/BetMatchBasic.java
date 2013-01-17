@@ -1,6 +1,5 @@
 package BetMatchProcessing;
 
-import HandicapProcessing.HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
 import com.mongodb.BasicDBObject;
