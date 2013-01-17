@@ -13,11 +13,12 @@ import java.util.Properties;
  */
 public class Props {
     private static Properties props = null;
-    private static final String propertyFile = "src/Laputa.properties";
+    private static final String propertyFilePath = "/Users/snowhyzhang/IdeaProjects/fb/Laputa/src/";
+    private static final String propertyFile="Laputa.properties";
 
     static {
         try{
-            FileInputStream file = new FileInputStream(new File(propertyFile));
+            FileInputStream file = new FileInputStream(new File(propertyFilePath + propertyFile));
             props = new Properties();
             props.load(file);
         } catch (Exception e){
