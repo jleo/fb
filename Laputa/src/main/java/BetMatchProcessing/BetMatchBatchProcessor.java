@@ -26,22 +26,25 @@ public class BetMatchBatchProcessor {
 
     public static void main(String args[]) {
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee();
+        double minExpectation = 0.03;
+        double minProbability = 0.58;
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
-    public void betBatchMatchHandicapGuarantee() {
+    public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
         long t1 = System.currentTimeMillis();
-        int cpuNums = Runtime.getRuntime().availableProcessors();//
+        int cpuNum = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newCachedThreadPool();
 
         final List<DBObject> matchList = getAllBettingMatch();
         processingMatch = 0;
         final int[] BetOnMatch = {0};
+        final double minExp = minExpectation;
+        final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
         for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
 
-                @Override
                 public void run() {
                     iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
                     HandicapProcessing hp = new HandicapProcessing();
@@ -74,7 +77,7 @@ public class BetMatchBatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(0.03, 0.58, 10, hp);
+                    isBet = bmp.betMatch(minExp, minPro, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
@@ -95,14 +98,14 @@ public class BetMatchBatchProcessor {
         }
         long t2 = System.currentTimeMillis();
 
-        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\n" + "total time:" + (t2 - t1));
+        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
     private double getHandicap(double type, int abFlag) {
         double handicap = type / 4.0;
-        if (abFlag == 1) {               //主
+        if (abFlag == 1) {              //让球
             return handicap;
-        } else if (abFlag == 2) {           //客
+        } else if (abFlag == 2) {       //受让让球
             return handicap * -1;
         } else {
             return -999;

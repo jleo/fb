@@ -18,7 +18,7 @@ public class Props {
     static {
         try {
             String dir = System.getProperty("user.dir");
-            FileInputStream file = new FileInputStream(new File(dir + "/" + propertyFile));
+            FileInputStream file = new FileInputStream(new File("/Users/snowhyzhang/IdeaProjects/fb/Laputa/Laputa.properties"));
             props = new Properties();
             props.load(file);
         } catch (Exception e) {

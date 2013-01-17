@@ -14,7 +14,11 @@ public class HandicapProcessor {
 
     public static void main(String args[]){
         HandicapProcessor handicapProcessor = new HandicapProcessor();
-        handicapProcessor.betOneMatch(3.05, 3.15, 2.2, -0.25, 1.02, 0.9, "snow001", "8", "8");
+        handicapProcessor.betOneMatch(1.36, 4.75, 8.0, 1.25, 1, 0.92, "snow001", "8", "8");
+        System.out.println("==========");
+        handicapProcessor.betOneMatch(1.36, 4.75, 8.0, 1, 0.7, 1.23, "snow001", "8", "8");
+        System.out.println("==========");
+        handicapProcessor.betOneMatch(1.36, 4.75, 8.0, 1.5, 1.29, 0.69, "snow001", "8", "8");
     }
 
     public void betOneMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
