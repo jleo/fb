@@ -13,24 +13,28 @@ import java.util.Properties;
  */
 public class Props {
     private static Properties props = null;
-    private static final String propertyFilePath = "/Users/snowhyzhang/IdeaProjects/fb/Laputa/src/";
-    private static final String propertyFile="Laputa.properties";
+    private static final String propertyFile = "Laputa.properties";
 
     static {
-        try{
-            FileInputStream file = new FileInputStream(new File(propertyFilePath + propertyFile));
+        try {
+            String dir = System.getProperty("user.dir");
+            FileInputStream file = new FileInputStream(new File(dir + "/" + propertyFile));
             props = new Properties();
             props.load(file);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized static String getProperty(String property){
+    public synchronized static String getProperty(String property) {
         return props.getProperty(property);
     }
 
-    public synchronized static String getProperty(String property, String defaultValue){
+    public synchronized static String getProperty(String property, String defaultValue) {
         return props.getProperty(property, defaultValue);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Props.getProperty("MongoDBHost"));
     }
 }
