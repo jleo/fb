@@ -189,8 +189,6 @@ public class BasicDataProcessing implements iBasicDataProcessing {
                 }
             }
         }
-
-        dbUtil.closeConnection();
     }
 
     public BasicData getBasicData() {
