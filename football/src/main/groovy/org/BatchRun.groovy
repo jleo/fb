@@ -44,7 +44,7 @@ class BatchRun {
 
                 seedProbability = seedProbability + j * 0.02;
             }
-            seedExpectation = seedExpectation + i * 0.005;
+            seedExpectation = seedExpectation + i * 0.05;
             seedProbability = 0.0;
         }
 
