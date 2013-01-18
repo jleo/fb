@@ -27,12 +27,12 @@ public class BetMatchBatchProcessor {
 
     public static void main(String args[]) {
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
-        double minExpectation = 0.05;
+        double minExpectation = 0.03;
         double minProbability = 0.58;
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
-    public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
+    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability) {
         long t1 = System.currentTimeMillis();
         int cpuNum = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newCachedThreadPool();
@@ -40,12 +40,9 @@ public class BetMatchBatchProcessor {
         final List<DBObject> matchList = getAllBettingMatch();
         processingMatch = 0;
         final int[] BetOnMatch = {0};
-        final double minExp = minExpectation;
-        final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
         for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
-
                 public void run() {
                     iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
                     HandicapProcessing hp = new HandicapProcessing();
@@ -80,7 +77,7 @@ public class BetMatchBatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExp, minPro, 10, hp);
+                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
