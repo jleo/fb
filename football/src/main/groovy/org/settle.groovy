@@ -217,7 +217,8 @@ public class Settle {
 
             println "total: " + count
             println "net: " + delta
-            println "profit: " + delta * 100 / sum + "%"
+            if (sum != 0)
+                println "profit: " + delta * 100 / sum + "%"
         }
         mongo.close()
     }
