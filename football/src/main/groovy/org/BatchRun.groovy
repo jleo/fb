@@ -15,10 +15,9 @@ import java.util.concurrent.Executors
  */
 class BatchRun {
     public static void main(String[] args) {
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
         def date = Date.parse("yyyy-MM-dd", "2013-01-01")
-
         17.times {
             BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, date.format("yyyy-MM-dd"), (date + 1).format("yyyy-MM-dd"));
 

@@ -35,7 +35,7 @@ public class BetMatchBatchProcessor {
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability) {
         long t1 = System.currentTimeMillis();
         int cpuNum = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
         final List<DBObject> matchList = getAllBettingMatch();
         processingMatch = 0;

@@ -48,7 +48,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
             fromDate = args[0];
             toDate = args[1];
         }
-        ExecutorService executorService = Executors.newCachedThreadPool();
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, fromDate, toDate);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
