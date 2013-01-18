@@ -26,6 +26,7 @@ class BatchRun {
             betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
 
             Settle s = new Settle()
+            println date.format("yyyy-MM-dd")
             s.settle()
             date = date + 1
         }
