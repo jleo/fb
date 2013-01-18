@@ -29,10 +29,12 @@ public class BetMatchBatchProcessorSpecifiedDate {
     private String dateFrom;
     private String dateTo;
     private MongoDBUtil dbUtil;
+    ExecutorService executorService;
 
-    public BetMatchBatchProcessorSpecifiedDate(String dateFrom, String dateTo) {
+    public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, String dateFrom, String dateTo) {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        this.executorService = executorService;
     }
 
     public static void main(String args[]) {
@@ -46,8 +48,8 @@ public class BetMatchBatchProcessorSpecifiedDate {
             fromDate = args[0];
             toDate = args[1];
         }
-
-        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(fromDate, toDate);
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, fromDate, toDate);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
@@ -57,7 +59,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
     public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
         long t1 = System.currentTimeMillis();
         int cpuNum = Runtime.getRuntime().availableProcessors();
-        ExecutorService executorService = Executors.newCachedThreadPool();
+
 
         final List<DBObject> matchList = getAllBettingMatch();
         dbUtil.drop(Props.getProperty("MatchBatchBetSpecifiedDate"));
@@ -75,9 +77,6 @@ public class BetMatchBatchProcessorSpecifiedDate {
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBetSpecifiedDate"));
-                    System.out.println("\n*_*_*_*_*_*_*_*_*_*");
-                    System.out.println("Processing match: " + processingMatch);
-                    ++processingMatch;
                     double win = ((Number) match.get("w1")).doubleValue();
                     double push = ((Number) match.get("p1")).doubleValue();
                     double lose = ((Number) match.get("l1")).doubleValue();

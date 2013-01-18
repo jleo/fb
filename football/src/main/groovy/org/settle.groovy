@@ -121,7 +121,8 @@ public class Settle {
             }
         }
 
-        def db = new Mongo("rm4", 15000).getDB("fb");
+        def mongo = new Mongo("rm4", 15000)
+        def db = mongo.getDB("fb");
 
         def betCollection = db.getCollection(byDate ? "betDate" : "bet")
 
@@ -218,6 +219,7 @@ public class Settle {
             println "net: " + delta
             println "profit: " + delta * 100 / sum + "%"
         }
+        mongo.close()
     }
 
     public static void main(String[] args) {
