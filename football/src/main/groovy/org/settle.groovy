@@ -150,6 +150,8 @@ public class Settle {
 
             ObjectId oid = it.get("_id")
             if (betType == 0) {
+                if (!matchInfo.get("ch"))
+                    return
                 int type = matchInfo.get("ch") as int
 
                 float h1 = matchInfo.get("h1") as float
