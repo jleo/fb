@@ -38,7 +38,6 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         setDBConnection(mongoDBHost, mongoDBPort, mongoDBName);
 
         basicData = new BasicData();
-        dbUtil.getConnection();
 
         DBObject winQuery = getWinQuery(win, winFactor);
         DBObject pushQuery = getPushQuery(push, pushFactor);
