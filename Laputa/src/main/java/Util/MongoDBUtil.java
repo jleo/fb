@@ -34,7 +34,7 @@ public class MongoDBUtil {
             MongoOptions options = new MongoOptions();
             options.threadsAllowedToBlockForConnectionMultiplier = 3000;
             options.connectionsPerHost = 300;
-            mongo = new Mongo(mongoDBHost, Integer.parseInt(mongoDBPort));
+            mongo = new Mongo(new ServerAddress(mongoDBHost, Integer.parseInt(mongoDBPort)), options);
         } catch (UnknownHostException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
