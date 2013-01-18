@@ -41,8 +41,8 @@ public class BetMatchBatchProcessorSpecifiedDate {
         String toDate = Props.getProperty("SpecifiedDateTo");
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(fromDate, toDate);
 
-        double minExpectation = 0.03;
-        double minProbability = 0.58;
+        double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
+        double minProbability =  Double.parseDouble(Props.getProperty("minProbability"));//0.58;
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
