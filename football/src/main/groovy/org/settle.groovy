@@ -204,12 +204,15 @@ if (byDate) {
 
     def sum = 0
     def delta = 0
+    def count = 0
 
     t.each {
         delta += it.get("delta") as double
         sum += it.get("bet") as int
+        count++
     }
 
-    println "net:" + delta
-    println "profit:" + delta * 100 / sum + "%"
+    println "total: "+count
+    println "net: " + delta
+    println "profit: " + delta * 100 / sum + "%"
 }
