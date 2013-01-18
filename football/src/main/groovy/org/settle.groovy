@@ -13,7 +13,7 @@ import org.bson.types.ObjectId
  */
 
 public class Settle {
-    public static void main(String[] args) {
+    public void settle() {
         def byDate = true
 
         def GoalCn = new String[41];
@@ -218,5 +218,10 @@ public class Settle {
             println "net: " + delta
             println "profit: " + delta * 100 / sum + "%"
         }
+    }
+
+    public static void main(String[] args) {
+        Settle settle = new Settle()
+        settle.settle()
     }
 }

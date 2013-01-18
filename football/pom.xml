@@ -145,6 +145,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>Laputa</groupId>
+            <artifactId>Laputa</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <version>3.4.5</version>

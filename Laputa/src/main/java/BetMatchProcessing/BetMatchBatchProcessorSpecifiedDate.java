@@ -36,13 +36,21 @@ public class BetMatchBatchProcessorSpecifiedDate {
     }
 
     public static void main(String args[]) {
+        String fromDate = null;
+        String toDate = null;
 
-        String fromDate = Props.getProperty("SpecifiedDateFrom");
-        String toDate = Props.getProperty("SpecifiedDateTo");
+        if (args.length == 0) {
+            fromDate = Props.getProperty("SpecifiedDateFrom");
+            toDate = Props.getProperty("SpecifiedDateTo");
+        } else {
+            fromDate = args[0];
+            toDate = args[1];
+        }
+
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(fromDate, toDate);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
-        double minProbability =  Double.parseDouble(Props.getProperty("minProbability"));//0.58;
+        double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
