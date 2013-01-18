@@ -54,43 +54,43 @@ public class BetMatchHistoryProcessor {
 
             Runnable runnable = new Runnable() {
                 public void run() {
-                iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
-                HandicapProcessing hp = new HandicapProcessing();
-                bmp.setCollection(Props.getProperty("MatchHistoryBet"));
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
+                    HandicapProcessing hp = new HandicapProcessing();
+                    bmp.setCollection(Props.getProperty("MatchHistoryBet"));
 
-                System.out.println("\n*_*_*_*_*_*_*_*_*_*");
-                System.out.println("Processing match: " + ProcessingMatch[0]);
-                ++ProcessingMatch[0];
-                double win = ((Number) match.get("w1")).doubleValue();
-                double push = ((Number) match.get("p1")).doubleValue();
-                double lose = ((Number) match.get("l1")).doubleValue();
-                double winRate = ((Number) match.get("h1")).doubleValue();
-                double loseRate = ((Number) match.get("h2")).doubleValue();
+                    System.out.println("\n*_*_*_*_*_*_*_*_*_*");
+                    System.out.println("Processing match: " + ProcessingMatch[0]);
+                    ++ProcessingMatch[0];
+                    double win = ((Number) match.get("w1")).doubleValue();
+                    double push = ((Number) match.get("p1")).doubleValue();
+                    double lose = ((Number) match.get("l1")).doubleValue();
+                    double winRate = ((Number) match.get("h1")).doubleValue();
+                    double loseRate = ((Number) match.get("h2")).doubleValue();
 
-                String matchId = (String) match.get("matchId");
-                double ch = ((Number) match.get("ch")).doubleValue();
-                String cid = (String) match.get("cid");
-                int abFlag = ((Number) match.get("abFlag")).intValue();
-                Date matchTime = ((Date) match.get("time"));
+                    String matchId = (String) match.get("matchId");
+                    double ch = ((Number) match.get("ch")).doubleValue();
+                    String cid = (String) match.get("cid");
+                    int abFlag = ((Number) match.get("abFlag")).intValue();
+                    Date matchTime = ((Date) match.get("time"));
 
-                double handicap = getHandicap(ch, abFlag);
-                if (handicap == -999) {
-                    System.out.println("ERROR handicap!");
-                    return;
-                }
-                if (handicap >= 3 || handicap <= -3) {
-                    System.out.println("The handicap is out of range: " + handicap);
-                    return;
-                }
-                hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime);
-                int isBet = hp.getResult(10000, 10, false);
-                if (isBet != 0) {
-                    return;
-                }
-                isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
-                if (isBet == 0) {
-                    ++BetOnMatch[0];
-                }
+                    double handicap = getHandicap(ch, abFlag);
+                    if (handicap == -999) {
+                        System.out.println("ERROR handicap!");
+                        return;
+                    }
+                    if (handicap >= 3 || handicap <= -3) {
+                        System.out.println("The handicap is out of range: " + handicap);
+                        return;
+                    }
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime);
+                    int isBet = hp.getResult(10000, 10, false);
+                    if (isBet != 0) {
+                        return;
+                    }
+                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
+                    if (isBet == 0) {
+                        ++BetOnMatch[0];
+                    }
                 }
             };
             Future f = executorService.submit(runnable);
@@ -149,14 +149,12 @@ public class BetMatchHistoryProcessor {
         field.put("l1", 1);
         field.put("time", 1);
 
-        MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
-        dbUtil.getConnection();
 
         List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchRemoteResult"));
 
-        dbUtil.closeConnection();
         return matchList;
     }
 

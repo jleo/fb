@@ -126,7 +126,6 @@ public class BetMatchBatchProcessorSpecifiedDate {
         }
         long t2 = System.currentTimeMillis();
 
-        dbUtil.closeConnection();
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
@@ -169,7 +168,6 @@ public class BetMatchBatchProcessorSpecifiedDate {
         dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
-        dbUtil.getConnection();
 
         List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
 

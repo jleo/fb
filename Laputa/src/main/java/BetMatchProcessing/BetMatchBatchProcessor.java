@@ -132,14 +132,12 @@ public class BetMatchBatchProcessor {
         field.put("l1", 1);
         field.put("time", 1);
 
-        MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
-        dbUtil.getConnection();
 
         List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("BettingMatch"));
 
-        dbUtil.closeConnection();
         return matchList;
     }
 }
