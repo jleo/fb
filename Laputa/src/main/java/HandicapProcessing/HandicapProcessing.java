@@ -515,7 +515,6 @@ public class HandicapProcessing implements iHandicapProcessing {
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(mongoDBHost, mongoDBPort, mongoDBName);
         dbUtil.insert(insertionQuery, collectionName);
-        dbUtil.closeConnection();
 
         System.out.println("Saved Match:" + matchName);
     }
@@ -548,7 +547,6 @@ public class HandicapProcessing implements iHandicapProcessing {
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(mongoDBHost, mongoDBPort, mongoDBName);
         DBObject result = dbUtil.findOne(query, collectionName);
-        dbUtil.closeConnection();
 
         if (result == null)
             return false;

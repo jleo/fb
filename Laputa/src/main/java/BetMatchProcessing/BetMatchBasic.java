@@ -41,13 +41,11 @@ public abstract class BetMatchBasic implements iBetMatchProcessing{
         betQuery.put("probability", probability);
         betQuery.put("matchTime", matchTime);
 
-        MongoDBUtil dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
-        dbUtil.getConnection();
 
         dbUtil.upsert(matchIdQuery, betQuery, false, matchBetCollection);
 
-        dbUtil.closeConnection();
     }
 
 }
