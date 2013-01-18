@@ -13,7 +13,7 @@ import org.bson.types.ObjectId
  */
 
 public class Settle {
-    public void settle() {
+    public void settle(String gurateen) {
         def byDate = true
 
         def GoalCn = new String[41];
@@ -143,7 +143,7 @@ public class Settle {
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
 
-            if (matchInfo.get("abFlag")==null)
+            if (matchInfo.get("abFlag") == null)
                 return
 
             int abFlag = matchInfo.get("abFlag") as int  //0主 1客
@@ -207,7 +207,7 @@ public class Settle {
         }
 
         if (byDate) {
-            def t = transactionCollection.find()
+            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
 
             def sum = 0
             def delta = 0
