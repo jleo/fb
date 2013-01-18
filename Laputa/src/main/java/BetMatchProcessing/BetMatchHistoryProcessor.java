@@ -31,21 +31,19 @@ public class BetMatchHistoryProcessor {
         double seedProbability = 0.5;
         int loopingExpectation = 20;
         int loppingProbability = 10;
+
+        List<DBObject> matchList = betMatchHistoryProcessor.getAllBettingMatch();
         for (int i = 1; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++i) {
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
-                betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
+                betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, matchList);
                 seedProbability = seedExpectation + j * 0.02;
             }
             seedExpectation = seedExpectation + i * 0.005;
         }
     }
 
-    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability) {
-
-        List<DBObject> matchList = getAllBettingMatch();
-        System.out.println(matchList.size());
-
+    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
         List<Future> futures = new ArrayList<Future>();
         final int[] ProcessingMatch = {0};
         final int[] BetOnMatch = {0};
