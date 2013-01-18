@@ -12,6 +12,8 @@ import org.bson.types.ObjectId
  * Let's RocknRoll
  */
 
+def byDate = true
+
 def GoalCn = new String[41];
 
 GoalCn[0] = "平手";
@@ -119,12 +121,12 @@ def handicap = { type, scoreA, scoreB, abFlag, betOn ->
 
 db = new Mongo("rm4", 15000).getDB("fb");
 
-def betCollection = db.getCollection("bet")
+def betCollection = db.getCollection(byDate ? "betDate" : "bet")
 
-def transactionCollection = db.getCollection("transaction")
+def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
 transactionCollection.drop()
 
-betCollection.find(new BasicDBObject("status", "new")).each { it ->
+betCollection.find(byDate ? new BasicDBObject() : new BasicDBObject("status", "new")).each { it ->
     String matchId = it.get("matchId")
     String clientId = it.get("clientId") as String
     float bet = it.get("bet") as float
@@ -195,4 +197,22 @@ betCollection.find(new BasicDBObject("status", "new")).each { it ->
     )
 
     betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
+}
+
+if (byDate) {
+    def t = transactionCollection.find()
+
+    def sum = 0
+    def delta = 0
+    def count = 0
+
+    t.each {
+        delta += it.get("delta") as double
+        sum += it.get("bet") as int
+        count++
+    }
+
+    println "total: "+count
+    println "net: " + delta
+    println "profit: " + delta * 100 / sum + "%"
 }
