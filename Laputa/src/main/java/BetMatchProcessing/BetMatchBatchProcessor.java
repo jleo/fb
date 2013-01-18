@@ -27,8 +27,8 @@ public class BetMatchBatchProcessor {
 
     public static void main(String args[]) {
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
-        double minExpectation = -0.1;
-        double minProbability = 0.5;
+        double minExpectation = 0.05;
+        double minProbability = 0.58;
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
