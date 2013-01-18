@@ -127,7 +127,6 @@ public class Settle {
         def betCollection = db.getCollection(byDate ? "betDate" : "bet")
 
         def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
-        transactionCollection.drop()
 
         betCollection.find(byDate ? new BasicDBObject() : new BasicDBObject("status", "new")).each { it ->
             String matchId = it.get("matchId")
