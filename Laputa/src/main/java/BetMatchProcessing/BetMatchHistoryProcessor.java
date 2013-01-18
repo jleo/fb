@@ -40,6 +40,7 @@ public class BetMatchHistoryProcessor {
                 seedProbability = seedProbability + j * 0.02;
             }
             seedExpectation = seedExpectation + i * 0.005;
+            seedProbability = 0.0;
         }
     }
 
