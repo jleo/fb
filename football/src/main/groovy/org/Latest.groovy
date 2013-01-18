@@ -13,8 +13,6 @@ def matcher = [:]
 def odd = [:]
 def handicap = [:]
 
-println matches
-println odds
 
 
 def toReturnRate = { w1, p1, l1 ->
@@ -99,6 +97,11 @@ println finalResult
 
 db = new Mongo("rm4", 15000).getDB("fb");
 
+def cutoff = db.getCollection("cutoff")
+cutoff.drop()
+
+cutoff.insert(new BasicDBObject("time", new Date()))
+
 def save = db.getCollection("resultnew")
 save.drop()
 
@@ -120,7 +123,7 @@ matcher = [:]
 odd = [:]
 handicap = [:]
 
-def start = new Date() - 19
+def start = new Date() - 2
 def end = new Date()
 
 
