@@ -26,8 +26,6 @@ public class MongoDBUtil {
         this.mongoDBHost = MongoDBHost;
         this.mongoDBPort = MongoDBPort;
         this.mongoDBName = MongoDBName;
-
-        isConnected = false;
     }
 
     public String getMongoDBHost() {
@@ -55,7 +53,6 @@ public class MongoDBUtil {
     }
 
     public void getConnection() {
-//        closeConnection();
         try {
             if (mongo == null)
                 mongo = new Mongo(mongoDBHost, Integer.parseInt(mongoDBPort));
@@ -69,7 +66,7 @@ public class MongoDBUtil {
 
     public void closeConnection() {
 //        if (isConnected) {
-//            mongo.close();
+            mongo.close();
 //        }
     }
 
