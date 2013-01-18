@@ -144,6 +144,9 @@ public class Settle {
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
 
+            if (!matchInfo.get("abFlag"))
+                return
+
             int abFlag = matchInfo.get("abFlag") as int  //0主 1客
 
             def delta = null;
