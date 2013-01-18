@@ -37,7 +37,7 @@ public class BetMatchHistoryProcessor {
             for (int j = 0; j < loppingProbability; ++j) {
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
                 betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, matchList);
-                seedProbability = seedExpectation + j * 0.02;
+                seedProbability = seedProbability + j * 0.02;
             }
             seedExpectation = seedExpectation + i * 0.005;
         }
