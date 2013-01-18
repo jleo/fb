@@ -17,16 +17,16 @@ public class BasicDataProcessing implements iBasicDataProcessing {
 
     private MongoDBUtil dbUtil = null;
 
-    private final String mongoDBHost = Props.getProperty("MongoDBRemoteHost");
-    private final String mongoDBPort = Props.getProperty("MongoDBRemotePort");
-    private final String mongoDBName = Props.getProperty("MongoDBRemoteName");
+    private final static String mongoDBHost = Props.getProperty("MongoDBRemoteHost");
+    private final static String mongoDBPort = Props.getProperty("MongoDBRemotePort");
+    private final static String mongoDBName = Props.getProperty("MongoDBRemoteName");
     private final String collectionName = Props.getProperty("MatchRemoteResult");
 
     private BasicData basicData = null;
 
     private void setDBConnection(String MongoDBHost, String MongoDBPort, String MongoDBName) {
-        if (dbUtil == null){
-            dbUtil = new MongoDBUtil(MongoDBHost, MongoDBPort, MongoDBName);
+        if (dbUtil == null) {
+            dbUtil = MongoDBUtil.getInstance(MongoDBHost, MongoDBPort, MongoDBName);
         } else {
             dbUtil.setMongoDBHost(MongoDBHost);
             dbUtil.setMongoDBPort(MongoDBPort);
@@ -54,99 +54,99 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         queryField.put("resultRB", 1);
 
         List<DBObject> resultList = dbUtil.findAll(query, queryField, collectionName);
-        basicData.setMatchCount((double)resultList.size());
+        basicData.setMatchCount((double) resultList.size());
 
-        for (DBObject dbObject: resultList) {
+        for (DBObject dbObject : resultList) {
             double resultRA = ((Number) dbObject.get("resultRA")).doubleValue();
             double resultRB = ((Number) dbObject.get("resultRB")).doubleValue();
-            if (resultRA > 4 || resultRB > 4){
+            if (resultRA > 4 || resultRB > 4) {
                 ++basicData.getResultSet()[5][5];
-                if (resultRA > resultRB){
+                if (resultRA > resultRB) {
                     basicData.setWinMatch(basicData.getWinMatch() + 1);
                     ++basicData.getResultSet()[5][0];
-                    if (resultRA - resultRB == 1){
+                    if (resultRA - resultRB == 1) {
                         basicData.setWin1Game(basicData.getWin1Game() + 1);
-                    } else if (resultRA - resultRB == 2){
+                    } else if (resultRA - resultRB == 2) {
                         basicData.setWin2Game(basicData.getWin2Game() + 1);
-                    } else if (resultRA - resultRA == 3){
+                    } else if (resultRA - resultRA == 3) {
                         basicData.setWin3Game(basicData.getWin3Game() + 1);
                     } else {
                         basicData.setWin4Game(basicData.getWin4Game() + 1);
                     }
-                } else if (resultRA == resultRB){
+                } else if (resultRA == resultRB) {
                     basicData.setPushMatch(basicData.getPushMatch() + 1);
                     ++basicData.getResultSet()[5][1];
                 } else {
                     basicData.setLoseMatch(basicData.getLoseMatch() + 1);
                     ++basicData.getResultSet()[5][2];
-                    if (resultRA - resultRB == -1){
+                    if (resultRA - resultRB == -1) {
                         basicData.setLose1Game(basicData.getLose1Game() + 1);
-                    } else if (resultRA - resultRB == -2){
+                    } else if (resultRA - resultRB == -2) {
                         basicData.setLose2Game(basicData.getLose2Game() + 1);
-                    } else if (resultRA - resultRB == -3){
+                    } else if (resultRA - resultRB == -3) {
                         basicData.setLose3Game(basicData.getLose3Game() + 1);
                     } else {
                         basicData.setLose4Game(basicData.getLose4Game() + 1);
                     }
                 }
-            }else if (resultRA == 0){
-                if (resultRB == 0){
+            } else if (resultRA == 0) {
+                if (resultRB == 0) {
                     ++basicData.getResultSet()[0][0];
-                } else if (resultRB == 1){
+                } else if (resultRB == 1) {
                     ++basicData.getResultSet()[0][1];
-                } else if (resultRB == 2){
+                } else if (resultRB == 2) {
                     ++basicData.getResultSet()[0][2];
-                } else if (resultRB == 3){
+                } else if (resultRB == 3) {
                     ++basicData.getResultSet()[0][3];
-                } else if (resultRB == 4){
+                } else if (resultRB == 4) {
                     ++basicData.getResultSet()[0][4];
                 }
-            } else if (resultRA == 1){
-                if (resultRB == 0){
+            } else if (resultRA == 1) {
+                if (resultRB == 0) {
                     ++basicData.getResultSet()[1][0];
-                } else if (resultRB == 1){
+                } else if (resultRB == 1) {
                     ++basicData.getResultSet()[1][1];
-                } else if (resultRB == 2){
+                } else if (resultRB == 2) {
                     ++basicData.getResultSet()[1][2];
-                } else if (resultRB == 3){
+                } else if (resultRB == 3) {
                     ++basicData.getResultSet()[1][3];
-                } else if (resultRB == 4){
+                } else if (resultRB == 4) {
                     ++basicData.getResultSet()[1][4];
                 }
-            } else if (resultRA == 2){
-                if (resultRB == 0){
+            } else if (resultRA == 2) {
+                if (resultRB == 0) {
                     ++basicData.getResultSet()[2][0];
-                } else if (resultRB == 1){
+                } else if (resultRB == 1) {
                     ++basicData.getResultSet()[2][1];
-                } else if (resultRB == 2){
+                } else if (resultRB == 2) {
                     ++basicData.getResultSet()[2][2];
-                } else if (resultRB == 3){
+                } else if (resultRB == 3) {
                     ++basicData.getResultSet()[2][3];
-                } else if (resultRB == 4){
+                } else if (resultRB == 4) {
                     ++basicData.getResultSet()[2][4];
                 }
-            } else if (resultRA == 3){
-                if (resultRB == 0){
+            } else if (resultRA == 3) {
+                if (resultRB == 0) {
                     ++basicData.getResultSet()[3][0];
-                } else if (resultRB == 1){
+                } else if (resultRB == 1) {
                     ++basicData.getResultSet()[3][1];
-                } else if (resultRB == 2){
+                } else if (resultRB == 2) {
                     ++basicData.getResultSet()[3][2];
-                } else if (resultRB == 3){
+                } else if (resultRB == 3) {
                     ++basicData.getResultSet()[3][3];
-                } else if (resultRB == 4){
+                } else if (resultRB == 4) {
                     ++basicData.getResultSet()[3][4];
                 }
-            } else if (resultRA == 4){
-                if (resultRB == 0){
+            } else if (resultRA == 4) {
+                if (resultRB == 0) {
                     ++basicData.getResultSet()[4][0];
-                } else if (resultRB == 1){
+                } else if (resultRB == 1) {
                     ++basicData.getResultSet()[4][1];
-                } else if (resultRB == 2){
+                } else if (resultRB == 2) {
                     ++basicData.getResultSet()[4][2];
-                } else if (resultRB == 3){
+                } else if (resultRB == 3) {
                     ++basicData.getResultSet()[4][3];
-                } else if (resultRB == 4){
+                } else if (resultRB == 4) {
                     ++basicData.getResultSet()[4][4];
                 }
             } else {
@@ -154,11 +154,11 @@ public class BasicDataProcessing implements iBasicDataProcessing {
             }
         }
 
-        for (int i = 0; i < 5; ++i){
-            for (int j = 0; j < 5; ++j){
-                if (i > j){
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if (i > j) {
                     basicData.setWinMatch(basicData.getWinMatch() + basicData.getResultSet()[i][j]);
-                } else if (i == j){
+                } else if (i == j) {
                     basicData.setPushMatch(basicData.getPushMatch() + basicData.getResultSet()[i][j]);
                 } else {
                     basicData.setLoseMatch(basicData.getLoseMatch() + basicData.getResultSet()[i][j]);
@@ -166,30 +166,29 @@ public class BasicDataProcessing implements iBasicDataProcessing {
             }
         }
 
-        for (int i = 0; i < 5; ++i){
-            for (int j = 0; j < 5; ++j){
-                if ((i - j) >=4 ){
+        for (int i = 0; i < 5; ++i) {
+            for (int j = 0; j < 5; ++j) {
+                if ((i - j) >= 4) {
                     basicData.setWin4Game(basicData.getWin4Game() + basicData.getResultSet()[i][j]);
-                }else if ((i - j) == 3){
+                } else if ((i - j) == 3) {
                     basicData.setWin3Game(basicData.getWin3Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == 2){
+                } else if ((i - j) == 2) {
                     basicData.setWin2Game(basicData.getWin2Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == 1){
+                } else if ((i - j) == 1) {
                     basicData.setWin1Game(basicData.getWin1Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == 0){
+                } else if ((i - j) == 0) {
                     basicData.setPushGame(basicData.getPushGame() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == -1){
+                } else if ((i - j) == -1) {
                     basicData.setLose1Game(basicData.getLose1Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == -2){
+                } else if ((i - j) == -2) {
                     basicData.setLose2Game(basicData.getLose2Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) == -3){
+                } else if ((i - j) == -3) {
                     basicData.setLose3Game(basicData.getLose3Game() + basicData.getResultSet()[i][j]);
-                } else if ((i - j) <= -4){
+                } else if ((i - j) <= -4) {
                     basicData.setLose4Game(basicData.getLose4Game() + basicData.getResultSet()[i][j]);
                 }
             }
         }
-        dbUtil.closeConnection();
     }
 
     public BasicData getBasicData() {

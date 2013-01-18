@@ -108,6 +108,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
+
                 }
             });
             futures.add(future);
@@ -165,7 +166,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
         field.put("l1", 1);
         field.put("time", 1);
 
-        dbUtil = new MongoDBUtil(Props.getProperty("MongoDBRemoteHost"),
+        dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
         dbUtil.getConnection();

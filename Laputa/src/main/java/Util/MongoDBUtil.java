@@ -2,6 +2,7 @@ package Util;
 
 import com.mongodb.*;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +23,27 @@ public class MongoDBUtil {
 
     private boolean isConnected;
 
-    public MongoDBUtil(String MongoDBHost, String MongoDBPort, String MongoDBName) {
+    private static MongoDBUtil dbUtil;
+
+    private MongoDBUtil(String MongoDBHost, String MongoDBPort, String MongoDBName) {
         this.mongoDBHost = MongoDBHost;
         this.mongoDBPort = MongoDBPort;
         this.mongoDBName = MongoDBName;
+
+        try {
+            mongo = new Mongo(mongoDBHost, Integer.parseInt(mongoDBPort));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        mongoDB = mongo.getDB(mongoDBName);
+    }
+
+    public static synchronized MongoDBUtil getInstance(String MongoDBHost, String MongoDBPort, String MongoDBName) {
+        if (dbUtil == null) {
+            dbUtil = new MongoDBUtil(MongoDBHost, MongoDBPort, MongoDBName);
+        }
+        return dbUtil;
     }
 
     public String getMongoDBHost() {
@@ -52,53 +70,22 @@ public class MongoDBUtil {
         this.mongoDBName = mongoDBName;
     }
 
-    public void getConnection() {
-        try {
-            if (mongo == null)
-                mongo = new Mongo(mongoDBHost, Integer.parseInt(mongoDBPort));
-
-            mongoDB = mongo.getDB(mongoDBName);
-            isConnected = true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void closeConnection() {
-//        if (isConnected) {
-            mongo.close();
-//        }
-    }
-
-
     public void insert(DBObject object, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         collection.insert(object);
     }
 
     public DBObject findOne(DBObject query, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         return collection.findOne(query);
     }
 
     public DBObject findOne(DBObject query, DBObject field, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         return collection.findOne(query, field);
     }
 
     public List<DBObject> findAll(DBObject query, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         List<DBObject> resultList = new ArrayList<DBObject>();
         DBCollection collection = mongoDB.getCollection(collectionName);
         DBCursor cursor = collection.find(query);
@@ -110,9 +97,6 @@ public class MongoDBUtil {
     }
 
     public List<DBObject> findAll(DBObject query, DBObject filed, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         List<DBObject> resultList = new ArrayList<DBObject>();
         DBCollection collection = mongoDB.getCollection(collectionName);
         DBCursor cursor = collection.find(query, filed);
@@ -124,65 +108,41 @@ public class MongoDBUtil {
     }
 
     public void update(DBObject query, DBObject update, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         collection.update(query, update);
     }
 
     public void upsert(DBObject query, DBObject update, boolean multi, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         collection.update(query, update, true, multi);
     }
 
     public void remove(DBObject query, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         collection.remove(query);
     }
 
     public void removeAll(String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
     }
 
     public void drop(String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         collection.drop();
     }
 
 
     public int getCount(DBObject query, String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         return (int) collection.count(query);
     }
 
     public int getCollectionSize(String collectionName) {
-        if (isConnected) {
-            getConnection();
-        }
         DBCollection collection = mongoDB.getCollection(collectionName);
         return collection.find().size();
     }
 
     public DBCollection getCollection(String collectionName) {
-        if (!isConnected) {
-            getConnection();
-        }
         return mongoDB.getCollection(collectionName);
     }
 }

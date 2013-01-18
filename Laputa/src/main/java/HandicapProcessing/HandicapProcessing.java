@@ -140,7 +140,7 @@ public class HandicapProcessing implements iHandicapProcessing {
     }
 
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                         String matchId, String clientId, String cid){
+                         String matchId, String clientId, String cid) {
         matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid);
     }
 
@@ -168,15 +168,15 @@ public class HandicapProcessing implements iHandicapProcessing {
             ++increaseCount;
         }
 
-        if (basicData.getMatchCount() < supportDegree){
+        if (basicData.getMatchCount() < supportDegree) {
             System.out.println("The count of match is less than support degree. aborting betting on this match");
             return -1;
         }
 
-        if (matchInformation.getHandicap() == 3){
+        if (matchInformation.getHandicap() == 3) {
 
             winExpectation = basicData.getWin4Game() / basicData.getMatchCount() * matchInformation.getWinRate() - (basicData.getLoseMatch()
-                    + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game())/basicData.getMatchCount();
+                    + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()) / basicData.getMatchCount();
             winProbability = basicData.getWin4Game() / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game())
@@ -185,18 +185,18 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getWin3Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 2.75){
+        } else if (matchInformation.getHandicap() == 2.75) {
 
-            winExpectation = (basicData.getWin4Game() + basicData.getWin3Game()/2) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game())/basicData.getMatchCount();
-            winProbability = basicData.getWin4Game()/ basicData.getMatchCount();
+            winExpectation = (basicData.getWin4Game() + basicData.getWin3Game() / 2) / basicData.getMatchCount() * matchInformation.getWinRate()
+                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()) / basicData.getMatchCount();
+            winProbability = basicData.getWin4Game() / basicData.getMatchCount();
             winHalfProbability = basicData.getWin3Game() / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game())
-                    / basicData.getMatchCount() * matchInformation.getLoseRate() - (basicData.getWin4Game() + basicData.getWin3Game()/2) / basicData.getMatchCount();
+                    / basicData.getMatchCount() * matchInformation.getLoseRate() - (basicData.getWin4Game() + basicData.getWin3Game() / 2) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 2.5){
+        } else if (matchInformation.getHandicap() == 2.5) {
 
             winExpectation = (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()) / basicData.getMatchCount();
@@ -206,18 +206,18 @@ public class HandicapProcessing implements iHandicapProcessing {
                     / basicData.getMatchCount() * matchInformation.getLoseRate() - (basicData.getWin4Game() + basicData.getWin3Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 2.25){
+        } else if (matchInformation.getHandicap() == 2.25) {
 
             winExpectation = (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()/2) / basicData.getMatchCount();
+                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game() / 2) / basicData.getMatchCount();
             winProbability = (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game()/2)
+            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() + basicData.getWin2Game() / 2)
                     / basicData.getMatchCount() * matchInformation.getLoseRate() - (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
             loseHalfProbability = basicData.getWin2Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 2){
+        } else if (matchInformation.getHandicap() == 2) {
 
             winExpectation = (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
@@ -229,19 +229,19 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getWin2Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 1.75){
+        } else if (matchInformation.getHandicap() == 1.75) {
 
-            winExpectation = (basicData.getWin2Game()/2 + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
+            winExpectation = (basicData.getWin2Game() / 2 + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             winHalfProbability = basicData.getWin2Game() / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount()
-                    * matchInformation.getLoseRate() - (basicData.getWin2Game()/2 + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
+                    * matchInformation.getLoseRate() - (basicData.getWin2Game() / 2 + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
 
 
-        } else if (matchInformation.getHandicap() == 1.5){
+        } else if (matchInformation.getHandicap() == 1.5) {
 
             winExpectation = (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
@@ -251,18 +251,18 @@ public class HandicapProcessing implements iHandicapProcessing {
                     * matchInformation.getLoseRate() - (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 1.25){
+        } else if (matchInformation.getHandicap() == 1.25) {
 
             winExpectation = (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()/2) / basicData.getMatchCount();
+                    - (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() / 2) / basicData.getMatchCount();
             winProbability = (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game()/2) / basicData.getMatchCount()
+            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() + basicData.getWin1Game() / 2) / basicData.getMatchCount()
                     * matchInformation.getLoseRate() - (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
-            loseProbability =  (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
-            loseHalfProbability =  basicData.getWin1Game() / basicData.getMatchCount();
+            loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
+            loseHalfProbability = basicData.getWin1Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 1){
+        } else if (matchInformation.getHandicap() == 1) {
 
             winExpectation = (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
@@ -274,18 +274,18 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getWin1Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 0.75){
+        } else if (matchInformation.getHandicap() == 0.75) {
 
-            winExpectation = (basicData.getWin1Game()/2 + basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount()
+            winExpectation = (basicData.getWin1Game() / 2 + basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount()
                     * matchInformation.getWinRate() - (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
             winProbability = (basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             winHalfProbability = basicData.getWin1Game() / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount() * matchInformation.getLoseRate()
-                    - (basicData.getWin1Game()/2 + basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
+                    - (basicData.getWin1Game() / 2 + basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 0.5){
+        } else if (matchInformation.getHandicap() == 0.5) {
 
             winExpectation = basicData.getWinMatch() / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
@@ -295,18 +295,18 @@ public class HandicapProcessing implements iHandicapProcessing {
                     - (basicData.getWin1Game() + basicData.getWin2Game() + basicData.getWin3Game() + basicData.getWin4Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 0.25){
+        } else if (matchInformation.getHandicap() == 0.25) {
 
             winExpectation = basicData.getWinMatch() / basicData.getMatchCount() * matchInformation.getWinRate()
-                    - (basicData.getLoseMatch() + basicData.getPushMatch()/2) / basicData.getMatchCount();
+                    - (basicData.getLoseMatch() + basicData.getPushMatch() / 2) / basicData.getMatchCount();
             winProbability = basicData.getWinMatch() / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch()/2) / basicData.getMatchCount() * matchInformation.getLoseRate()
+            loseExpectation = (basicData.getLoseMatch() + basicData.getPushMatch() / 2) / basicData.getMatchCount() * matchInformation.getLoseRate()
                     - (basicData.getWinMatch()) / basicData.getMatchCount();
             loseProbability = basicData.getLoseMatch() / basicData.getMatchCount();
-            loseHalfProbability = basicData.getPushMatch() /basicData.getMatchCount();
+            loseHalfProbability = basicData.getPushMatch() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == 0){
+        } else if (matchInformation.getHandicap() == 0) {
 
             winExpectation = basicData.getWinMatch() / basicData.getMatchCount() * matchInformation.getWinRate() - basicData.getLoseMatch()
                     / basicData.getMatchCount();
@@ -318,18 +318,18 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getPushGame() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -0.25){
+        } else if (matchInformation.getHandicap() == -0.25) {
 
-            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch()/2) / basicData.getMatchCount() * matchInformation.getWinRate()
+            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() / 2) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - basicData.getLoseMatch() / basicData.getMatchCount();
             winProbability = basicData.getWinMatch() / basicData.getMatchCount();
-            winHalfProbability =  basicData.getPushMatch() / basicData.getMatchCount();
+            winHalfProbability = basicData.getPushMatch() / basicData.getMatchCount();
 
             loseExpectation = basicData.getLoseMatch() / basicData.getMatchCount() * matchInformation.getLoseRate()
-                    - (basicData.getWinMatch() + basicData.getPushMatch()/2) / basicData.getMatchCount();
+                    - (basicData.getWinMatch() + basicData.getPushMatch() / 2) / basicData.getMatchCount();
             loseProbability = basicData.getLoseMatch() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -0.5){
+        } else if (matchInformation.getHandicap() == -0.5) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - basicData.getLoseMatch() / basicData.getMatchCount();
@@ -340,18 +340,18 @@ public class HandicapProcessing implements iHandicapProcessing {
             loseProbability = basicData.getLoseMatch() / basicData.getMatchCount();
 
 
-        } else if (matchInformation.getHandicap() == -0.75){
+        } else if (matchInformation.getHandicap() == -0.75) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    - (basicData.getLose1Game()/2 + basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
+                    - (basicData.getLose1Game() / 2 + basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLose1Game()/2 + basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount()
+            loseExpectation = (basicData.getLose1Game() / 2 + basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount()
                     * matchInformation.getLoseRate() - (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
             loseProbability = (basicData.getLoseMatch() - basicData.getLose1Game()) / basicData.getMatchCount();
             loseHalfProbability = basicData.getLose1Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -1){
+        } else if (matchInformation.getHandicap() == -1) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
@@ -363,18 +363,18 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getLose1Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -1.25){
+        } else if (matchInformation.getHandicap() == -1.25) {
 
-            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()/2) / basicData.getMatchCount() * matchInformation.getWinRate()
+            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() / 2) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch()) / basicData.getMatchCount();
             winHalfProbability = basicData.getLose1Game() / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
-                    - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()/2) / basicData.getMatchCount();
+                    - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() / 2) / basicData.getMatchCount();
             loseProbability = (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -1.5){
+        } else if (matchInformation.getHandicap() == -1.5) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
                     - (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
@@ -384,21 +384,21 @@ public class HandicapProcessing implements iHandicapProcessing {
                     - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLose2Game() + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -1.75){
+        } else if (matchInformation.getHandicap() == -1.75) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    -  (basicData.getLose2Game()/2 + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
+                    - (basicData.getLose2Game() / 2 + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game());
 
-            loseExpectation = (basicData.getLose2Game()/2 + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
-                    -  (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount();
-            loseProbability = ( basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
+            loseExpectation = (basicData.getLose2Game() / 2 + basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
+                    - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount();
+            loseProbability = (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             loseHalfProbability = basicData.getLose2Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -2){
+        } else if (matchInformation.getHandicap() == -2) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount() * matchInformation.getWinRate()
-                    -  (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
+                    - (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount();
 
             loseExpectation = (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
@@ -407,18 +407,18 @@ public class HandicapProcessing implements iHandicapProcessing {
 
             drawProbability = basicData.getLose2Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -2.25){
+        } else if (matchInformation.getHandicap() == -2.25) {
 
-            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()/2) / basicData.getMatchCount()
+            winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game() / 2) / basicData.getMatchCount()
                     * matchInformation.getWinRate() - (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game()) / basicData.getMatchCount();
             winHalfProbability = basicData.getLose2Game() / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLose3Game() + basicData.getLose4Game()) /basicData.getMatchCount() * matchInformation.getLoseRate()
-                    - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()/2) / basicData.getMatchCount();
-            loseProbability = (basicData.getLose3Game() + basicData.getLose4Game()) /basicData.getMatchCount();
+            loseExpectation = (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
+                    - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game() / 2) / basicData.getMatchCount();
+            loseProbability = (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -2.5){
+        } else if (matchInformation.getHandicap() == -2.5) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount()
                     * matchInformation.getWinRate() - (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
@@ -428,35 +428,34 @@ public class HandicapProcessing implements iHandicapProcessing {
                     - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount();
             loseProbability = (basicData.getLose3Game() + basicData.getLose4Game()) / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -2.75){
+        } else if (matchInformation.getHandicap() == -2.75) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount()
-                    * matchInformation.getWinRate() - (basicData.getLose3Game()/2 + basicData.getLose4Game()) / basicData.getMatchCount();
+                    * matchInformation.getWinRate() - (basicData.getLose3Game() / 2 + basicData.getLose4Game()) / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount();
 
-            loseExpectation = (basicData.getLose3Game()/2 + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
+            loseExpectation = (basicData.getLose3Game() / 2 + basicData.getLose4Game()) / basicData.getMatchCount() * matchInformation.getLoseRate()
                     - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount();
             loseProbability = basicData.getLose4Game() / basicData.getMatchCount();
             loseHalfProbability = basicData.getLose3Game() / basicData.getMatchCount();
 
-        } else if (matchInformation.getHandicap() == -3){
+        } else if (matchInformation.getHandicap() == -3) {
 
             winExpectation = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount()
-                    * matchInformation.getWinRate() - + basicData.getLose4Game() / basicData.getMatchCount();
+                    * matchInformation.getWinRate() - +basicData.getLose4Game() / basicData.getMatchCount();
             winProbability = (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount();
 
-            loseExpectation =  basicData.getLose4Game() / basicData.getMatchCount() * matchInformation.getLoseRate()
+            loseExpectation = basicData.getLose4Game() / basicData.getMatchCount() * matchInformation.getLoseRate()
                     - (basicData.getWinMatch() + basicData.getPushMatch() + basicData.getLose1Game() + basicData.getLose2Game()) / basicData.getMatchCount();
             loseProbability = basicData.getLose4Game() / basicData.getMatchCount();
         }
 
-        if (display){
+        if (display) {
             displayResult();
         }
 
         return 0;
     }
-
 
 
     private void clearInfo() {
@@ -478,7 +477,7 @@ public class HandicapProcessing implements iHandicapProcessing {
     public void saveMatchResult(String matchName, String betWinOrLose, String resultWinOrLose, double betMoney, double resultGain) {
         System.out.println("Saving Match: " + matchName);
 
-        if (isSaved(matchName)){
+        if (isSaved(matchName)) {
             System.out.println("Match was saved. aborting...");
             return;
         }
@@ -514,7 +513,7 @@ public class HandicapProcessing implements iHandicapProcessing {
         insertionQuery.put("betMoney", betMoney);
         insertionQuery.put("resultGain", resultGain);
 
-        MongoDBUtil dbUtil = new MongoDBUtil(mongoDBHost, mongoDBPort, mongoDBName);
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(mongoDBHost, mongoDBPort, mongoDBName);
         dbUtil.insert(insertionQuery, collectionName);
         dbUtil.closeConnection();
 
@@ -537,10 +536,9 @@ public class HandicapProcessing implements iHandicapProcessing {
         System.out.println("Lose Half Probability:\t" + df.format(loseHalfProbability * 100) + "%");
 
         System.out.println("Draw Probability:\t" + df.format(drawProbability * 100) + "%");
-
     }
 
-    private boolean isSaved (String matchName){
+    private boolean isSaved(String matchName) {
         String mongoDBHost = Props.getProperty("MongoDBHost");
         String mongoDBPort = Props.getProperty("MongoDBPort");
         String mongoDBName = Props.getProperty("MongoDBName");
@@ -548,7 +546,7 @@ public class HandicapProcessing implements iHandicapProcessing {
 
         DBObject query = new BasicDBObject("matchName", matchName);
 
-        MongoDBUtil dbUtil = new MongoDBUtil(mongoDBHost, mongoDBPort, mongoDBName);
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(mongoDBHost, mongoDBPort, mongoDBName);
         DBObject result = dbUtil.findOne(query, collectionName);
         dbUtil.closeConnection();
 
