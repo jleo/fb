@@ -126,6 +126,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
         long t2 = System.currentTimeMillis();
 
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
+        executorService.shutdown();
     }
 
     private double getHandicap(double type, int abFlag) {
