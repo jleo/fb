@@ -32,7 +32,7 @@ public class MongoDBUtil {
 
         try {
             MongoOptions options = new MongoOptions();
-            options.threadsAllowedToBlockForConnectionMultiplier = 30;
+            options.threadsAllowedToBlockForConnectionMultiplier = 3000;
             options.connectionsPerHost = 300;
             mongo = new Mongo(mongoDBHost, Integer.parseInt(mongoDBPort));
         } catch (UnknownHostException e) {
