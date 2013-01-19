@@ -22,7 +22,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing{
         this.matchBetCollection = collection;
     }
 
-    protected void betOnMatch(String matchId, String cid, String clientId, String betOn, double bet, String aid,
+    protected void betOnMatch(String matchId, String cid, String clientId, int betOn, double bet, String aid,
                             double expectation, double probability, Date matchTime){
         DBObject matchIdQuery = new BasicDBObject("matchId", matchId);
         matchIdQuery.put("aid", aid);
