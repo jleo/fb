@@ -15,6 +15,7 @@ import org.bson.types.ObjectId
 public class Settle {
     public void settle(String gurateen) {
         def byDate = true
+        def reverse = true
 
         def GoalCn = new String[41];
 
@@ -133,6 +134,9 @@ public class Settle {
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
             int betOn = it.get("betOn")    //0主1客
+            if (reverse) {
+                betOn = betOn == 0 ? 1 : 0
+            }
             Integer betType = it.get("betType")    //0亚1欧
 
             def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
