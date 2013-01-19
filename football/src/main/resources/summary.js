@@ -23,4 +23,4 @@ f = function (key, reducedValue) {
     return reducedValue;
 };
 
-res = db.transactionDate.mapReduce(m, r, {finalize: f, out: "summaryDate"});
+res = db.transactionDate.mapReduce(m, r, {finalize: f, out: {replace:"summaryDate"}});
