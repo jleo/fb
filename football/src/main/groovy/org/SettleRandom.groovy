@@ -127,6 +127,7 @@ public class SettleRandom {
         def betCollection = db.getCollection("betRandom")
 
         def transactionCollection = db.getCollection("transactionRandom")
+        transactionCollection.drop()
 
         betCollection.find(new BasicDBObject("status", "processed").append("matchId","606442")).each { it ->
             String matchId = it.get("matchId")
@@ -229,6 +230,6 @@ public class SettleRandom {
 
     public static void main(String[] args) {
         SettleRandom settle = new SettleRandom()
-        settle.settle()
+        settle.settle(args[0])
     }
 }
