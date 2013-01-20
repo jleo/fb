@@ -1,8 +1,5 @@
 package HandicapProcessing;
 
-import Util.MongoDBUtil;
-import Util.Props;
-
 import java.util.Date;
 
 /**
@@ -26,10 +23,29 @@ public class MatchInformation {
     private String clientId;
     private String cid;
 
+    public String getTeamB() {
+        return teamB;
+    }
+
+    public void setTeamB(String teamB) {
+        this.teamB = teamB;
+    }
+
+    public String getTeamA() {
+        return teamA;
+    }
+
+    public void setTeamA(String teamA) {
+        this.teamA = teamA;
+    }
+
+    private String teamA;
+    private String teamB;
+
     private Date matchTime;
 
     public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                            String matchId, String clientId, String cid, Date matchTime) {
+                            String matchId, String clientId, String cid, Date matchTime, String teamA, String teamB) {
         this.win = win;
         this.push = push;
         this.lose = lose;
@@ -40,10 +56,12 @@ public class MatchInformation {
         this.clientId = clientId;
         this.cid = cid;
         this.matchTime = matchTime;
+        this.teamA = teamA;
+        this.teamB = teamB;
     }
 
     public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                            String matchId, String clientId, String cid){
+                            String matchId, String clientId, String cid, String teamA, String teamB) {
         this.win = win;
         this.push = push;
         this.lose = lose;
@@ -53,7 +71,10 @@ public class MatchInformation {
         this.matchId = matchId;
         this.clientId = clientId;
         this.cid = cid;
+        this.teamA = teamA;
+        this.teamB = teamB;
     }
+
 
     public Date getMatchTime() {
         return matchTime;

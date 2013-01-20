@@ -10,7 +10,7 @@ package HandicapProcessing;
 public interface iHandicapProcessing {
 
     public void setMatch(double win, double push, double lose, double handicap , double winRate, double loseRate,
-                         String matchId, String clientId, String cid);
+                         String matchId, String clientId, String cid, String teamA, String teamB);
 
     public int getResult (int supportDegree, int supportIncreaseCount, boolean display);
 
