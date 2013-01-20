@@ -19,8 +19,8 @@ class BatchRun {
 
         BigDecimal seedExpectation = new BigDecimal("0.0");
         BigDecimal seedProbability = new BigDecimal("0.5");
-        int loopingExpectation = 20;
-        int loppingProbability = 10;
+        int loopingExpectation = 40;
+        int loppingProbability = 12;
 
         for (int i = 1; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
@@ -36,8 +36,8 @@ class BatchRun {
 
                     Settle s = new Settle()
                     println date.format("yyyy-MM-dd")
-                    String gurantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
-                    s.settle(gurantee)
+                    String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
+                    s.settle(guarantee)
                     date = date + 1
                 }
 
