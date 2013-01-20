@@ -13,9 +13,7 @@ import org.bson.types.ObjectId
  */
 
 public class Settle {
-    public void settle(String gurateen) {
-        def byDate = true
-        def reverse = true
+    public void settle(String gurateen, byDate, reverse) {
 
         def GoalCn = new String[41];
 
@@ -233,6 +231,6 @@ public class Settle {
 
     public static void main(String[] args) {
         Settle settle = new Settle()
-        settle.settle()
+        settle.settle(args[0], Boolean.valueOf(args[1]), Boolean.valueOf(args[2]))
     }
 }
