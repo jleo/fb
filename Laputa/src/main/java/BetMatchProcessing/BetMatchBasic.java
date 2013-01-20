@@ -43,8 +43,8 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         betQuery.put("teamA", teamA);
         betQuery.put("teamB", teamB);
         betQuery.put("ch", ch);
-        betQuery.put("h1", ch);
-        betQuery.put("h2", ch);
+        betQuery.put("h1", h1);
+        betQuery.put("h2", h2);
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
