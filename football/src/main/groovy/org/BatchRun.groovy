@@ -42,7 +42,7 @@ class BatchRun {
                 }
 
             }
-            seedExpectation = seedExpectation.add(new BigDecimal("0.05"));
+            seedExpectation = seedExpectation.add(new BigDecimal("0.005"));
             seedProbability = new BigDecimal("0.5");
         }
     }
