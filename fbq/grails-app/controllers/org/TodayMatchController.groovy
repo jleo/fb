@@ -33,7 +33,7 @@ class TodayMatchController {
     }
 
     def show() {
-        def matchInstance = TodayMatch.get(params.id)
+        def matchInstance = TodayMatch.findByMatchIdAndCid(params.matchId,params.cid)
         if (!matchInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'TodayMatch.label', default: 'Match'), params.id])
             redirect(action: "list")
@@ -116,15 +116,14 @@ class TodayMatchController {
 
         if (cid && cid != "-1" && matchId) {
             def count = TodayMatch.countByMatchIdAndCid(matchId, cid)
-            render(view: 'list', model: [query: [cid: cid, matchId: matchId],matchInstanceList: TodayMatch.findAllByMatchIdAndCid(matchId, params), matchInstanceTotal: count])
+            render(view: 'list', model: [query: [cid: cid, matchId: matchId], matchInstanceList: TodayMatch.findAllByMatchIdAndCid(matchId, params), matchInstanceTotal: count])
         } else if (cid && cid != -1 && !matchId) {
             def count = TodayMatch.countByCid(cid)
-            render(view: 'list', model: [query: [cid: cid],matchInstanceList: TodayMatch.findAllByCid(cid, params), matchInstanceTotal: count])
-        }else if((!cid || cid == -1) && !matchId){
+            render(view: 'list', model: [query: [cid: cid], matchInstanceList: TodayMatch.findAllByCid(cid, params), matchInstanceTotal: count])
+        } else if ((!cid || cid == -1) && !matchId) {
             def count = TodayMatch.count()
-            render(view: 'list', model: [query: [cid: cid],matchInstanceList: TodayMatch.findAll(params), matchInstanceTotal: count])
-        }
-        else {
+            render(view: 'list', model: [query: [cid: cid], matchInstanceList: TodayMatch.findAll(params), matchInstanceTotal: count])
+        } else {
             def count = TodayMatch.countByMatchId(matchId)
             render(view: 'list', model: [query: [cid: cid, matchId: matchId], matchInstanceList: TodayMatch.findAllByMatchId(matchId, params), matchInstanceTotal: count])
         }

@@ -203,42 +203,6 @@
 				</li>
 				</g:if>
 			
-				<g:if test="${matchInstance?.resultRA}">
-				<li class="fieldcontain">
-					<span id="resultRA-label" class="property-label"><g:message code="match.resultRA.label" default="Result RA" /></span>
-					
-						<span class="property-value" aria-labelledby="resultRA-label"><g:fieldValue bean="${matchInstance}" field="resultRA"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${matchInstance?.resultRB}">
-				<li class="fieldcontain">
-					<span id="resultRB-label" class="property-label"><g:message code="match.resultRB.label" default="Result RB" /></span>
-					
-						<span class="property-value" aria-labelledby="resultRB-label"><g:fieldValue bean="${matchInstance}" field="resultRB"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${matchInstance?.resultPA}">
-				<li class="fieldcontain">
-					<span id="resultPA-label" class="property-label"><g:message code="match.resultPA.label" default="Result PA" /></span>
-					
-						<span class="property-value" aria-labelledby="resultPA-label"><g:fieldValue bean="${matchInstance}" field="resultPA"/></span>
-					
-				</li>
-				</g:if>
-			
-				<g:if test="${matchInstance?.resultPB}">
-				<li class="fieldcontain">
-					<span id="resultPB-label" class="property-label"><g:message code="match.resultPB.label" default="Result PB" /></span>
-					
-						<span class="property-value" aria-labelledby="resultPB-label"><g:fieldValue bean="${matchInstance}" field="resultPB"/></span>
-					
-				</li>
-				</g:if>
-			
 				<g:if test="${matchInstance?.wa1}">
 				<li class="fieldcontain">
 					<span id="wa1-label" class="property-label"><g:message code="match.wa1.label" default="Wa1" /></span>
