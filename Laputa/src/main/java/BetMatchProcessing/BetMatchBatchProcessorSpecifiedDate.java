@@ -166,8 +166,8 @@ public class BetMatchBatchProcessorSpecifiedDate {
         field.put("p1", 1);
         field.put("l1", 1);
         field.put("time", 1);
-        field.put("teamA", 1);
-        field.put("teamB", 1);
+        field.put("tNameA", 1);
+        field.put("tNameB", 1);
 
         dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
