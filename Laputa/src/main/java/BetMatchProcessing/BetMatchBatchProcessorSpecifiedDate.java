@@ -84,8 +84,8 @@ public class BetMatchBatchProcessorSpecifiedDate {
                     double winRate = ((Number) match.get("h1")).doubleValue();
                     double loseRate = ((Number) match.get("h2")).doubleValue();
 
-                    String teamA = (String) match.get("tNameA");
-                    String teamB = (String) match.get("tNameB");
+                    String teamA = match.get("tNameA").toString();
+                    String teamB = match.get("tNameB").toString();
                     String matchId = (String) match.get("matchId");
                     double ch = ((Number) match.get("ch")).doubleValue();
                     String cid = (String) match.get("cid");
