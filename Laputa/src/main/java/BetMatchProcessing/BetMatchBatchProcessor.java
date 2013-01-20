@@ -27,8 +27,8 @@ public class BetMatchBatchProcessor {
 
     public static void main(String args[]) {
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor();
-        double minExpectation = 0.03;
-        double minProbability = 0.58;
+        double minExpectation = Double.parseDouble(args[0]);
+        double minProbability = Double.parseDouble(args[1]);
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
     }
 
@@ -36,6 +36,11 @@ public class BetMatchBatchProcessor {
         long t1 = System.currentTimeMillis();
         int cpuNum = Runtime.getRuntime().availableProcessors();
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
+                Props.getProperty("MongoDBRemotePort"),
+                Props.getProperty("MongoDBRemoteName"));
+        dbUtil.drop(Props.getProperty("MatchBatchBet"));
 
         final List<DBObject> matchList = getAllBettingMatch();
         processingMatch = 0;
@@ -99,6 +104,7 @@ public class BetMatchBatchProcessor {
         long t2 = System.currentTimeMillis();
 
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
+        executorService.shutdown();
     }
 
     private double getHandicap(double type, int abFlag) {
