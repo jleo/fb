@@ -70,7 +70,7 @@ public class BetMatchHistoryProcessor {
                     String teamB = match.get("tNameB").toString();
 
                     String matchId = (String) match.get("matchId");
-                    double ch = ((Number) match.get("ch")).doubleValue();
+                    int ch = ((Number) match.get("ch")).intValue();
                     String cid = (String) match.get("cid");
                     int abFlag = ((Number) match.get("abFlag")).intValue();
                     Date matchTime = ((Date) match.get("time"));
@@ -84,7 +84,7 @@ public class BetMatchHistoryProcessor {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
-                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA, teamB);
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA, teamB,ch);
                     int isBet = hp.getResult(10000, 10, false);
                     if (isBet != 0) {
                         return;

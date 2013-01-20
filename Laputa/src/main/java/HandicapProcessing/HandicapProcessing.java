@@ -134,14 +134,14 @@ public class HandicapProcessing implements iHandicapProcessing {
     }
 
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                         String matchId, String clientId, String cid, Date date, String teamA, String teamB) {
+                         String matchId, String clientId, String cid, Date date, String teamA, String teamB, int ch) {
 
-        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, date, teamA, teamB);
+        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, date, teamA, teamB,ch);
     }
 
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                         String matchId, String clientId, String cid, String teamA, String teamB) {
-        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, teamA, teamB);
+                         String matchId, String clientId, String cid, String teamA, String teamB,int ch) {
+        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, teamA, teamB,ch);
     }
 
     public int getResult(int supportDegree, int supportIncreaseCount, boolean display) {

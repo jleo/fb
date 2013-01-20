@@ -23,6 +23,16 @@ public class MatchInformation {
     private String clientId;
     private String cid;
 
+    public int getCh() {
+        return ch;
+    }
+
+    public void setCh(int ch) {
+        this.ch = ch;
+    }
+
+    private int ch;
+
     public String getTeamB() {
         return teamB;
     }
@@ -45,7 +55,7 @@ public class MatchInformation {
     private Date matchTime;
 
     public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                            String matchId, String clientId, String cid, Date matchTime, String teamA, String teamB) {
+                            String matchId, String clientId, String cid, Date matchTime, String teamA, String teamB,int ch) {
         this.win = win;
         this.push = push;
         this.lose = lose;
@@ -58,10 +68,11 @@ public class MatchInformation {
         this.matchTime = matchTime;
         this.teamA = teamA;
         this.teamB = teamB;
+        this.ch = ch;
     }
 
     public MatchInformation(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                            String matchId, String clientId, String cid, String teamA, String teamB) {
+                            String matchId, String clientId, String cid, String teamA, String teamB, int ch) {
         this.win = win;
         this.push = push;
         this.lose = lose;
@@ -73,6 +84,7 @@ public class MatchInformation {
         this.cid = cid;
         this.teamA = teamA;
         this.teamB = teamB;
+        this.ch = ch;
     }
 
 
