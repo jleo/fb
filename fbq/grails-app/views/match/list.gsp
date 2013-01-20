@@ -45,6 +45,8 @@
             <g:sortableColumn property="lr" title="负"/>
 
             <g:sortableColumn property="matchId" title="比赛场号"/>
+            <g:sortableColumn property="h1" title="主胜"/>
+            <g:sortableColumn property="h2" title="客胜"/>
 
             <g:sortableColumn property="cid" title="菠菜公司"/>
             <g:sortableColumn property="time" title="时间"/>
@@ -61,6 +63,8 @@
                 <td>${fieldValue(bean: matchInstance, field: "p1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "l1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "matchId")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h1")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h2")}</td>
                 <td>${CompanyMapping.mapping.get(Integer.parseInt(matchInstance.cid))}</td>
                 <td>${matchInstance.time}</td>
             </tr>
