@@ -150,6 +150,8 @@ public class BetMatchHistoryProcessor {
         field.put("p1", 1);
         field.put("l1", 1);
         field.put("time", 1);
+        field.put("teamA", 1);
+        field.put("teamB", 1);
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),

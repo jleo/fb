@@ -63,6 +63,7 @@ public class BetMatchBatchProcessor {
                     double loseRate = ((Number) match.get("h2")).doubleValue();
                     String teamA = (String) match.get("tNameA");
                     String teamB = (String) match.get("tNameB");
+
                     String matchId = (String) match.get("matchId");
                     double ch = ((Number) match.get("ch")).doubleValue();
                     String cid = (String) match.get("cid");
@@ -138,6 +139,8 @@ public class BetMatchBatchProcessor {
         field.put("p1", 1);
         field.put("l1", 1);
         field.put("time", 1);
+        field.put("teamA", 1);
+        field.put("teamB", 1);
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"),
