@@ -14,16 +14,16 @@ import java.util.Date;
  * Time: 下午2:45
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BetMatchBasic implements iBetMatchProcessing{
+public abstract class BetMatchBasic implements iBetMatchProcessing {
 
     protected String matchBetCollection;
 
-    public void setCollection(String collection){
+    public void setCollection(String collection) {
         this.matchBetCollection = collection;
     }
 
     protected void betOnMatch(String matchId, String cid, String clientId, int betOn, double bet, String aid,
-                            double expectation, double probability, Date matchTime, String teamA, String teamB,int ch){
+                              double expectation, double probability, Date matchTime, String teamA, String teamB, int ch, double h1, double h2) {
         DBObject matchIdQuery = new BasicDBObject("matchId", matchId);
         matchIdQuery.put("aid", aid);
         matchIdQuery.put("cid", cid);
@@ -43,6 +43,8 @@ public abstract class BetMatchBasic implements iBetMatchProcessing{
         betQuery.put("teamA", teamA);
         betQuery.put("teamB", teamB);
         betQuery.put("ch", ch);
+        betQuery.put("h1", h1);
+        betQuery.put("h2", h2);
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
