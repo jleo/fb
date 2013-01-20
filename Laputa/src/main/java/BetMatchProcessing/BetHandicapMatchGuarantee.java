@@ -20,7 +20,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     0, baseMoney, aid, handicapProcessing.getWinExpectation(),
                     (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh());
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh(),handicapProcessing.getMatchInformation().getWinRate(),handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         } else if (handicapProcessing.getLoseExpectation() > minExpectation && (handicapProcessing.getLoseProbability()
                 + handicapProcessing.getLoseHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability) {
@@ -29,7 +29,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     1, baseMoney, aid, handicapProcessing.getLoseExpectation(),
                     (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh());
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh(),handicapProcessing.getMatchInformation().getWinRate(),handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         }
 
