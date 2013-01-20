@@ -129,7 +129,7 @@ public class SettleRandom {
         def transactionCollection = db.getCollection("transactionRandom")
         transactionCollection.drop()
 
-        betCollection.find(new BasicDBObject("status", "processed").append("matchId","606442")).each { it ->
+        betCollection.find(new BasicDBObject("status", "processed")).each { it ->
             String matchId = it.get("matchId")
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
