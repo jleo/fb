@@ -109,14 +109,7 @@ public class BetMatchHistoryProcessor {
     }
 
     private double getHandicap(double type, int abFlag) {
-        double handicap = type / 4.0;
-        if (abFlag == 1) {    //history 0 主
-            return handicap;
-        } else if (abFlag == 2) {
-            return handicap * -1;           //history 1客
-        } else {
-            return -999;
-        }
+        return type / 4.0;
     }
 
     private List<DBObject> getAllBettingMatch(List<String> matchIds) {

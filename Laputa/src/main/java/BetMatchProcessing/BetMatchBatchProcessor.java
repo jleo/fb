@@ -68,13 +68,10 @@ public class BetMatchBatchProcessor {
                     int ch = ((Number) match.get("ch")).intValue();
                     String cid = (String) match.get("cid");
                     int abFlag = ((Number) match.get("abFlag")).intValue();
-                    Date matchTime = ((Date)match.get("time"));
+                    Date matchTime = ((Date) match.get("time"));
 
                     double handicap = getHandicap(ch, abFlag);
-                    if (handicap == -999) {
-                        System.out.println("ERROR handicap!");
-                        return;
-                    }
+
                     if (handicap >= 3 || handicap <= -3) {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
@@ -112,14 +109,7 @@ public class BetMatchBatchProcessor {
     }
 
     private double getHandicap(double type, int abFlag) {
-        double handicap = type / 4.0;
-        if (abFlag == 1) {              //让球
-            return handicap;
-        } else if (abFlag == 2) {       //受让让球
-            return handicap * -1;
-        } else {
-            return -999;
-        }
+        return type / 4.0;
     }
 
     private List<DBObject> getAllBettingMatch() {
