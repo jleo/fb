@@ -68,11 +68,12 @@ public class SettleHistory {
                 def handicap = type / 4
                 if (abFlag == 1)
                     handicap = -handicap
+
                 if (scoreA - handicap == scoreB)
                     result = 0;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
             if (type % 4 == 1) {
@@ -93,7 +94,7 @@ public class SettleHistory {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                else if (scoreA - handicap > scoreB)
+                if (scoreA - handicap > scoreB)
                     result = 1
                 else if (scoreA - handicap < scoreB)
                     result = -1
@@ -106,9 +107,9 @@ public class SettleHistory {
 
                 if (scoreA - (int) handicap == scoreB)
                     result = 0.5;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
 
