@@ -60,20 +60,11 @@ public class Settle {
         GoalCn[40] = "十球";
 
         def handicap = { type, scoreA, scoreB, betOn ->
-
-            def abFlag = 0
-
-            if (type<0)
-                abFlag = 2
-
-            type = Math.abs(type)
-
             def result = null
 
-            if (type % 4 == 0) {
+            def abs = Math.abs(type)
+            if (abs % 4 == 0) {
                 def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
 
                 if (scoreA - handicap == scoreB)
                     result = 0;
@@ -82,12 +73,8 @@ public class Settle {
                 else if (scoreA - handicap < scoreB)
                     result = -1
             }
-            if (type % 4 == 1) {
+            if (abs % 4 == 1) {
                 def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
-
-
                 if (scoreA - (int) handicap == scoreB)
                     result = -0.5;
                 else if (scoreA - handicap > scoreB)
@@ -95,21 +82,16 @@ public class Settle {
                 else if (scoreA - handicap < scoreB)
                     result = -1
             }
-            if (type % 4 == 2) {
+            if (abs % 4 == 2) {
                 def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
-
                 if (scoreA - handicap > scoreB)
                     result = 1
                 else if (scoreA - handicap < scoreB)
                     result = -1
             }
 
-            if (type % 4 == 3) {
+            if (abs % 4 == 3) {
                 def handicap = type / 4 + 1
-                if (abFlag == 2)
-                    handicap = -handicap
 
                 if (scoreA - (int) handicap == scoreB)
                     result = 0.5;
@@ -120,12 +102,8 @@ public class Settle {
             }
 
             if (betOn == 0) {
-                if (abFlag == 2)
-                    return -result
                 return result
             } else {
-                if (abFlag == 2)
-                    return result
                 return -result
             }
         }
@@ -177,7 +155,7 @@ public class Settle {
                 }
 
                 if (result > 0) {
-                    delta = bet * result * ((betOn == 1 ? h1 : h2))
+                    delta = bet * result * ((betOn == 0 ? h1 : h2))
                 }
 
                 if (result < 0) {
@@ -188,7 +166,7 @@ public class Settle {
                 it.removeField("_id")
                 it.removeField("cid")
                 it.betOnDisplay = betOn == 0 ? "主" : "客"
-                it.typeDispaly = prefix + GoalCn[type]
+                it.typeDispaly = prefix + GoalCn[Math.abs(type)]
             } else {
                 float w2 = matchInfo.get("w2") as float
                 float p2 = matchInfo.get("p2") as float
