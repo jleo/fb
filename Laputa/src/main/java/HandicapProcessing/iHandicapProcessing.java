@@ -12,7 +12,7 @@ public interface iHandicapProcessing {
     public void setMatch(double win, double push, double lose, double handicap , double winRate, double loseRate,
                          String matchId, String clientId, String cid, String teamA, String teamB, int ch);
 
-    public int getResult (int supportDegree, int supportIncreaseCount, boolean display);
+    public int getResult (boolean display);
 
     public void saveMatchResult (String matchName, String betWinOrLose, String resultWinOrLose, double betMoney, double resultGain);
 }

@@ -79,8 +79,10 @@ public class BetMatchBatchProcessor {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
-                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime,teamA,teamB,ch);
-                    int isBet = hp.getResult(10000, 10, false);
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA,
+                            teamB, ch);
+
+                    int isBet = hp.getResult(false);
                     if (isBet != 0) {
                         return;
                     }

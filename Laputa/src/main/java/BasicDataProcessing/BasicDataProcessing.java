@@ -53,6 +53,9 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         queryField.put("resultRB", 1);
 
         List<DBObject> resultList = dbUtil.findAll(query, queryField, collectionName);
+        if (resultList.size() < Integer.parseInt(Props.getProperty("supportDegree"))){
+            return;
+        }
         basicData.setMatchCount((double) resultList.size());
 
         for (DBObject dbObject : resultList) {
