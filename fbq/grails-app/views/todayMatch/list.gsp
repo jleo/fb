@@ -68,11 +68,11 @@
                 <td>${fieldValue(bean: matchInstance, field: "h1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "h2")}</td>
                 <g:if test="${matchInstance.ch}">
-                    <g:if test="${matchInstance.abFlag}">
-                        <td>${org.HandicapMapping.GoalCn[matchInstance.ch]}</td>
+                    <g:if test="${matchInstance.ch >= 0}">
+                        <td>${org.HandicapMapping.GoalCn[(matchInstance.ch)]}</td>
                     </g:if>
                     <g:else>
-                        <td>受${org.HandicapMapping.GoalCn[matchInstance.ch]}</td>
+                        <td>受${org.HandicapMapping.GoalCn[(-matchInstance.ch)]}</td>
                     </g:else>
                 </g:if>
                 <g:else>
