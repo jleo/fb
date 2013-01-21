@@ -6,7 +6,6 @@ import Util.Props;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,21 +26,15 @@ public class BetMatchHistoryProcessor {
 
     public static void main(String[] args) {
         BetMatchHistoryProcessor betMatchHistoryProcessor = new BetMatchHistoryProcessor();
-        double seedExpectation = 0.0;
-        double seedProbability = 0.5;
-        int loopingExpectation = 20;
-        int loppingProbability = 10;
+        double seedExpectation = 0.1;
+        double seedProbability = 0.53;
 
-        List<DBObject> matchList = betMatchHistoryProcessor.getAllBettingMatch();
-        for (int i = 1; i < loopingExpectation; ++i) {
-            for (int j = 0; j < loppingProbability; ++j) {
-                System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
-                betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, matchList);
-                seedProbability = seedProbability + 0.02;
-            }
-            seedExpectation = seedExpectation + 0.005;
-            seedProbability = 0.0;
-        }
+        List<String> matches = new ArrayList<String>();
+        matches.add("592356");
+
+        List<DBObject> matchList = betMatchHistoryProcessor.getAllBettingMatch(matches);
+        System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
+        betMatchHistoryProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, matchList);
     }
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
@@ -84,7 +77,7 @@ public class BetMatchHistoryProcessor {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
-                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA, teamB,ch);
+                    hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA, teamB, ch);
                     int isBet = hp.getResult(10000, 10, false);
                     if (isBet != 0) {
                         return;
@@ -125,7 +118,7 @@ public class BetMatchHistoryProcessor {
         }
     }
 
-    private List<DBObject> getAllBettingMatch() {
+    private List<DBObject> getAllBettingMatch(List<String> matchIds) {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
@@ -134,7 +127,7 @@ public class BetMatchHistoryProcessor {
         query.put("cid", cid);
 
         try {
-            query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2013-01-01 00:00:00")));
+            query.put("matchId", new BasicDBObject("$in", matchIds));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -37,8 +37,9 @@ class Match {
     float wa2
     float pa2
     float la2
-    double h1
-    double h2
+    Double h1
+    Double h2
+    Integer ch
 
     static constraints = {
         returnRate(nullable:true)
