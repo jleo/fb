@@ -21,11 +21,11 @@
 <g:form action="query" name="query">
     <span>比赛Id</span>&nbsp;&nbsp;<g:textField name="matchId" value="${query?.matchId}"></g:textField>
     <span>菠菜公司</span>&nbsp;&nbsp;
-    <g:select name="cid" noSelection="${["-1": '']}" from="${ CompanyMapping.mapping}"
-                                           optionKey="key"
-                                           optionValue="value" value="${query?.cid}">
+    <g:select name="cid" noSelection="${["-1": '']}" from="${CompanyMapping.mapping}"
+              optionKey="key"
+              optionValue="value" value="${query?.cid}">
 
-</g:select>
+    </g:select>
     <g:submitButton name="提交"></g:submitButton>
 </g:form>
 <div id="list-match" class="content scaffold-list" role="main">
@@ -45,8 +45,11 @@
             <g:sortableColumn property="lr" title="负"/>
 
             <g:sortableColumn property="matchId" title="比赛场号"/>
-
-            <g:sortableColumn property="cid" title="菠菜公司"/>
+            <g:sortableColumn property="h1" title="主胜"/>
+            <g:sortableColumn property="h2" title="客胜"/>
+            <g:sortableColumn property="resultRA" title="主分"/>
+            <g:sortableColumn property="resultRB" title="客分"/>
+            <g:sortableColumn property="ch" title="盘口"/>
             <g:sortableColumn property="time" title="时间"/>
 
         </tr>
@@ -61,7 +64,17 @@
                 <td>${fieldValue(bean: matchInstance, field: "p1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "l1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "matchId")}</td>
-                <td>${CompanyMapping.mapping.get(Integer.parseInt(matchInstance.cid))}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h1")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "h2")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "resultRA")}</td>
+                <td>${fieldValue(bean: matchInstance, field: "resultRB")}</td>
+
+                <g:if test="${matchInstance.ch}">
+                    <td>${org.HandicapMapping.GoalCn[(matchInstance.ch)]}</td>
+                </g:if>
+                <g:else>
+                    <td></td>
+                </g:else>
                 <td>${matchInstance.time}</td>
             </tr>
         </g:each>

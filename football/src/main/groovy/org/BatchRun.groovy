@@ -37,7 +37,7 @@ class BatchRun {
                     Settle s = new Settle()
                     println date.format("yyyy-MM-dd")
                     String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
-                    s.settle(guarantee)
+                    s.settle(guarantee, true, false)
                     date = date + 1
                 }
 

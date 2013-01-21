@@ -12,8 +12,8 @@ import org.bson.types.ObjectId
  * Let's RocknRoll
  */
 
-public class Settle {
-    public void settle(String gurateen, byDate, reverse) {
+public class SettleHistory {
+    public void settle(reverse) {
 
         def GoalCn = new String[41];
 
@@ -80,11 +80,12 @@ public class Settle {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
+
+                if (scoreA - (int) handicap == scoreB)
                     result = -0.5;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
             if (type % 4 == 2) {
@@ -92,11 +93,9 @@ public class Settle {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
-                    result = -1;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
 
@@ -105,7 +104,7 @@ public class Settle {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
+                if (scoreA - Math.ceil(handicap as double) == scoreB)
                     result = 0.5;
                 if (scoreA - handicap > scoreB)
                     result = 1
@@ -123,11 +122,12 @@ public class Settle {
         def mongo = new Mongo("rm4", 15000)
         def db = mongo.getDB("fb");
 
-        def betCollection = db.getCollection(byDate ? "betDate" : "bet")
+        def betCollection = db.getCollection("betHistory")
 
-        def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
+        def transactionCollection = db.getCollection("transactionHistory")
+        transactionCollection.drop()
 
-        betCollection.find(byDate ? new BasicDBObject("aid",gurateen) : new BasicDBObject("status", "new")).each { it ->
+        betCollection.find(new BasicDBObject()).each { it ->
             String matchId = it.get("matchId")
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
@@ -208,29 +208,28 @@ public class Settle {
             betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
         }
 
-        if (byDate) {
-            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
+        def t = transactionCollection.find()
 
-            def sum = 0
-            def delta = 0
-            def count = 0
+        def sum = 0
+        def delta = 0
+        def count = 0
 
-            t.each {
-                delta += it.get("delta") as double
-                sum += it.get("bet") as int
-                count++
-            }
-
-            println "total: " + count
-            println "net: " + delta
-            if (sum != 0)
-                println "profit: " + delta * 100 / sum + "%"
+        t.each {
+            delta += it.get("delta") as double
+            sum += it.get("bet") as int
+            count++
         }
+
+        println "total: " + count
+        println "net: " + delta
+        if (sum != 0)
+            println "profit: " + delta * 100 / sum + "%"
+
         mongo.close()
     }
 
     public static void main(String[] args) {
-        Settle settle = new Settle()
-        settle.settle(args[0], Boolean.valueOf(args[1]), Boolean.valueOf(args[2]))
+        SettleHistory settle = new SettleHistory()
+        settle.settle(false)
     }
 }
