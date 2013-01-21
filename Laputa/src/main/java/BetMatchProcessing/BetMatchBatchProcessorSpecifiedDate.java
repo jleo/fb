@@ -24,17 +24,47 @@ import java.util.concurrent.Future;
  */
 public class BetMatchBatchProcessorSpecifiedDate {
 
-    private int processingMatch;
-
-    private String dateFrom;
-    private String dateTo;
-    private MongoDBUtil dbUtil;
     ExecutorService executorService;
+    private List<DBObject> allBettingMatch;
+    private MongoDBUtil dbUtil;
 
-    public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, String dateFrom, String dateTo) {
-        this.dateFrom = dateFrom;
-        this.dateTo = dateTo;
+    public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, List<DBObject> allBettingMatch, MongoDBUtil dbUtil) {
         this.executorService = executorService;
+        this.allBettingMatch = allBettingMatch;
+        this.dbUtil = dbUtil;
+    }
+
+    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil) {
+        String cid = Props.getProperty("betCId");
+
+        DBObject query = new BasicDBObject();
+        query.put("ch", new BasicDBObject("$ne", null));
+        query.put("abFlag", new BasicDBObject("$ne", null));
+        query.put("cid", cid);
+        try {
+            query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateFrom + " 00:00:00")).append("$lte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTo + " 00:00:00")));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        DBObject field = new BasicDBObject();
+        field.put("h1", 1);
+        field.put("h2", 1);
+        field.put("abFlag", 1);
+        field.put("ch", 1);
+        field.put("matchId", 1);
+        field.put("cid", 1);
+        field.put("w1", 1);
+        field.put("p1", 1);
+        field.put("l1", 1);
+        field.put("time", 1);
+        field.put("tNameA", 1);
+        field.put("tNameB", 1);
+
+
+        List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
+
+        return matchList;
     }
 
     public static void main(String args[]) {
@@ -49,8 +79,13 @@ public class BetMatchBatchProcessorSpecifiedDate {
             toDate = args[1];
         }
 
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
+                Props.getProperty("MongoDBRemotePort"),
+                Props.getProperty("MongoDBRemoteName"));
+
+        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil);
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
-        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, fromDate, toDate);
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
@@ -59,18 +94,14 @@ public class BetMatchBatchProcessorSpecifiedDate {
 
     public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
         long t1 = System.currentTimeMillis();
-        int cpuNum = Runtime.getRuntime().availableProcessors();
 
-
-        final List<DBObject> matchList = getAllBettingMatch();
         dbUtil.drop(Props.getProperty("MatchBatchBetSpecifiedDate"));
 
-        processingMatch = 0;
         final int[] BetOnMatch = {0};
         final double minExp = minExpectation;
         final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
-        for (final DBObject match : matchList) {
+        for (final DBObject match : allBettingMatch) {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
@@ -92,11 +123,8 @@ public class BetMatchBatchProcessorSpecifiedDate {
                     int abFlag = ((Number) match.get("abFlag")).intValue();
                     Date matchTime = ((Date) match.get("time"));
 
-                    double handicap = getHandicap(ch, abFlag);
-                    if (handicap == -999) {
-                        System.out.println("ERROR handicap!");
-                        return;
-                    }
+                    double handicap = ch / 4.0;
+
                     if (handicap >= 3 || handicap <= -3) {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
@@ -129,46 +157,12 @@ public class BetMatchBatchProcessorSpecifiedDate {
         }
         long t2 = System.currentTimeMillis();
 
-        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
+        System.out.println("\n****\nTotal Match: " + allBettingMatch.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
     private double getHandicap(double type, int abFlag) {
         return type / 4.0;
     }
 
-    private List<DBObject> getAllBettingMatch() {
-        String cid = Props.getProperty("betCId");
 
-        DBObject query = new BasicDBObject();
-        query.put("ch", new BasicDBObject("$ne", null));
-        query.put("abFlag", new BasicDBObject("$ne", null));
-        query.put("cid", cid);
-        try {
-            query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateFrom + " 00:00:00")).append("$lte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTo + " 00:00:00")));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        DBObject field = new BasicDBObject();
-        field.put("h1", 1);
-        field.put("h2", 1);
-        field.put("abFlag", 1);
-        field.put("ch", 1);
-        field.put("matchId", 1);
-        field.put("cid", 1);
-        field.put("w1", 1);
-        field.put("p1", 1);
-        field.put("l1", 1);
-        field.put("time", 1);
-        field.put("tNameA", 1);
-        field.put("tNameB", 1);
-
-        dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
-                Props.getProperty("MongoDBRemotePort"),
-                Props.getProperty("MongoDBRemoteName"));
-
-        List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
-
-        return matchList;
-    }
 }

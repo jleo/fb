@@ -237,24 +237,24 @@ public class Settle {
             betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
         }
 
-        if (byDate) {
-            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
-
-            def sum = 0
-            def delta = 0
-            def count = 0
-
-            t.each {
-                delta += it.get("delta") as double
-                sum += it.get("bet") as int
-                count++
-            }
-
-            println "total: " + count
-            println "net: " + delta
-            if (sum != 0)
-                println "profit: " + delta * 100 / sum + "%"
-        }
+//        if (byDate) {
+//            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
+//
+//            def sum = 0
+//            def delta = 0
+//            def count = 0
+//
+//            t.each {
+//                delta += it.get("delta") as double
+//                sum += it.get("bet") as int
+//                count++
+//            }
+//
+//            println "total: " + count
+//            println "net: " + delta
+//            if (sum != 0)
+//                println "profit: " + delta * 100 / sum + "%"
+//        }
         mongo.close()
     }
 

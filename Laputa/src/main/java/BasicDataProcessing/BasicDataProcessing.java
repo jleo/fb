@@ -23,6 +23,11 @@ public class BasicDataProcessing implements iBasicDataProcessing {
     private final String collectionName = Props.getProperty("MatchRemoteResult");
 
     private BasicData basicData = null;
+    private String supportDegree;
+
+    public BasicDataProcessing() {
+        supportDegree = Props.getProperty("supportDegree");
+    }
 
     private void setDBConnection(String MongoDBHost, String MongoDBPort, String MongoDBName) {
         if (dbUtil == null) {
@@ -53,7 +58,8 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         queryField.put("resultRB", 1);
 
         List<DBObject> resultList = dbUtil.findAll(query, queryField, collectionName);
-        if (resultList.size() < Integer.parseInt(Props.getProperty("supportDegree"))){
+
+        if (resultList.size() < Integer.parseInt(supportDegree)){
             return;
         }
         basicData.setMatchCount((double) resultList.size());
