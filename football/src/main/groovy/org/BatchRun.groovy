@@ -24,11 +24,7 @@ class BatchRun {
 
         for (int i = 1; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
-                seedProbability = seedProbability.add(new BigDecimal("0.02"));
-
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
-
-
                 def date = Date.parse("yyyy-MM-dd", "2013-01-01")
                 17.times {
                     BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, date.format("yyyy-MM-dd"), (date + 1).format("yyyy-MM-dd"));
@@ -40,7 +36,7 @@ class BatchRun {
                     s.settle(guarantee, true, false)
                     date = date + 1
                 }
-
+                seedProbability = seedProbability.add(new BigDecimal("0.02"));
             }
             seedExpectation = seedExpectation.add(new BigDecimal("0.005"));
             seedProbability = new BigDecimal("0.5");

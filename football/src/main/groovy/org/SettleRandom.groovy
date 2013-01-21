@@ -61,73 +61,92 @@ public class SettleRandom {
         GoalCn[40] = "十球";
 
         def handicap = { type, scoreA, scoreB, betOn ->
-
-            def abFlag = 0
-
-            if (type < 0)
-                abFlag = 2
-
-            type = Math.abs(type)
-
             def result = null
 
-            if (type % 4 == 0) {
-                def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
+            def absType = Math.abs(type)
+            if (type >= 0){
+                if (absType % 4 ==0){
+                    def handicap = absType / 4
+                    if (scoreA - handicap == scoreB){
+                        result = 0
+                    } else if (scoreA - handicap > scoreB){
+                        result = 1
+                    } else if (scoreA - handicap < scoreB){
+                        result = -1
+                    }
+                } else if (absType % 4 == 1){
+                    def handicap = absType / 4
+                    if (scoreA - (int)handicap == scoreB){
+                        result = -0.5
+                    } else if (scoreA - handicap > scoreB){
+                        result = 1
+                    } else if (scoreA - handicap < scoreB){
+                        result = -1
+                    }
+                } else if (absType % 4 == 2){
+                    def handicap = absType / 4
+                    if (scoreA - handicap > scoreB){
+                        result = 1
+                    } else if (scoreA - handicap < scoreB){
+                        result = -1
+                    }
 
-                if (scoreA - handicap == scoreB)
-                    result = 0;
-                else if (scoreA - handicap > scoreB)
-                    result = 1
-                else if (scoreA - handicap < scoreB)
-                    result = -1
-            }
-            if (type % 4 == 1) {
-                def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
+                } else if (absType % 4 == 3){
+                    def handicap = absType / 4 + 1
+                    if (scoreA - (int)handicap == scoreB){
+                        result = 0.5
+                    } else if (scoreA - handicap > scoreB){
+                        result = 1
+                    } else if (scoreA - handicap < scoreB){
+                        result = -1
+                    }
+                }
 
-
-                if (scoreA - (int) handicap == scoreB)
-                    result = -0.5;
-                else if (scoreA - handicap > scoreB)
-                    result = 1
-                else if (scoreA - handicap < scoreB)
-                    result = -1
-            }
-            if (type % 4 == 2) {
-                def handicap = type / 4
-                if (abFlag == 2)
-                    handicap = -handicap
-
-                if (scoreA - handicap > scoreB)
-                    result = 1
-                else if (scoreA - handicap < scoreB)
-                    result = -1
-            }
-
-            if (type % 4 == 3) {
-                def handicap = type / 4 + 1
-                if (abFlag == 2)
-                    handicap = -handicap
-
-                if (scoreA - (int) handicap == scoreB)
-                    result = 0.5;
-                else if (scoreA - handicap > scoreB)
-                    result = 1
-                else if (scoreA - handicap < scoreB)
-                    result = -1
-            }
-
-            if (betOn == 0) {
-                if (abFlag == 2)
-                    return -result
-                return result
-            } else {
-                if (abFlag == 2)
+                if (betOn == 0){
                     return result
-                return -result
+                } else {
+                    return result*-1
+                }
+            } else {
+                if (absType % 4 == 0){
+                    def handicap = absType / 4
+                    if (scoreB - handicap == scoreA){
+                        result = 0
+                    } else if (scoreB - handicap > scoreA){
+                        result = -1
+                    } else if (scoreB - handicap < scoreA){
+                        result = 1
+                    }
+                } else if (absType % 4 == 1){
+                    def handicap = absType / 4
+                    if (scoreB - (int)handicap == scoreA){
+                        result = 0.5
+                    } else if (scoreB - handicap > scoreA){
+                        result = -1
+                    } else if (scoreB - handicap < scoreA){
+                        result = 1
+                    }
+                } else if (absType % 4 == 2){
+                    def handicap = absType / 4
+                    if (scoreB - handicap > scoreA){
+                        result = -1
+                    } else if (scoreB - handicap < scoreA){
+                        result = 1
+                    }
+                } else if (absType % 4 == 3){
+                    def handicap = absType / 4 + 1
+                    if (scoreB - (int)handicap ==  scoreA){
+                        result = -0.5
+                    } else if (scoreB - handicap > scoreA){
+                        result = -1
+                    } else if (scoreB - handicap < scoreA){
+                        result = 1
+                    }
+                }
+                if (betOn == 0)
+                    return result
+                else
+                    return result*-1
             }
         }
 
