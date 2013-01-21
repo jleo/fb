@@ -128,9 +128,9 @@ public class Settle {
                 } else if (absType % 4 == 2){
                     def handicap = absType / 4
                     if (scoreB - handicap > scoreA){
-                        result = 1
-                    } else if (scoreB - handicap < scoreA){
                         result = -1
+                    } else if (scoreB - handicap < scoreA){
+                        result = 1
                     }
                 } else if (absType % 4 == 3){
                     def handicap = absType / 4 + 1
