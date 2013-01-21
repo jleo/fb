@@ -66,7 +66,7 @@ public class SettleHistory {
 
             if (type % 4 == 0) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap == scoreB)
@@ -78,7 +78,7 @@ public class SettleHistory {
             }
             if (type % 4 == 1) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
 
@@ -91,7 +91,7 @@ public class SettleHistory {
             }
             if (type % 4 == 2) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap > scoreB)
@@ -102,7 +102,7 @@ public class SettleHistory {
 
             if (type % 4 == 3) {
                 def handicap = type / 4 + 1
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - (int) handicap == scoreB)
@@ -199,6 +199,7 @@ public class SettleHistory {
             transactionCollection.save(new BasicDBObject()
                     .append("matchId", matchId)
                     .append("bet", bet)
+                    .append("abFlag", abFlag)
                     .append("delta", delta)
                     .append("clientId", clientId)
                     .append("resultRA", resultRA)
