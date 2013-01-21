@@ -70,7 +70,12 @@
                 <td>${fieldValue(bean: matchInstance, field: "resultRB")}</td>
 
                 <g:if test="${matchInstance.ch}">
-                    <td>${org.HandicapMapping.GoalCn[(matchInstance.ch)]}</td>
+                    <g:if test="${matchInstance.ch >= 0}">
+                        <td>${org.HandicapMapping.GoalCn[(matchInstance.ch)]}</td>
+                    </g:if>
+                    <g:else>
+                        <td>受${org.HandicapMapping.GoalCn[(-matchInstance.ch)]}</td>
+                    </g:else>
                 </g:if>
                 <g:else>
                     <td></td>

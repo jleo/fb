@@ -59,8 +59,14 @@ public class SettleHistory {
         GoalCn[39] = "九球半/十球";
         GoalCn[40] = "十球";
 
-        def handicap = { type, scoreA, scoreB, abFlag, betOn ->
+        def handicap = { type, scoreA, scoreB, betOn ->
 
+            def abFlag = 0
+
+            if (type<0)
+                abFlag = 2
+
+            type = Math.abs(type)
 
             def result = null
 
@@ -114,8 +120,12 @@ public class SettleHistory {
             }
 
             if (betOn == 0) {
+                if (abFlag == 2)
+                    return -result
                 return result
             } else {
+                if (abFlag == 2)
+                    return result
                 return -result
             }
         }
@@ -174,7 +184,7 @@ public class SettleHistory {
                 if (result < 0) {
                     delta = bet * result
                 }
-                def prefix = abFlag == 0 ? "" : "受让"
+                def prefix = abFlag == 1 ? "" : "受让"
 
                 it.removeField("_id")
                 it.removeField("cid")
