@@ -104,7 +104,7 @@ public class SettleHistory {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - Math.ceil(handicap as double) == scoreB)
+                if (scoreA - (int) handicap == scoreB)
                     result = 0.5;
                 if (scoreA - handicap > scoreB)
                     result = 1

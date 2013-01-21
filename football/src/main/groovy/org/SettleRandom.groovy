@@ -76,16 +76,18 @@ public class SettleRandom {
                 if (scoreA - handicap < scoreB)
                     result = -1
             }
+
             if (type % 4 == 1) {
                 def handicap = type / 4
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
+
+                if (scoreA - (int) handicap == scoreB)
                     result = -0.5;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
             if (type % 4 == 2) {
@@ -93,11 +95,9 @@ public class SettleRandom {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
-                    result = -1;
-                if (scoreA - handicap > scoreB)
+                else if (scoreA - handicap > scoreB)
                     result = 1
-                if (scoreA - handicap < scoreB)
+                else if (scoreA - handicap < scoreB)
                     result = -1
             }
 
@@ -106,7 +106,7 @@ public class SettleRandom {
                 if (abFlag == 1)
                     handicap = -handicap
 
-                if (scoreA - handicap == scoreB)
+                if (scoreA - (int) handicap == scoreB)
                     result = 0.5;
                 if (scoreA - handicap > scoreB)
                     result = 1

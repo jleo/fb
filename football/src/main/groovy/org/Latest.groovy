@@ -202,18 +202,26 @@ public class Latest {
                 }
             }
 
-
+            int progress = 0;
+            println "total:" + odd.size()
             finalResult = odd.collect { cmId, oddData ->
+                progress++;
+                if (progress % 50 == 0)
+                    println progress
                 def matchId = oddData[0]
                 def cId = oddData[1]
 
                 def abFlag = null
+                def abFlagInitial = null
 
                 if (!matcher[matchId])
                     return null
 
                 if ([* matcher[matchId]][18])
-                    abFlag = [* matcher[matchId]][18] as int
+                    abFlagInitial = [* matcher[matchId]][18] as int
+
+                if ([* matcher[matchId]][19])
+                    abFlag = [* matcher[matchId]][19] as int
 
                 def handicapInfo = [* handicap[matchId + "," + cId]]
 
@@ -245,7 +253,7 @@ public class Latest {
                         parse = Date.parse("yyyy-MM-dd", r[19])
                     }
                     if (r[19] && r[3] && r[4] && r[5] && r[6] && r[7] && r[8] && r[40] && r[41] && r[42] && r[43] && r[44] && r[45])
-                        return [h1: h1, h2: h2, abFlag: abFlag, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": new BigDecimal(r[3]).toDouble(), 'p1': new BigDecimal(r[4]).toDouble(), 'l1': new BigDecimal(r[5]).toDouble(), 'w2': new BigDecimal(r[6]).toDouble(), 'p2': new BigDecimal(r[7]).toDouble(), 'l2': new BigDecimal(r[8]).toDouble(), "mtype": join(r[15], r[16], r[17]), 'time': parse, 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "resultRA": r[33] as int, "resultRB": r[34] as int, "resultPA": r[35] as int, "resultPB": r[36] as int, "wa1": new BigDecimal(r[40]).toDouble(), "pa1": new BigDecimal(r[41]).toDouble(), "la1": new BigDecimal(r[42]).toDouble(), "wa2": new BigDecimal(r[43]).toDouble(), "pa2": new BigDecimal(r[44]).toDouble(), "la2": new BigDecimal(r[45]).toDouble()]
+                        return [h1: h1, h2: h2, abFlag: abFlag, abFlagInitial: abFlagInitial, ih: initHandicap, ch: currentHandicap, "matchId": r[0], "cid": r[1], "w1": new BigDecimal(r[3]).toDouble(), 'p1': new BigDecimal(r[4]).toDouble(), 'l1': new BigDecimal(r[5]).toDouble(), 'w2': new BigDecimal(r[6]).toDouble(), 'p2': new BigDecimal(r[7]).toDouble(), 'l2': new BigDecimal(r[8]).toDouble(), "mtype": join(r[15], r[16], r[17]), 'time': parse, 'tidA': r[20], 'tNameA': join(r[21], r[22], r[23]), 'tidB': r[24], 'tNameB': join(r[25], r[26], r[27]), "tRankA": r[28], "tRankB": r[29], "resultRA": r[33] as int, "resultRB": r[34] as int, "resultPA": r[35] as int, "resultPB": r[36] as int, "wa1": new BigDecimal(r[40]).toDouble(), "pa1": new BigDecimal(r[41]).toDouble(), "la1": new BigDecimal(r[42]).toDouble(), "wa2": new BigDecimal(r[43]).toDouble(), "pa2": new BigDecimal(r[44]).toDouble(), "la2": new BigDecimal(r[45]).toDouble()]
                     return null
                 } else
                     return null
