@@ -60,14 +60,20 @@ public class SettleRandom {
         GoalCn[39] = "九球半/十球";
         GoalCn[40] = "十球";
 
-        def handicap = { type, scoreA, scoreB, abFlag, betOn ->
+        def handicap = { type, scoreA, scoreB, betOn ->
 
+            def abFlag = 0
+
+            if (type<0)
+                abFlag = 2
+
+            type = Math.abs(type)
 
             def result = null
 
             if (type % 4 == 0) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap == scoreB)
@@ -79,7 +85,7 @@ public class SettleRandom {
             }
             if (type % 4 == 1) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
 
@@ -92,7 +98,7 @@ public class SettleRandom {
             }
             if (type % 4 == 2) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap > scoreB)
@@ -103,7 +109,7 @@ public class SettleRandom {
 
             if (type % 4 == 3) {
                 def handicap = type / 4 + 1
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - (int) handicap == scoreB)
@@ -115,8 +121,12 @@ public class SettleRandom {
             }
 
             if (betOn == 0) {
+                if (abFlag == 2)
+                    return -result
                 return result
             } else {
+                if (abFlag == 2)
+                    return result
                 return -result
             }
         }
@@ -172,7 +182,7 @@ public class SettleRandom {
                 if (result < 0) {
                     delta = bet * result
                 }
-                def prefix = abFlag == 0 ? "" : "受让"
+                def prefix = abFlag == 1 ? "" : "受让"
 
                 it.removeField("_id")
                 it.removeField("cid")

@@ -59,14 +59,20 @@ public class Settle {
         GoalCn[39] = "九球半/十球";
         GoalCn[40] = "十球";
 
-        def handicap = { type, scoreA, scoreB, abFlag, betOn ->
+        def handicap = { type, scoreA, scoreB, betOn ->
 
+            def abFlag = 0
+
+            if (type<0)
+                abFlag = 2
+
+            type = Math.abs(type)
 
             def result = null
 
             if (type % 4 == 0) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap == scoreB)
@@ -78,7 +84,7 @@ public class Settle {
             }
             if (type % 4 == 1) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
 
@@ -91,7 +97,7 @@ public class Settle {
             }
             if (type % 4 == 2) {
                 def handicap = type / 4
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - handicap > scoreB)
@@ -102,7 +108,7 @@ public class Settle {
 
             if (type % 4 == 3) {
                 def handicap = type / 4 + 1
-                if (abFlag == 1)
+                if (abFlag == 2)
                     handicap = -handicap
 
                 if (scoreA - (int) handicap == scoreB)
@@ -114,8 +120,12 @@ public class Settle {
             }
 
             if (betOn == 0) {
+                if (abFlag == 2)
+                    return -result
                 return result
             } else {
+                if (abFlag == 2)
+                    return result
                 return -result
             }
         }
@@ -127,7 +137,7 @@ public class Settle {
 
         def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
 
-        betCollection.find(byDate ? new BasicDBObject("aid",gurateen) : new BasicDBObject("status", "new")).each { it ->
+        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject("status", "new")).each { it ->
             String matchId = it.get("matchId")
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
@@ -161,7 +171,7 @@ public class Settle {
                 float h1 = matchInfo.get("h1") as float
                 float h2 = matchInfo.get("h2") as float
 
-                float result = handicap(type, resultRA, resultRB, abFlag, betOn)
+                float result = handicap(type, resultRA, resultRB, betOn)
                 if (result == 0) {
                     delta = 0
                 }
@@ -173,7 +183,7 @@ public class Settle {
                 if (result < 0) {
                     delta = bet * result
                 }
-                def prefix = abFlag == 0 ? "" : "受让"
+                def prefix = (type >= 0 ? "" : "受让")
 
                 it.removeField("_id")
                 it.removeField("cid")

@@ -86,12 +86,14 @@ public class Latest {
                     initHandicap = handicapInfo[6] as int
                 if (handicapInfo[5]) {
                     currentHandicap = handicapInfo[5] as int
+
+                    if (abFlag == 2)
+                        currentHandicap = -(handicapInfo[5] as int)
+                    else
+                        currentHandicap = handicapInfo[5] as int
                 }
 
-                if(abFlag == 2)
-                    currentHandicap = -(handicapInfo[5] as int)
-                else
-                    currentHandicap = handicapInfo[5] as int
+
 
                 if (handicapInfo[3])
                     h1 = new BigDecimal(handicapInfo[3]).toDouble()
@@ -246,8 +248,9 @@ public class Latest {
                 if (handicapInfo) {
                     if (handicapInfo[6])
                         initHandicap = handicapInfo[6] as int
+
                     if (handicapInfo[5]) {
-                        if(abFlag == 2)
+                        if (abFlag == 2)
                             currentHandicap = -(handicapInfo[5] as int)
                         else
                             currentHandicap = handicapInfo[5] as int
