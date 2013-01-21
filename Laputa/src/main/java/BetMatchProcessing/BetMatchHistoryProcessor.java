@@ -78,7 +78,7 @@ public class BetMatchHistoryProcessor {
                         return;
                     }
                     hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA, teamB, ch);
-                    int isBet = hp.getResult(10000, 10, false);
+                    int isBet = hp.getResult(false);
                     if (isBet != 0) {
                         return;
                     }
@@ -105,6 +105,7 @@ public class BetMatchHistoryProcessor {
         }
 
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0]);
+        executorService.shutdown();
     }
 
     private double getHandicap(double type, int abFlag) {
