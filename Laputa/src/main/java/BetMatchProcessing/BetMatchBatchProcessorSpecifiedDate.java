@@ -134,9 +134,9 @@ public class BetMatchBatchProcessorSpecifiedDate {
 
     private double getHandicap(double type, int abFlag) {
         double handicap = type / 4.0;
-        if (abFlag == 0) {              //让球
+        if (abFlag == 1) {              //让球
             return handicap;
-        } else if (abFlag == 1) {       //受让让球
+        } else if (abFlag == 2) {       //受让让球
             return handicap * -1;
         } else {
             return -999;

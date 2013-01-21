@@ -125,7 +125,7 @@ public class Latest {
         odd = [:]
         handicap = [:]
 
-        def start = new Date() - 1
+        def start = new Date() - 21
         def end = new Date()
 
 
@@ -223,6 +223,7 @@ public class Latest {
                 if ([* matcher[matchId]][19])
                     abFlag = [* matcher[matchId]][19] as int
 
+                println abFlag
                 def handicapInfo = [* handicap[matchId + "," + cId]]
 
                 def initHandicap = null
