@@ -148,7 +148,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
 
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne", null));
-        query.put("abFlag", new BasicDBObject("$ne", null));
+        query.put("abFlag", new BasicDBObject("$ne", null).put("$ne", 0));
         query.put("cid", cid);
         try {
             query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateFrom + " 00:00:00")).append("$lte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTo + " 00:00:00")));
