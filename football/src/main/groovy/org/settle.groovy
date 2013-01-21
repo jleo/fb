@@ -93,8 +93,7 @@ public class Settle {
                 def handicap = type / 4
                 if (abFlag == 1)
                     handicap = -handicap
-
-                else if (scoreA - handicap > scoreB)
+                if (scoreA - handicap > scoreB)
                     result = 1
                 else if (scoreA - handicap < scoreB)
                     result = -1
