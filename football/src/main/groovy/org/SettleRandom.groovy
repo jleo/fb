@@ -64,7 +64,7 @@ public class SettleRandom {
 
             def abFlag = 0
 
-            if (type<0)
+            if (type < 0)
                 abFlag = 2
 
             type = Math.abs(type)
@@ -170,7 +170,7 @@ public class SettleRandom {
                 float h1 = matchInfo.get("h1") as float
                 float h2 = matchInfo.get("h2") as float
 
-                float result = handicap(type, resultRA, resultRB, abFlag, betOn)
+                float result = handicap(type, resultRA, resultRB, betOn)
                 if (result == 0) {
                     delta = 0
                 }
@@ -182,12 +182,12 @@ public class SettleRandom {
                 if (result < 0) {
                     delta = bet * result
                 }
-                def prefix = abFlag == 1 ? "" : "受让"
+                def prefix = type >= 0 ? "" : "受让"
 
                 it.removeField("_id")
                 it.removeField("cid")
                 it.betOnDisplay = betOn == 0 ? "主" : "客"
-                it.typeDispaly = prefix + GoalCn[type]
+                it.typeDispaly = prefix + GoalCn[Math.abs(type)]
             } else {
                 float w2 = matchInfo.get("w2") as float
                 float p2 = matchInfo.get("p2") as float
