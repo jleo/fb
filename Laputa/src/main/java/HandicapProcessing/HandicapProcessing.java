@@ -144,14 +144,17 @@ public class HandicapProcessing implements iHandicapProcessing {
         matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, teamA, teamB,ch);
     }
 
-    public int getResult(int supportDegree, int supportIncreaseCount, boolean display) {
+    public int getResult(boolean display) {
 
         clearInfo();
+        double supportIncrease = Double.parseDouble(Props.getProperty("supportIncrease"));
+        int supportDegree = Integer.parseInt(Props.getProperty("supportDegree"));
+        int supportIncreaseCount = Integer.parseInt(Props.getProperty("supportIncreaseCount"));
 
         bdp = new BasicDataProcessing();
-        double winFactorInc = matchInformation.getWin() * 0.01;
-        double pushFactorInc = matchInformation.getPush() * 0.01;
-        double loseFactorInc = matchInformation.getLose() * 0.01;
+        double winFactorInc = matchInformation.getWin() * supportIncrease;
+        double pushFactorInc = matchInformation.getPush() * supportIncrease;
+        double loseFactorInc = matchInformation.getLose() * supportIncrease;
 
         bdp.processBasicData(matchInformation.getWin(), matchInformation.getPush(), matchInformation.getLose(), winFactor,
                 pushFactor, loseFactor);
