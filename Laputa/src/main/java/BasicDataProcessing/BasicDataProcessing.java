@@ -57,12 +57,14 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         cacheQuery.append("loseFactor", loseFactor);
 
         if (inMemoryCache.containsKey(cacheQuery.toString())) {
+            System.out.println("from in memory cache");
             basicData = inMemoryCache.get(cacheQuery.toString());
             return;
         }
 
         DBObject cached = dbUtil.findOne(cacheQuery, "resultcache");
         if (cached != null) {
+            System.out.println("from mongo cache");
             String basicDataJson = (String) cached.get("basicDataJson");
             ObjectMapper mapper = new ObjectMapper();
             try {
