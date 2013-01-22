@@ -2,9 +2,9 @@ package BasicDataProcessing;
 
 import Util.MongoDBUtil;
 import Util.Props;
-import com.mongodb.*;
-
-import java.util.List;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 /**
  * Created with IntelliJ IDEA.
@@ -57,14 +57,15 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         queryField.put("resultRA", 1);
         queryField.put("resultRB", 1);
 
-        List<DBObject> resultList = dbUtil.findAll(query, queryField, collectionName);
+        DBCursor dbCursor = dbUtil.findAllCursor(query, queryField, collectionName);
 
-        if (resultList.size() < Integer.parseInt(supportDegree)){
+        if (dbCursor.count() < Integer.parseInt(supportDegree)){
             return;
         }
-        basicData.setMatchCount((double) resultList.size());
+        basicData.setMatchCount((double) dbCursor.size());
 
-        for (DBObject dbObject : resultList) {
+        while(dbCursor.hasNext()){
+            DBObject dbObject = dbCursor.next();
             double resultRA = ((Number) dbObject.get("resultRA")).doubleValue();
             double resultRB = ((Number) dbObject.get("resultRB")).doubleValue();
             if (resultRA > 4 || resultRB > 4) {
@@ -161,6 +162,7 @@ public class BasicDataProcessing implements iBasicDataProcessing {
                 System.out.println("!!!! Missing !!!");
             }
         }
+        dbCursor.close();
 
         for (int i = 0; i < 5; ++i) {
             for (int j = 0; j < 5; ++j) {
