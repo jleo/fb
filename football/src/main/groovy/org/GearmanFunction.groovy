@@ -27,7 +27,7 @@ class GearmanFunction extends AbstractGearmanFunction {
             Props.getProperty("MongoDBRemoteName"));
 
 
-    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(date.format("yyyy-MM-dd"), (date + 20).format("yyyy-MM-dd"), dbUtil);
+    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch("2013-01-01", "2013-01-20", dbUtil);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
     @Override
