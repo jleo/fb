@@ -95,8 +95,6 @@ public class BetMatchBatchProcessorSpecifiedDate {
     public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
         long t1 = System.currentTimeMillis();
 
-        dbUtil.drop(Props.getProperty("MatchBatchBetSpecifiedDate"));
-
         final int[] BetOnMatch = {0};
         final double minExp = minExpectation;
         final double minPro = minProbability;

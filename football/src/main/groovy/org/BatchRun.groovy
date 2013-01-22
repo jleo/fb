@@ -21,7 +21,7 @@ class BatchRun {
         int loppingProbability = 12;
 
         GearmanClientImpl client = new GearmanClientImpl();
-        client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 4730));
+        client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
 
         for (int i = 0; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
