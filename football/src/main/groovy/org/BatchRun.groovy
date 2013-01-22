@@ -35,6 +35,7 @@ class BatchRun {
 
         for (int i = 1; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
+                seedProbability = seedProbability.add(new BigDecimal("0.02"));
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
                 betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
