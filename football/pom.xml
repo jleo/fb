@@ -17,7 +17,11 @@
             <artifactId>groovy-all</artifactId>
             <version>2.0.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.gearman</groupId>
+            <artifactId>gearman-java</artifactId>
+            <version>0.5</version>
+        </dependency>
 
         <dependency>
             <groupId>org.vert-x</groupId>
