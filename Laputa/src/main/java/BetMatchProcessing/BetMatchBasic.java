@@ -24,10 +24,6 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
 
     protected void betOnMatch(String matchId, String cid, String clientId, int betOn, double bet, String aid,
                               double expectation, double probability, Date matchTime, String teamA, String teamB, int ch, double h1, double h2) {
-        DBObject matchIdQuery = new BasicDBObject("matchId", matchId);
-        matchIdQuery.put("aid", aid);
-        matchIdQuery.put("cid", cid);
-
         DBObject betQuery = new BasicDBObject();
         betQuery.put("matchId", matchId);
         betQuery.put("cid", cid);
@@ -49,7 +45,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
 
-        dbUtil.upsert(matchIdQuery, betQuery, false, matchBetCollection);
+        dbUtil.insert(betQuery, matchBetCollection);
 
     }
 
