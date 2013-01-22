@@ -5,6 +5,9 @@ import Util.Props;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,6 +45,26 @@ public class BasicDataProcessing implements iBasicDataProcessing {
     public void processBasicData(double win, double push, double lose, double winFactor, double pushFactor, double loseFactor) {
         setDBConnection(mongoDBHost, mongoDBPort, mongoDBName);
 
+        BasicDBObject cacheQuery = new BasicDBObject();
+        cacheQuery.append("win", win);
+        cacheQuery.append("push", push);
+        cacheQuery.append("lose", lose);
+        cacheQuery.append("winFactor", winFactor);
+        cacheQuery.append("pushFactor", pushFactor);
+        cacheQuery.append("loseFactor", loseFactor);
+
+        DBObject cached = dbUtil.findOne(cacheQuery, "resultcache");
+        if (cached != null) {
+            String basicDataJson = (String) cached.get("basicDataJson");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                basicData = mapper.readValue(basicDataJson, BasicData.class);
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         basicData = new BasicData();
 
         DBObject winQuery = getWinQuery(win, winFactor);
@@ -59,12 +82,12 @@ public class BasicDataProcessing implements iBasicDataProcessing {
 
         DBCursor dbCursor = dbUtil.findAllCursor(query, queryField, collectionName);
 
-        if (dbCursor.count() < Integer.parseInt(supportDegree)){
+        if (dbCursor.count() < Integer.parseInt(supportDegree)) {
             return;
         }
         basicData.setMatchCount((double) dbCursor.size());
 
-        while(dbCursor.hasNext()){
+        while (dbCursor.hasNext()) {
             DBObject dbObject = dbCursor.next();
             double resultRA = ((Number) dbObject.get("resultRA")).doubleValue();
             double resultRB = ((Number) dbObject.get("resultRB")).doubleValue();
@@ -198,6 +221,17 @@ public class BasicDataProcessing implements iBasicDataProcessing {
                     basicData.setLose4Game(basicData.getLose4Game() + basicData.getResultSet()[i][j]);
                 }
             }
+        }
+
+        //persist the cached value
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String basicDataJson = mapper.writeValueAsString(basicData);
+
+            cacheQuery.append("basicDataJson", basicDataJson);
+            dbUtil.insert(cacheQuery, "resultcache");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

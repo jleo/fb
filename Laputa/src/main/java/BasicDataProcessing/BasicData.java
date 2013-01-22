@@ -1,6 +1,8 @@
 package BasicDataProcessing;
 
-public class BasicData {
+import java.io.Serializable;
+
+public class BasicData implements Serializable {
 
     private double matchCount = 0;
 
