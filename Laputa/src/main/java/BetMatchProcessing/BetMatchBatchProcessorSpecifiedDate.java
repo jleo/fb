@@ -53,11 +53,10 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);
+        field.put("mtype", 1);
 
 
-        List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
-
-        return matchList;
+        return dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
     }
 
     public static void main(String args[]) {

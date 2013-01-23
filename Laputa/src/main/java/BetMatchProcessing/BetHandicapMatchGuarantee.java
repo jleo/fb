@@ -36,13 +36,13 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
             return 0;
         }
 
-        System.out.println("Don't not bet on this match...");
-        System.out.println("Win Expectation: " + handicapProcessing.getWinExpectation());
-        System.out.println("Win Probability: " + (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                + handicapProcessing.getDrawProbability()));
-        System.out.println("Lose Expectation: " + handicapProcessing.getLoseExpectation());
-        System.out.println("Lose Probability: " + (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                + handicapProcessing.getDrawProbability()));
+//        System.out.println("Don't not bet on this match...");
+//        System.out.println("Win Expectation: " + handicapProcessing.getWinExpectation());
+//        System.out.println("Win Probability: " + (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
+//                + handicapProcessing.getDrawProbability()));
+//        System.out.println("Lose Expectation: " + handicapProcessing.getLoseExpectation());
+//        System.out.println("Lose Probability: " + (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
+//                + handicapProcessing.getDrawProbability()));
 
         return -1;
     }
