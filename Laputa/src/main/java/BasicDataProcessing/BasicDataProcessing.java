@@ -94,6 +94,16 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         DBCursor dbCursor = dbUtil.findAllCursor(query, queryField, collectionName);
 
         if (dbCursor.count() < Integer.parseInt(supportDegree)) {
+            //persist the cached value
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                String basicDataJson = mapper.writeValueAsString(basicData);
+
+                cacheQuery.append("basicDataJson", basicDataJson);
+                dbUtil.insert(cacheQuery, "resultcache");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return;
         }
         basicData.setMatchCount((double) dbCursor.size());
