@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,6 +18,12 @@ import java.util.Date;
 public abstract class BetMatchBasic implements iBetMatchProcessing {
 
     protected String matchBetCollection;
+
+    private final BetMatchProcessor betMatchBatchProcessor;
+
+    public BetMatchBasic(BetMatchProcessor betMatchBatchProcessor) {
+        this.betMatchBatchProcessor = betMatchBatchProcessor;
+    }
 
     public void setCollection(String collection) {
         this.matchBetCollection = collection;
@@ -41,6 +48,14 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         betQuery.put("ch", ch);
         betQuery.put("h1", h1);
         betQuery.put("h2", h2);
+
+
+        List<DBObject> matchList = betMatchBatchProcessor.getMatchList();
+        for (DBObject dbObject : matchList) {
+            if (dbObject.get("matchId").equals(matchId)) {
+                betQuery.put("mtype", dbObject.get("mtype"));
+            }
+        }
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));

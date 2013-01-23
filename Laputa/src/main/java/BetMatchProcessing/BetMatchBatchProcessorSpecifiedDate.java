@@ -22,16 +22,9 @@ import java.util.concurrent.Future;
  * Time: 上午12:35
  * To change this template use File | Settings | File Templates.
  */
-public class BetMatchBatchProcessorSpecifiedDate {
-
-    ExecutorService executorService;
-    private List<DBObject> allBettingMatch;
-    private MongoDBUtil dbUtil;
-
+public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
     public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, List<DBObject> allBettingMatch, MongoDBUtil dbUtil) {
-        this.executorService = executorService;
-        this.allBettingMatch = allBettingMatch;
-        this.dbUtil = dbUtil;
+        super(executorService, allBettingMatch, dbUtil);
     }
 
     public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil) {
@@ -99,11 +92,11 @@ public class BetMatchBatchProcessorSpecifiedDate {
         final double minExp = minExpectation;
         final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
-        for (final DBObject match : allBettingMatch) {
+        for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
-                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessorSpecifiedDate.this);
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBetSpecifiedDate"));
@@ -155,7 +148,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
         }
         long t2 = System.currentTimeMillis();
 
-        System.out.println("\n****\nTotal Match: " + allBettingMatch.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
+        System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
     private double getHandicap(double type, int abFlag) {
