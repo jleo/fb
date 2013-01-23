@@ -8,8 +8,8 @@ import com.mongodb.DBObject;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +29,7 @@ public class BasicDataProcessing implements iBasicDataProcessing {
 
     private BasicData basicData = null;
     private String supportDegree;
-    private static Map<String, BasicData> inMemoryCache = new HashMap<String, BasicData>();
+    private static Map<String, BasicData> inMemoryCache = new ConcurrentHashMap<String, BasicData>(4000);
 
     public BasicDataProcessing() {
         supportDegree = Props.getProperty("supportDegree");
@@ -57,14 +57,12 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         cacheQuery.append("loseFactor", loseFactor);
 
         if (inMemoryCache.containsKey(cacheQuery.toString())) {
-            System.out.println("from in memory cache");
             basicData = inMemoryCache.get(cacheQuery.toString());
             return;
         }
 
         DBObject cached = dbUtil.findOne(cacheQuery, "resultcache");
         if (cached != null) {
-            System.out.println("from mongo cache");
             String basicDataJson = (String) cached.get("basicDataJson");
             ObjectMapper mapper = new ObjectMapper();
             try {
