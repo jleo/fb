@@ -21,6 +21,10 @@ public class MongoDBUtil {
     private Mongo mongo;
     private DB mongoDB;
 
+    public Mongo getMongo() {
+        return mongo;
+    }
+
     private boolean isConnected;
 
     private static MongoDBUtil dbUtil;

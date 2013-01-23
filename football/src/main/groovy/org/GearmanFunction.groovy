@@ -1,5 +1,4 @@
 package org
-
 import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
 import Util.MongoDBUtil
 import Util.Props
@@ -11,7 +10,6 @@ import org.gearman.worker.AbstractGearmanFunction
 
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -29,6 +27,7 @@ class GearmanFunction extends AbstractGearmanFunction {
 
     static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch("2013-01-01", "2013-01-20", dbUtil);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
+    Settle s = new Settle(dbUtil.getMongo())
 
     @Override
     public GearmanJobResult executeFunction() {
@@ -46,7 +45,6 @@ class GearmanFunction extends AbstractGearmanFunction {
 
             betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
 
-            Settle s = new Settle()
             String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
             s.settle(guarantee, true, false)
         } catch (Exception e) {

@@ -17,8 +17,8 @@ class BatchRun {
         BigDecimal seedExpectation = new BigDecimal("0.0");
         BigDecimal seedProbability = new BigDecimal("0.5");
 
-        int loopingExpectation = 60;
-        int loppingProbability = 24;
+        int loopingExpectation = 40;
+        int loppingProbability = 12;
 
         GearmanClientImpl client = new GearmanClientImpl();
         client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
