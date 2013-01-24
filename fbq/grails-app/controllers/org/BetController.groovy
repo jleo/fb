@@ -10,6 +10,11 @@ class BetController {
         redirect(action: "list", params: params)
     }
 
+    def latest() {
+        new Latest().latest()
+        redirect(action: "list", params: params)
+    }
+
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [betInstanceList: Bet.list(params), betInstanceTotal: Bet.count()]
@@ -26,14 +31,14 @@ class BetController {
             return
         }
 
-		flash.message = message(code: 'default.created.message', args: [message(code: 'bet.label', default: 'Bet'), betInstance.id])
+        flash.message = message(code: 'default.created.message', args: [message(code: 'bet.label', default: 'Bet'), betInstance.id])
         redirect(action: "show", id: betInstance.id)
     }
 
     def show() {
         def betInstance = Bet.get(params.id)
         if (!betInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
             redirect(action: "list")
             return
         }
@@ -64,8 +69,8 @@ class BetController {
             def version = params.version.toLong()
             if (betInstance.version > version) {
                 betInstance.errors.rejectValue("version", "default.optimistic.locking.failure",
-                          [message(code: 'bet.label', default: 'Bet')] as Object[],
-                          "Another user has updated this Bet while you were editing")
+                        [message(code: 'bet.label', default: 'Bet')] as Object[],
+                        "Another user has updated this Bet while you were editing")
                 render(view: "edit", model: [betInstance: betInstance])
                 return
             }
@@ -78,25 +83,25 @@ class BetController {
             return
         }
 
-		flash.message = message(code: 'default.updated.message', args: [message(code: 'bet.label', default: 'Bet'), betInstance.id])
+        flash.message = message(code: 'default.updated.message', args: [message(code: 'bet.label', default: 'Bet'), betInstance.id])
         redirect(action: "show", id: betInstance.id)
     }
 
     def delete() {
         def betInstance = Bet.get(params.id)
         if (!betInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
+            flash.message = message(code: 'default.not.found.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
             redirect(action: "list")
             return
         }
 
         try {
             betInstance.delete(flush: true)
-			flash.message = message(code: 'default.deleted.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
+            flash.message = message(code: 'default.deleted.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
             redirect(action: "list")
         }
         catch (DataIntegrityViolationException e) {
-			flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
+            flash.message = message(code: 'default.not.deleted.message', args: [message(code: 'bet.label', default: 'Bet'), params.id])
             redirect(action: "show", id: params.id)
         }
     }

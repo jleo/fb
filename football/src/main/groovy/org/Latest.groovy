@@ -7,6 +7,11 @@ import com.mongodb.Mongo
 
 public class Latest {
     public static void main(String[] args) {
+        Latest latest = new Latest()
+        latest.latest()
+    }
+
+    public void latest() {
         def matches = new URL("http://odds2.zso8.com/html/match.html").getText("utf-8")
         def odds = new URL("http://odds2.zso8.com/html/fixed.html").getText("utf-8")
         def handicaps = new URL("http://odds2.zso8.com/html/handicap.html").getText("utf-8")
