@@ -145,9 +145,8 @@ public class Latest {
         odd = [:]
         handicap = [:]
 
-        def start = new Date() - 3
+        def start = new Date() - 2
         def end = new Date()
-
 
         def index = 0
         (start..end).each {
@@ -225,8 +224,6 @@ public class Latest {
             println "total:" + odd.size()
             finalResult = odd.collect { cmId, oddData ->
                 progress++;
-                if (progress % 50 == 0)
-                    println progress
                 def matchId = oddData[0]
                 def cId = oddData[1]
 
@@ -242,7 +239,6 @@ public class Latest {
                 if ([* matcher[matchId]][19])
                     abFlag = [* matcher[matchId]][19] as int
 
-                println abFlag
                 def handicapInfo = [* handicap[matchId + "," + cId]]
 
                 def initHandicap = null

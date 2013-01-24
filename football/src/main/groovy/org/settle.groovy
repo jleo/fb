@@ -1,11 +1,9 @@
 package org
 
-import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
 import com.mongodb.Mongo
 import org.bson.types.ObjectId
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -167,8 +165,6 @@ public class Settle {
             String matchId = it.get("matchId")
 
             if (!byDate) {
-                def transactionCollection = db.getCollection("transaction")
-
                 DBObject q = new BasicDBObject();
                 q.put("matchId", matchId)
                 transactionCollection.remove(q)
