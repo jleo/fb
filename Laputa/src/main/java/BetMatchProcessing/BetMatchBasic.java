@@ -50,6 +50,12 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         betQuery.put("h2", h2);
 
 
+        DBObject uniqueQuery = new BasicDBObject();
+        uniqueQuery.put("matchId", matchId);
+        uniqueQuery.put("cid", cid);
+        uniqueQuery.put("clientId", clientId);
+        uniqueQuery.put("aid", aid);
+
         List<DBObject> matchList = betMatchBatchProcessor.getMatchList();
         for (DBObject dbObject : matchList) {
             if (dbObject.get("matchId").equals(matchId)) {
@@ -60,7 +66,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
 
-        dbUtil.insert(betQuery, matchBetCollection);
+        dbUtil.upsert(uniqueQuery, betQuery, true, matchBetCollection);
 
     }
 
