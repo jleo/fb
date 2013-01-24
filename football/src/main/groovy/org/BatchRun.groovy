@@ -15,17 +15,18 @@ import org.gearman.common.GearmanNIOJobServerConnection
 class BatchRun {
     public static void main(String[] args) {
         BigDecimal seedExpectation = new BigDecimal("0.0");
-        BigDecimal seedProbability = new BigDecimal("0.5");
+        def initProbability = "0.675"
+        BigDecimal seedProbability = new BigDecimal(initProbability);
 
-        int loopingExpectation = 40;
-        int loppingProbability = 12;
+        int loopingExpectation = 20;
+        int loppingProbability = 50;
 
         GearmanClientImpl client = new GearmanClientImpl();
         client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
 
         for (int i = 0; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
-                seedProbability = seedProbability.add(new BigDecimal("0.02"));
+                seedProbability = seedProbability.add(new BigDecimal("0.001"));
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
                 GearmanJob job = GearmanJobImpl.createBackgroundJob("org.GearmanFunction", (seedExpectation.toString() + "," + seedProbability.toString()).getBytes(),
@@ -34,7 +35,7 @@ class BatchRun {
                 client.submit(job)
             }
             seedExpectation = seedExpectation.add(new BigDecimal("0.005"));
-            seedProbability = new BigDecimal("0.5");
+            seedProbability = new BigDecimal(initProbability);
         }
     }
 }

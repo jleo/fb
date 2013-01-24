@@ -15,17 +15,45 @@ import com.mongodb.Mongo
 def mongo = new Mongo("rm4", 15000)
 def c = mongo.getDB("fb").getCollection("summaryDateByDate")
 
-def winCount = [:].withDefault {
-    return 0
+def dayAidRank = [:].withDefault {
+    return [:]
 }
-(1..20).each {
-    int rank = 1
-    c.find(["_id.day": it, "value.count": ["\$gt": 1]] as BasicDBObject, ["_id.aid": 1] as BasicDBObject).sort(["value.profitAverage": -1] as BasicDBObject).each {
+
+def aidDayRank = [:].withDefault {
+    return [:]
+}
+(1..20).each { day ->
+    int rank = 10
+    c.find(["_id.day": day, "value.count": ["\$gt": 1]] as BasicDBObject, ["_id.aid": 1] as BasicDBObject).sort(["value.profitAverage": -1] as BasicDBObject).each {
         if (rank <= 0)
             return
 
-        winCount.put(it.get("_id").get("aid"), winCount.get(it.get("_id").get("aid")) + rank++)
+        dayAidRank.get(day).putAll(["${it.get("_id").get("aid")}": rank])
+        def rankList = aidDayRank.get(it.get("_id").get("aid")).get(day)
+        if (!rankList)
+            aidDayRank.get(it.get("_id").get("aid")).put(day, [])
+
+        aidDayRank.get(it.get("_id").get("aid")).get(day) << rank
+        rank--
     }
 }
 
-println winCount
+(1..20).each { day ->
+    println ""
+    println ""
+    println ""
+    println ""
+    println "2013-1-$day"
+    println "-----------------------------------"
+    println dayAidRank.get(day)
+}
+
+def aidSum = new TreeMap<>().withDefault {
+    return 0
+}
+
+aidDayRank.each { aid, dayRank ->
+        println dayRank.get(day).sum()/dayRank.get(day).size()
+        aidSum.put(aid, aidSum.get(aid) + ((dayRank.get(day) == null) ? 0 : dayRank.get(day)))
+}
+println aidSum
