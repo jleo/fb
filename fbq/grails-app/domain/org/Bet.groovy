@@ -14,6 +14,7 @@ class Bet {
     Date matchTime
     String teamA
     String teamB
+    String mtype
     int ch
     double h1
     double h2

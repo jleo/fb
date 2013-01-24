@@ -34,6 +34,7 @@
 
             <g:sortableColumn property="teamA" title="${message(code: 'bet.matchId.label', default: '主队')}"/>
             <g:sortableColumn property="teamB" title="${message(code: 'bet.matchId.label', default: '客队')}"/>
+            <g:sortableColumn property="mtype" title="${message(code: 'bet.matchId.label', default: '联赛')}"/>
             <g:sortableColumn property="h1" title="${message(code: 'bet.matchId.label', default: '主胜')}"/>
             <g:sortableColumn property="h2" title="${message(code: 'bet.matchId.label', default: '客胜')}"/>
             <g:sortableColumn property="matchTime" title="${message(code: 'bet.matchId.label', default: '客队')}"/>
@@ -52,6 +53,7 @@
 
                 <td>${fieldValue(bean: betInstance, field: "teamA")}</td>
                 <td>${fieldValue(bean: betInstance, field: "teamB")}</td>
+                <td>${fieldValue(bean: betInstance, field: "mtype")}</td>
                 <td>${fieldValue(bean: betInstance, field: "h1")}</td>
                 <td>${fieldValue(bean: betInstance, field: "h2")}</td>
                 <td>${fieldValue(bean: betInstance, field: "matchTime")}</td>
