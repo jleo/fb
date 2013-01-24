@@ -1,6 +1,8 @@
 package org
 
+import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
+import com.mongodb.DBObject
 import com.mongodb.Mongo
 import org.bson.types.ObjectId
 
@@ -161,8 +163,17 @@ public class Settle {
 
         def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
 
-        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject("status", "new")).each { it ->
+        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject()).each { it ->
             String matchId = it.get("matchId")
+
+            if (!byDate) {
+                def transactionCollection = db.getCollection("transaction")
+
+                DBObject q = new BasicDBObject();
+                q.put("matchId", matchId)
+                transactionCollection.remove(q)
+            }
+
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
             int betOn = it.get("betOn")    //0主1客
