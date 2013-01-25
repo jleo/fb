@@ -60,6 +60,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         for (DBObject dbObject : matchList) {
             if (dbObject.get("matchId").equals(matchId)) {
                 betQuery.put("mtype", dbObject.get("mtype"));
+                betQuery.put("time", dbObject.get("time"));
             }
         }
 
