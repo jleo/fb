@@ -56,6 +56,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
+        int cpuNum = Runtime.getRuntime().availableProcessors();
 
 
         final int[] BetOnMatch = {0};

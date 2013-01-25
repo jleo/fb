@@ -76,8 +76,8 @@ public class Latest {
             def abFlag = null
 
 
-            if ([* matcher[matchId]][19])
-                abFlag = [* matcher[matchId]][19] as int
+            if ([* matcher[matchId]][18])
+                abFlag = [* matcher[matchId]][18] as int
 
             def handicapInfo = [* handicap[matchId + "," + cId]]
 
@@ -85,6 +85,8 @@ public class Latest {
             def currentHandicap = null
             def h1 = null
             def h2 = null
+
+            println abFlag
 
             if (handicapInfo) {
                 if (handicapInfo[6])
