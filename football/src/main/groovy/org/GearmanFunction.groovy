@@ -1,4 +1,5 @@
 package org
+
 import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
 import Util.MongoDBUtil
 import Util.Props
@@ -10,6 +11,7 @@ import org.gearman.worker.AbstractGearmanFunction
 
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -25,7 +27,7 @@ class GearmanFunction extends AbstractGearmanFunction {
             Props.getProperty("MongoDBRemoteName"));
 
 
-    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch("2013-01-01", "2013-01-20", dbUtil);
+    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
     Settle s = new Settle(dbUtil.getMongo())
 
@@ -43,7 +45,7 @@ class GearmanFunction extends AbstractGearmanFunction {
         try {
             System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
-            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
+            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
 
             String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
             s.settle(guarantee, true, false)

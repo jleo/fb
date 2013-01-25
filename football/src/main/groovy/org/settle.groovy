@@ -180,23 +180,23 @@ public class Settle {
 
             def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
 
-            if (!matchInfo)
+            if (!matchInfo){
+                throw new RuntimeException(matchId + " not found")
                 return
+            }
 
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
-
-            if (matchInfo.get("abFlag") == null)
-                return
-
-            int abFlag = matchInfo.get("abFlag") as int  //0主 1客
 
             def delta = null;
 
             ObjectId oid = it.get("_id")
             if (betType == 0) {
-                if (!matchInfo.get("ch"))
+                if (matchInfo.get("ch") == null){
+                    throw new RuntimeException(matchId + " ch not found")
                     return
+                }
+
                 int type = matchInfo.get("ch") as int
 
                 float h1 = matchInfo.get("h1") as float
