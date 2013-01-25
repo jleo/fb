@@ -28,11 +28,11 @@ class GearmanFunction extends AbstractGearmanFunction {
 
 
     static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil);
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
     Settle s = new Settle(dbUtil.getMongo())
 
     @Override
     public GearmanJobResult executeFunction() {
-        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         StringBuffer sb = new StringBuffer(ByteUtils.fromUTF8Bytes((byte[]) this.data));
 

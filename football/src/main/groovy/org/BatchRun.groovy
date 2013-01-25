@@ -14,7 +14,7 @@ import org.gearman.common.GearmanNIOJobServerConnection
  */
 class BatchRun {
     public static void main(String[] args) {
-        def initProbability = "0.0"
+        def initProbability = "0.5"
         def endProbability = "0.8"
         def probalilityStep = "0.01"
 

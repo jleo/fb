@@ -27,8 +27,6 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         super(executorService, allBettingMatch, dbUtil);
     }
 
-
-
     public static void main(String args[]) {
         String fromDate = null;
         String toDate = null;
@@ -56,8 +54,6 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
-        int cpuNum = Runtime.getRuntime().availableProcessors();
-
 
         final int[] BetOnMatch = {0};
         final double minExp = minExpectation;
