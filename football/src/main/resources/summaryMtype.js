@@ -1,6 +1,7 @@
 m = function () {
     var aid = this.betInfo.aid;
-    emit({aid: aid}, {net: this.delta, bet: this.bet, count: 1,correct: this.delta > 0?1:0, push:this.delta==0?1:0,lose:this.delta<0?1:0,total:1});
+    var mtype = this.betInfo.mtype;
+    emit({aid: aid,mtype:mtype}, {net: this.delta, bet: this.bet, count: 1,correct: this.delta > 0?1:0, push:this.delta==0?1:0,lose:this.delta<0?1:0,total:1});
 }
 r = function (k, vals) {
     var totalBet = 0
@@ -10,7 +11,6 @@ r = function (k, vals) {
     var push = 0;
     var lose = 0;
     var total = 0;
-
     for (var i = 0; i < vals.length; i++) {
         net += vals[i].net;
         totalBet += vals[i].bet;
@@ -30,4 +30,4 @@ f = function (key, reducedValue) {
     reducedValue.loseRate = reducedValue.lose / reducedValue.total;
     return reducedValue;
 };
-res = db.transactionDate.mapReduce(m, r, {finalize: f, out: {replace:"summaryDate"}});
+res = db.transactionDate.mapReduce(m, r, {finalize: f, out: {replace:"summaryDateMtype"}});

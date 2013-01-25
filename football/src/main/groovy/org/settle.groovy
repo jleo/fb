@@ -1,9 +1,9 @@
 package org
 
 import com.mongodb.BasicDBObject
+import com.mongodb.DBObject
 import com.mongodb.Mongo
 import org.bson.types.ObjectId
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -13,10 +13,10 @@ import org.bson.types.ObjectId
  */
 
 public class Settle {
-    public void settle(String gurateen, byDate, reverse) {
+    def mongo
 
-        def GoalCn = new String[41];
-
+    static def GoalCn = new String[41];
+    static {
         GoalCn[0] = "平手";
         GoalCn[1] = "平手/半球";
         GoalCn[2] = "半球";
@@ -58,106 +58,118 @@ public class Settle {
         GoalCn[38] = "九球半";
         GoalCn[39] = "九球半/十球";
         GoalCn[40] = "十球";
+    }
 
-        def handicap = { type, scoreA, scoreB, betOn ->
-            def result = null
+    def handicap = { type, scoreA, scoreB, betOn ->
+        def result = null
 
-            def absType = Math.abs(type)
-            if (type >= 0){
-                if (absType % 4 ==0){
-                    def handicap = absType / 4
-                    if (scoreA - handicap == scoreB){
-                        result = 0
-                    } else if (scoreA - handicap > scoreB){
-                        result = 1
-                    } else if (scoreA - handicap < scoreB){
-                        result = -1
-                    }
-                } else if (absType % 4 == 1){
-                    def handicap = absType / 4
-                    if (scoreA - (int)handicap == scoreB){
-                        result = -0.5
-                    } else if (scoreA - handicap > scoreB){
-                        result = 1
-                    } else if (scoreA - handicap < scoreB){
-                        result = -1
-                    }
-                } else if (absType % 4 == 2){
-                    def handicap = absType / 4
-                    if (scoreA - handicap > scoreB){
-                        result = 1
-                    } else if (scoreA - handicap < scoreB){
-                        result = -1
-                    }
-
-                } else if (absType % 4 == 3){
-                    def handicap = absType / 4 + 1
-                    if (scoreA - (int)handicap == scoreB){
-                        result = 0.5
-                    } else if (scoreA - handicap > scoreB){
-                        result = 1
-                    } else if (scoreA - handicap < scoreB){
-                        result = -1
-                    }
+        def absType = Math.abs(type)
+        if (type >= 0) {
+            if (absType % 4 == 0) {
+                def handicap = absType / 4
+                if (scoreA - handicap == scoreB) {
+                    result = 0
+                } else if (scoreA - handicap > scoreB) {
+                    result = 1
+                } else if (scoreA - handicap < scoreB) {
+                    result = -1
+                }
+            } else if (absType % 4 == 1) {
+                def handicap = absType / 4
+                if (scoreA - (int) handicap == scoreB) {
+                    result = -0.5
+                } else if (scoreA - handicap > scoreB) {
+                    result = 1
+                } else if (scoreA - handicap < scoreB) {
+                    result = -1
+                }
+            } else if (absType % 4 == 2) {
+                def handicap = absType / 4
+                if (scoreA - handicap > scoreB) {
+                    result = 1
+                } else if (scoreA - handicap < scoreB) {
+                    result = -1
                 }
 
-                if (betOn == 0){
-                    return result
-                } else {
-                    return result*-1
+            } else if (absType % 4 == 3) {
+                def handicap = absType / 4 + 1
+                if (scoreA - (int) handicap == scoreB) {
+                    result = 0.5
+                } else if (scoreA - handicap > scoreB) {
+                    result = 1
+                } else if (scoreA - handicap < scoreB) {
+                    result = -1
                 }
-            } else {
-                if (absType % 4 == 0){
-                    def handicap = absType / 4
-                    if (scoreB - handicap == scoreA){
-                        result = 0
-                    } else if (scoreB - handicap > scoreA){
-                        result = -1
-                    } else if (scoreB - handicap < scoreA){
-                        result = 1
-                    }
-                } else if (absType % 4 == 1){
-                    def handicap = absType / 4
-                    if (scoreB - (int)handicap == scoreA){
-                        result = 0.5
-                    } else if (scoreB - handicap > scoreA){
-                        result = -1
-                    } else if (scoreB - handicap < scoreA){
-                        result = 1
-                    }
-                } else if (absType % 4 == 2){
-                    def handicap = absType / 4
-                    if (scoreB - handicap > scoreA){
-                        result = -1
-                    } else if (scoreB - handicap < scoreA){
-                        result = 1
-                    }
-                } else if (absType % 4 == 3){
-                    def handicap = absType / 4 + 1
-                    if (scoreB - (int)handicap ==  scoreA){
-                        result = -0.5
-                    } else if (scoreB - handicap > scoreA){
-                        result = -1
-                    } else if (scoreB - handicap < scoreA){
-                        result = 1
-                    }
-                }
-                if (betOn == 0)
-                    return result
-                else
-                    return result*-1
             }
-        }
 
-        def mongo = new Mongo("rm4", 15000)
+            if (betOn == 0) {
+                return result
+            } else {
+                return result * -1
+            }
+        } else {
+            if (absType % 4 == 0) {
+                def handicap = absType / 4
+                if (scoreB - handicap == scoreA) {
+                    result = 0
+                } else if (scoreB - handicap > scoreA) {
+                    result = -1
+                } else if (scoreB - handicap < scoreA) {
+                    result = 1
+                }
+            } else if (absType % 4 == 1) {
+                def handicap = absType / 4
+                if (scoreB - (int) handicap == scoreA) {
+                    result = 0.5
+                } else if (scoreB - handicap > scoreA) {
+                    result = -1
+                } else if (scoreB - handicap < scoreA) {
+                    result = 1
+                }
+            } else if (absType % 4 == 2) {
+                def handicap = absType / 4
+                if (scoreB - handicap > scoreA) {
+                    result = -1
+                } else if (scoreB - handicap < scoreA) {
+                    result = 1
+                }
+            } else if (absType % 4 == 3) {
+                def handicap = absType / 4 + 1
+                if (scoreB - (int) handicap == scoreA) {
+                    result = -0.5
+                } else if (scoreB - handicap > scoreA) {
+                    result = -1
+                } else if (scoreB - handicap < scoreA) {
+                    result = 1
+                }
+            }
+            if (betOn == 0)
+                return result
+            else
+                return result * -1
+        }
+    }
+
+    Settle(mongo) {
+        this.mongo = mongo
+    }
+
+    public void settle(String gurateen, byDate, reverse) {
         def db = mongo.getDB("fb");
 
         def betCollection = db.getCollection(byDate ? "betDate" : "bet")
 
         def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
 
-        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject("status", "new")).each { it ->
+        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject()).each { it ->
             String matchId = it.get("matchId")
+
+            if (!byDate) {
+                DBObject q = new BasicDBObject();
+                q.put("matchId", matchId)
+                transactionCollection.remove(q)
+            }
+
             String clientId = it.get("clientId") as String
             float bet = it.get("bet") as float
             int betOn = it.get("betOn")    //0主1客
@@ -237,29 +249,29 @@ public class Settle {
             betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
         }
 
-        if (byDate) {
-            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
-
-            def sum = 0
-            def delta = 0
-            def count = 0
-
-            t.each {
-                delta += it.get("delta") as double
-                sum += it.get("bet") as int
-                count++
-            }
-
-            println "total: " + count
-            println "net: " + delta
-            if (sum != 0)
-                println "profit: " + delta * 100 / sum + "%"
-        }
-        mongo.close()
+//        if (byDate) {
+//            def t = transactionCollection.find(new BasicDBObject("betInfo.aid", gurateen))
+//
+//            def sum = 0
+//            def delta = 0
+//            def count = 0
+//
+//            t.each {
+//                delta += it.get("delta") as double
+//                sum += it.get("bet") as int
+//                count++
+//            }
+//
+//            println "total: " + count
+//            println "net: " + delta
+//            if (sum != 0)
+//                println "profit: " + delta * 100 / sum + "%"
+//        }
     }
 
     public static void main(String[] args) {
-        Settle settle = new Settle()
+        def mongo = new Mongo("rm4", 15000)
+        Settle settle = new Settle(mongo)
         settle.settle(args[0], Boolean.valueOf(args[1]), Boolean.valueOf(args[2]))
     }
 }

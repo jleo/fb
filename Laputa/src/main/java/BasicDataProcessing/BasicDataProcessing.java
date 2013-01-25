@@ -2,9 +2,14 @@ package BasicDataProcessing;
 
 import Util.MongoDBUtil;
 import Util.Props;
-import com.mongodb.*;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import org.codehaus.jackson.map.ObjectMapper;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +28,12 @@ public class BasicDataProcessing implements iBasicDataProcessing {
     private final String collectionName = Props.getProperty("MatchRemoteResult");
 
     private BasicData basicData = null;
+    private String supportDegree;
+    private static Map<String, BasicData> inMemoryCache = new ConcurrentHashMap<String, BasicData>(4000);
+
+    public BasicDataProcessing() {
+        supportDegree = Props.getProperty("supportDegree");
+    }
 
     private void setDBConnection(String MongoDBHost, String MongoDBPort, String MongoDBName) {
         if (dbUtil == null) {
@@ -37,6 +48,32 @@ public class BasicDataProcessing implements iBasicDataProcessing {
     public void processBasicData(double win, double push, double lose, double winFactor, double pushFactor, double loseFactor) {
         setDBConnection(mongoDBHost, mongoDBPort, mongoDBName);
 
+        BasicDBObject cacheQuery = new BasicDBObject();
+        cacheQuery.append("win", win);
+        cacheQuery.append("push", push);
+        cacheQuery.append("lose", lose);
+        cacheQuery.append("winFactor", winFactor);
+        cacheQuery.append("pushFactor", pushFactor);
+        cacheQuery.append("loseFactor", loseFactor);
+
+        if (inMemoryCache.containsKey(cacheQuery.toString())) {
+            basicData = inMemoryCache.get(cacheQuery.toString());
+            return;
+        }
+
+        DBObject cached = dbUtil.findOne(cacheQuery, "resultcache");
+        if (cached != null) {
+            String basicDataJson = (String) cached.get("basicDataJson");
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                basicData = mapper.readValue(basicDataJson, BasicData.class);
+                inMemoryCache.put(cacheQuery.toString(), basicData);
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         basicData = new BasicData();
 
         DBObject winQuery = getWinQuery(win, winFactor);
@@ -52,13 +89,25 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         queryField.put("resultRA", 1);
         queryField.put("resultRB", 1);
 
-        List<DBObject> resultList = dbUtil.findAll(query, queryField, collectionName);
-        if (resultList.size() < Integer.parseInt(Props.getProperty("supportDegree"))){
+        DBCursor dbCursor = dbUtil.findAllCursor(query, queryField, collectionName);
+
+        if (dbCursor.count() < Integer.parseInt(supportDegree)) {
+            //persist the cached value
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                String basicDataJson = mapper.writeValueAsString(basicData);
+
+                cacheQuery.append("basicDataJson", basicDataJson);
+                dbUtil.insert(cacheQuery, "resultcache");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return;
         }
-        basicData.setMatchCount((double) resultList.size());
+        basicData.setMatchCount((double) dbCursor.size());
 
-        for (DBObject dbObject : resultList) {
+        while (dbCursor.hasNext()) {
+            DBObject dbObject = dbCursor.next();
             double resultRA = ((Number) dbObject.get("resultRA")).doubleValue();
             double resultRB = ((Number) dbObject.get("resultRB")).doubleValue();
             if (resultRA > 4 || resultRB > 4) {
@@ -155,6 +204,7 @@ public class BasicDataProcessing implements iBasicDataProcessing {
                 System.out.println("!!!! Missing !!!");
             }
         }
+        dbCursor.close();
 
         for (int i = 0; i < 5; ++i) {
             for (int j = 0; j < 5; ++j) {
@@ -190,6 +240,17 @@ public class BasicDataProcessing implements iBasicDataProcessing {
                     basicData.setLose4Game(basicData.getLose4Game() + basicData.getResultSet()[i][j]);
                 }
             }
+        }
+
+        //persist the cached value
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String basicDataJson = mapper.writeValueAsString(basicData);
+
+            cacheQuery.append("basicDataJson", basicDataJson);
+            dbUtil.insert(cacheQuery, "resultcache");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

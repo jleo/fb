@@ -13,11 +13,20 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>2.0.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.gearman</groupId>
+            <artifactId>gearman-java</artifactId>
+            <version>0.5</version>
+        </dependency>
 
         <dependency>
             <groupId>org.vert-x</groupId>
@@ -57,7 +66,6 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

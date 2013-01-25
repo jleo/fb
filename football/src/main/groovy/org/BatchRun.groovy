@@ -1,10 +1,9 @@
 package org
 
-import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
-import Util.Props
-
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
+import org.gearman.client.GearmanClientImpl
+import org.gearman.client.GearmanJob
+import org.gearman.client.GearmanJobImpl
+import org.gearman.common.GearmanNIOJobServerConnection
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,31 +14,28 @@ import java.util.concurrent.Executors
  */
 class BatchRun {
     public static void main(String[] args) {
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
-
         BigDecimal seedExpectation = new BigDecimal("0.0");
-        BigDecimal seedProbability = new BigDecimal("0.5");
-        int loopingExpectation = 40;
-        int loppingProbability = 12;
+        def initProbability = "0.675"
+        BigDecimal seedProbability = new BigDecimal(initProbability);
 
-        for (int i = 1; i < loopingExpectation; ++i) {
+        int loopingExpectation = 20;
+        int loppingProbability = 50;
+
+        GearmanClientImpl client = new GearmanClientImpl();
+        client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
+
+        for (int i = 0; i < loopingExpectation; ++i) {
             for (int j = 0; j < loppingProbability; ++j) {
+                seedProbability = seedProbability.add(new BigDecimal("0.001"));
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
-                def date = Date.parse("yyyy-MM-dd", "2013-01-01")
-                17.times {
-                    BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, date.format("yyyy-MM-dd"), (date + 1).format("yyyy-MM-dd"));
-                    betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
 
-                    Settle s = new Settle()
-                    println date.format("yyyy-MM-dd")
-                    String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
-                    s.settle(guarantee, true, false)
-                    date = date + 1
-                }
-                seedProbability = seedProbability.add(new BigDecimal("0.02"));
+                GearmanJob job = GearmanJobImpl.createBackgroundJob("org.GearmanFunction", (seedExpectation.toString() + "," + seedProbability.toString()).getBytes(),
+                        UUID.randomUUID().toString());
+
+                client.submit(job)
             }
             seedExpectation = seedExpectation.add(new BigDecimal("0.005"));
-            seedProbability = new BigDecimal("0.5");
+            seedProbability = new BigDecimal(initProbability);
         }
     }
 }

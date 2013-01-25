@@ -21,6 +21,10 @@ public class MongoDBUtil {
     private Mongo mongo;
     private DB mongoDB;
 
+    public Mongo getMongo() {
+        return mongo;
+    }
+
     private boolean isConnected;
 
     private static MongoDBUtil dbUtil;
@@ -96,6 +100,7 @@ public class MongoDBUtil {
             DBObject dbObject = cursor.next();
             resultList.add(dbObject);
         }
+        cursor.close();
         return resultList;
     }
 
@@ -107,7 +112,14 @@ public class MongoDBUtil {
             DBObject dbObject = cursor.next();
             resultList.add(dbObject);
         }
+        cursor.close();
         return resultList;
+    }
+
+    public DBCursor findAllCursor(DBObject query, DBObject filed, String collectionName) {
+        List<DBObject> resultList = new ArrayList<DBObject>();
+        DBCollection collection = mongoDB.getCollection(collectionName);
+        return collection.find(query, filed);
     }
 
     public void update(DBObject query, DBObject update, String collectionName) {

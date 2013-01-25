@@ -10,6 +10,9 @@ import HandicapProcessing.HandicapProcessing;
  * To change this template use File | Settings | File Templates.
  */
 public class BetHandicapMatchGuarantee extends BetMatchBasic {
+    public BetHandicapMatchGuarantee(BetMatchProcessor betMatchBatchProcessor) {
+        super(betMatchBatchProcessor);
+    }
 
     public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {
         String aid = "Guarantee" + String.valueOf(minExpectation) + String.valueOf(minProbability);
@@ -20,7 +23,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     0, baseMoney, aid, handicapProcessing.getWinExpectation(),
                     (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh(),handicapProcessing.getMatchInformation().getWinRate(),handicapProcessing.getMatchInformation().getLoseRate());
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(), handicapProcessing.getMatchInformation().getCh(), handicapProcessing.getMatchInformation().getWinRate(), handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         } else if (handicapProcessing.getLoseExpectation() > minExpectation && (handicapProcessing.getLoseProbability()
                 + handicapProcessing.getLoseHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability) {
@@ -29,17 +32,17 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getClientId(),
                     1, baseMoney, aid, handicapProcessing.getLoseExpectation(),
                     (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(),handicapProcessing.getMatchInformation().getCh(),handicapProcessing.getMatchInformation().getWinRate(),handicapProcessing.getMatchInformation().getLoseRate());
+                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(), handicapProcessing.getMatchInformation().getCh(), handicapProcessing.getMatchInformation().getWinRate(), handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         }
 
-        System.out.println("Don't not bet on this match...");
-        System.out.println("Win Expectation: " + handicapProcessing.getWinExpectation());
-        System.out.println("Win Probability: " + (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                + handicapProcessing.getDrawProbability()));
-        System.out.println("Lose Expectation: " + handicapProcessing.getLoseExpectation());
-        System.out.println("Lose Probability: " + (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                + handicapProcessing.getDrawProbability()));
+//        System.out.println("Don't not bet on this match...");
+//        System.out.println("Win Expectation: " + handicapProcessing.getWinExpectation());
+//        System.out.println("Win Probability: " + (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
+//                + handicapProcessing.getDrawProbability()));
+//        System.out.println("Lose Expectation: " + handicapProcessing.getLoseExpectation());
+//        System.out.println("Lose Probability: " + (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
+//                + handicapProcessing.getDrawProbability()));
 
         return -1;
     }

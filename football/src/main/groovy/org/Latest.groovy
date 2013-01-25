@@ -7,6 +7,11 @@ import com.mongodb.Mongo
 
 public class Latest {
     public static void main(String[] args) {
+        Latest latest = new Latest()
+        latest.latest()
+    }
+
+    public void latest() {
         def matches = new URL("http://odds2.zso8.com/html/match.html").getText("utf-8")
         def odds = new URL("http://odds2.zso8.com/html/fixed.html").getText("utf-8")
         def handicaps = new URL("http://odds2.zso8.com/html/handicap.html").getText("utf-8")
@@ -140,9 +145,8 @@ public class Latest {
         odd = [:]
         handicap = [:]
 
-        def start = new Date() - 21
+        def start = new Date() - 2
         def end = new Date()
-
 
         def index = 0
         (start..end).each {
@@ -163,9 +167,9 @@ public class Latest {
             q.put("\$and", objects);
             save.remove(q)
 
-            def urlOdds = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/b_$year-$month-${day}.html").text
-            def urlMatches = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/m_$year-$month-${day}.html").text
-            def urlHandicaps = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/a_$year-$month-${day}.html").text
+            def urlOdds = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/b_$year-$month-${day}.html").getText("utf-8")
+            def urlMatches = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/m_$year-$month-${day}.html").getText("utf-8")
+            def urlHandicaps = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/a_$year-$month-${day}.html").getText("utf-8")
 
             matcher = [:]
             odd = [:]
@@ -220,8 +224,6 @@ public class Latest {
             println "total:" + odd.size()
             finalResult = odd.collect { cmId, oddData ->
                 progress++;
-                if (progress % 50 == 0)
-                    println progress
                 def matchId = oddData[0]
                 def cId = oddData[1]
 
@@ -237,7 +239,6 @@ public class Latest {
                 if ([* matcher[matchId]][19])
                     abFlag = [* matcher[matchId]][19] as int
 
-                println abFlag
                 def handicapInfo = [* handicap[matchId + "," + cId]]
 
                 def initHandicap = null

@@ -22,20 +22,12 @@ import java.util.concurrent.Future;
  * Time: 上午12:35
  * To change this template use File | Settings | File Templates.
  */
-public class BetMatchBatchProcessorSpecifiedDate {
-
-    private int processingMatch;
-
-    private String dateFrom;
-    private String dateTo;
-    private MongoDBUtil dbUtil;
-    ExecutorService executorService;
-
-    public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, String dateFrom, String dateTo) {
-        this.dateFrom = dateFrom;
-        this.dateTo = dateTo;
-        this.executorService = executorService;
+public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
+    public BetMatchBatchProcessorSpecifiedDate(ExecutorService executorService, List<DBObject> allBettingMatch, MongoDBUtil dbUtil) {
+        super(executorService, allBettingMatch, dbUtil);
     }
+
+
 
     public static void main(String args[]) {
         String fromDate = null;
@@ -49,23 +41,23 @@ public class BetMatchBatchProcessorSpecifiedDate {
             toDate = args[1];
         }
 
+        MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
+                Props.getProperty("MongoDBRemotePort"),
+                Props.getProperty("MongoDBRemoteName"));
+
+        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil);
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
-        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, fromDate, toDate);
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability);
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability,allBettingMatches);
     }
 
-    public void betBatchMatchHandicapGuarantee(double minExpectation, double minProbability) {
+    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
-        int cpuNum = Runtime.getRuntime().availableProcessors();
 
 
-        final List<DBObject> matchList = getAllBettingMatch();
-        dbUtil.drop(Props.getProperty("MatchBatchBetSpecifiedDate"));
-
-        processingMatch = 0;
         final int[] BetOnMatch = {0};
         final double minExp = minExpectation;
         final double minPro = minProbability;
@@ -74,7 +66,7 @@ public class BetMatchBatchProcessorSpecifiedDate {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
-                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee();
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessorSpecifiedDate.this);
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBetSpecifiedDate"));
@@ -86,23 +78,22 @@ public class BetMatchBatchProcessorSpecifiedDate {
 
                     String teamA = match.get("tNameA").toString();
                     String teamB = match.get("tNameB").toString();
+
                     String matchId = (String) match.get("matchId");
                     int ch = ((Number) match.get("ch")).intValue();
                     String cid = (String) match.get("cid");
                     int abFlag = ((Number) match.get("abFlag")).intValue();
                     Date matchTime = ((Date) match.get("time"));
 
-                    double handicap = getHandicap(ch, abFlag);
-                    if (handicap == -999) {
-                        System.out.println("ERROR handicap!");
-                        return;
-                    }
+                    double handicap = ch / 4.0;
+
                     if (handicap >= 3 || handicap <= -3) {
                         System.out.println("The handicap is out of range: " + handicap);
                         return;
                     }
                     hp.setMatch(win, push, lose, handicap, winRate, loseRate, matchId, "snow", cid, matchTime, teamA,
                             teamB, ch);
+
                     int isBet = hp.getResult(false);
                     if (isBet != 0) {
                         return;
@@ -130,13 +121,14 @@ public class BetMatchBatchProcessorSpecifiedDate {
         long t2 = System.currentTimeMillis();
 
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
+        executorService.shutdown();
     }
 
     private double getHandicap(double type, int abFlag) {
         return type / 4.0;
     }
 
-    private List<DBObject> getAllBettingMatch() {
+    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil) {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
@@ -162,13 +154,9 @@ public class BetMatchBatchProcessorSpecifiedDate {
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);
+        field.put("mtype", 1);
 
-        dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
-                Props.getProperty("MongoDBRemotePort"),
-                Props.getProperty("MongoDBRemoteName"));
 
-        List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
-
-        return matchList;
+        return dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
     }
 }

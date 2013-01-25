@@ -36,6 +36,15 @@ public class HandicapProcessing implements iHandicapProcessing {
     private double winFactor;
     private double pushFactor;
     private double loseFactor;
+    private final double supportIncrease;
+    private final int supportDegree;
+    private final int supportIncreaseCount;
+
+    public HandicapProcessing() {
+        supportIncrease = Double.parseDouble(Props.getProperty("supportIncrease"));
+        supportDegree = Integer.parseInt(Props.getProperty("supportDegree"));
+        supportIncreaseCount = Integer.parseInt(Props.getProperty("supportIncreaseCount"));
+    }
 
     public BasicData getBasicData() {
         return basicData;
@@ -145,11 +154,7 @@ public class HandicapProcessing implements iHandicapProcessing {
     }
 
     public int getResult(boolean display) {
-
         clearInfo();
-        double supportIncrease = Double.parseDouble(Props.getProperty("supportIncrease"));
-        int supportDegree = Integer.parseInt(Props.getProperty("supportDegree"));
-        int supportIncreaseCount = Integer.parseInt(Props.getProperty("supportIncreaseCount"));
 
         bdp = new BasicDataProcessing();
         double winFactorInc = matchInformation.getWin() * supportIncrease;
