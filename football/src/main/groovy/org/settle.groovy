@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBObject
 import com.mongodb.Mongo
 import org.bson.types.ObjectId
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -161,7 +162,7 @@ public class Settle {
 
         def transactionCollection = db.getCollection(byDate ? "transactionDate" : "transaction")
 
-        betCollection.find(byDate ? new BasicDBObject("aid", gurateen) : new BasicDBObject()).each { it ->
+        betCollection.find(byDate ? (gurateen ? new BasicDBObject("aid", gurateen) : new BasicDBObject()) : new BasicDBObject()).each { it ->
             String matchId = it.get("matchId")
 
             if (!byDate) {
@@ -180,7 +181,7 @@ public class Settle {
 
             def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
 
-            if (!matchInfo){
+            if (!matchInfo) {
                 throw new RuntimeException(matchId + " not found")
                 return
             }
@@ -192,7 +193,7 @@ public class Settle {
 
             ObjectId oid = it.get("_id")
             if (betType == 0) {
-                if (matchInfo.get("ch") == null){
+                if (matchInfo.get("ch") == null) {
                     throw new RuntimeException(matchId + " ch not found")
                     return
                 }
