@@ -21,6 +21,7 @@ import java.util.concurrent.Executors
  */
 class GearmanFunction extends AbstractGearmanFunction {
 
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
     static MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
             Props.getProperty("MongoDBRemotePort"),
             Props.getProperty("MongoDBRemoteName"));
@@ -31,7 +32,6 @@ class GearmanFunction extends AbstractGearmanFunction {
 
     @Override
     public GearmanJobResult executeFunction() {
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         StringBuffer sb = new StringBuffer(ByteUtils.fromUTF8Bytes((byte[]) this.data));
