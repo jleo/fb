@@ -167,9 +167,9 @@ public class Latest {
             q.put("\$and", objects);
             save.remove(q)
 
-            def urlOdds = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/b_$year-$month-${day}.html").text
-            def urlMatches = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/m_$year-$month-${day}.html").text
-            def urlHandicaps = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/a_$year-$month-${day}.html").text
+            def urlOdds = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/b_$year-$month-${day}.html").getText("utf-8")
+            def urlMatches = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/m_$year-$month-${day}.html").getText("utf-8")
+            def urlHandicaps = new URL("http://odds2.zso8.com/api/odds/oddshistory/$year/a_$year-$month-${day}.html").getText("utf-8")
 
             matcher = [:]
             odd = [:]
