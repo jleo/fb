@@ -20,7 +20,6 @@ import java.util.concurrent.Executors
  * Let's RocknRoll
  */
 class GearmanFunction extends AbstractGearmanFunction {
-    static ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
     static MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
             Props.getProperty("MongoDBRemotePort"),
@@ -28,11 +27,13 @@ class GearmanFunction extends AbstractGearmanFunction {
 
 
     static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil);
-    static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
     Settle s = new Settle(dbUtil.getMongo())
 
     @Override
     public GearmanJobResult executeFunction() {
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
+
         StringBuffer sb = new StringBuffer(ByteUtils.fromUTF8Bytes((byte[]) this.data));
 
         def args = sb.toString().split(",")
