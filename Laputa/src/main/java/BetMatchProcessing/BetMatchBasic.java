@@ -66,7 +66,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
 
-        dbUtil.upsert(uniqueQuery, betQuery, true, matchBetCollection);
+        dbUtil.upsert(uniqueQuery, betQuery, false, matchBetCollection);
 
     }
 

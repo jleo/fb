@@ -86,8 +86,6 @@ public class Latest {
             def h1 = null
             def h2 = null
 
-            println abFlag
-
             if (handicapInfo) {
                 if (handicapInfo[6])
                     initHandicap = handicapInfo[6] as int
