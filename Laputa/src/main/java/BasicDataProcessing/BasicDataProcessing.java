@@ -57,6 +57,7 @@ public class BasicDataProcessing implements iBasicDataProcessing {
         cacheQuery.append("loseFactor", loseFactor);
 
         if (inMemoryCache.containsKey(cacheQuery.toString())) {
+            System.out.println("from memory cache");
             basicData = inMemoryCache.get(cacheQuery.toString());
             return;
         }
@@ -68,6 +69,7 @@ public class BasicDataProcessing implements iBasicDataProcessing {
             try {
                 basicData = mapper.readValue(basicDataJson, BasicData.class);
                 inMemoryCache.put(cacheQuery.toString(), basicData);
+                System.out.println("from mongo cache");
                 return;
             } catch (IOException e) {
                 e.printStackTrace();

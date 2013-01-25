@@ -42,6 +42,7 @@ class GearmanFunction extends AbstractGearmanFunction {
         def seedProbability = args[1] as double
 
         StringBuilder text = new StringBuilder();
+
         BufferedReader reader = null;
         try {
             System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
