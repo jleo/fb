@@ -34,7 +34,6 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
         compile 'org.mongodb:mongo-java-driver:2.9.1'
-        compile 'football:football:1.0-SNAPSHOT'
     }
 
     plugins {
