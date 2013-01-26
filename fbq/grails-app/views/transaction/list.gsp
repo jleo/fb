@@ -46,6 +46,7 @@
             <g:sortableColumn property="resultRB"
                               title="${message(code: 'transaction.resultRA.label', default: 'Result RB')}"/>
 
+             <td>Time</td>
         </tr>
         </thead>
         <tbody>
@@ -66,6 +67,7 @@
 
                 <td>${fieldValue(bean: transactionInstance, field: "resultRA")}</td>
                 <td>${fieldValue(bean: transactionInstance, field: "resultRB")}</td>
+                <td>${transactionInstance.jsonBetInfo.time.$date}</td>
 
             </tr>
         </g:each>
