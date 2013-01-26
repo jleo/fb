@@ -38,6 +38,7 @@
         <tr>
             <g:sortableColumn property="tNameA" title="主"/>
             <g:sortableColumn property="tNameB" title="客"/>
+            <g:sortableColumn property="mtype" title="联赛"/>
 
             <g:sortableColumn property="wr" title="赢"/>
             <g:sortableColumn property="pr" title="平"/>
@@ -58,8 +59,9 @@
         <g:each in="${matchInstanceList}" status="i" var="matchInstance">
             <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
 
-                <td>${fieldValue(bean: matchInstance, field: "tNameA")}</td>
-                <td>${fieldValue(bean: matchInstance, field: "tNameB")}</td>
+                <td>${ListParser.parse(matchInstance.tNameA)[1]}</td>
+                <td>${ListParser.parse(matchInstance.tNameB)[1]}</td>
+                <td>${ListParser.parse(matchInstance.mtype)[1]}</td>
                 <td>${fieldValue(bean: matchInstance, field: "w1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "p1")}</td>
                 <td>${fieldValue(bean: matchInstance, field: "l1")}</td>

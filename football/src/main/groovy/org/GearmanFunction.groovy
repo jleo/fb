@@ -22,6 +22,8 @@ import java.util.concurrent.Executors
 class GearmanFunction extends AbstractGearmanFunction {
 
     static ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+    static ExecutorService executorService2 = Executors.newFixedThreadPool(3);
+
     static MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
             Props.getProperty("MongoDBRemotePort"),
             Props.getProperty("MongoDBRemoteName"));
@@ -38,8 +40,8 @@ class GearmanFunction extends AbstractGearmanFunction {
 
         def args = sb.toString().split(",")
 
-        def seedExpectation = args[0] as double
-        def seedProbability = args[1] as double
+        final def seedExpectation = args[0] as double
+        final def seedProbability = args[1] as double
 
         StringBuilder text = new StringBuilder();
 
@@ -49,8 +51,14 @@ class GearmanFunction extends AbstractGearmanFunction {
 
             betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
 
-            String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
-            s.settle(guarantee, true, false)
+            executorService2.execute(new Runnable() {
+                @Override
+                void run() {
+                    String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
+                    s.settle(guarantee, true, false)
+                }
+            })
+
         } catch (Exception e) {
             e.printStackTrace()
             GearmanJobResult gjr = new GearmanJobResultImpl(this.jobHandle,
