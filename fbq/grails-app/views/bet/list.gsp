@@ -47,9 +47,18 @@
                 <td><g:link controller="todayMatch" action="show"
                             params="${[matchId: betInstance.matchId, cid: betInstance.cid]}">${betInstance.matchId}</g:link></td>
 
-
                 <td>${betInstance.betOn==0?"主":"客"}</td>
-                <td>${org.HandicapMapping.GoalCn[betInstance.ch]}</td>
+                <g:if test="${betInstance.ch!=null}">
+                    <g:if test="${betInstance.ch >= 0}">
+                        <td>${org.HandicapMapping.GoalCn[(betInstance.ch)]}</td>
+                    </g:if>
+                    <g:else>
+                        <td>受${org.HandicapMapping.GoalCn[(-betInstance.ch)]}</td>
+                    </g:else>
+                </g:if>
+                <g:else>
+                    <td></td>
+                </g:else>
 
                 <td>${fieldValue(bean: betInstance, field: "teamA")}</td>
                 <td>${fieldValue(bean: betInstance, field: "teamB")}</td>

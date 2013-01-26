@@ -68,12 +68,15 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
 
 
-        if (Boolean.parseBoolean(Props.getProperty("upsert"))) {
-            dbUtil.upsert(uniqueQuery, betQuery, false, matchBetCollection);
-        }else{
-            dbUtil.insert(betQuery,matchBetCollection);
+        if (betMatchBatchProcessor.printOnly()) {
+            System.out.println(betQuery.toString());
+        } else {
+            if (Boolean.parseBoolean(Props.getProperty("upsert"))) {
+                dbUtil.upsert(uniqueQuery, betQuery, false, matchBetCollection);
+            } else {
+                dbUtil.insert(betQuery, matchBetCollection);
+            }
         }
-
     }
 
 }
