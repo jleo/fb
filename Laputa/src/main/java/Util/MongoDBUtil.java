@@ -129,7 +129,7 @@ public class MongoDBUtil {
 
     public void upsert(DBObject query, DBObject update, boolean multi, String collectionName) {
         DBCollection collection = mongoDB.getCollection(collectionName);
-        collection.update(query, update, true, multi);
+        collection.update(query, update, true, multi, WriteConcern.SAFE);
     }
 
     public void remove(DBObject query, String collectionName) {

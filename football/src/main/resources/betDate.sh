@@ -1,0 +1,1 @@
+java -Xmx1024m -cp ../Laputa/target/Laputa-1.0-jar-with-dependencies.jar BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate $1 $2

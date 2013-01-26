@@ -99,7 +99,7 @@ class Visual extends ApplicationFrame {
                 defaultCloseOperation: WC.EXIT_ON_CLOSE) {
             panel(id: 'canvas') {
                 def panel = new ChartPanel(chart)
-                panel.setPreferredSize(new java.awt.Dimension(800, 600));
+                panel.setPreferredSize(new java.awt.Dimension(1280, 800));
                 widget(panel)
             }
         }

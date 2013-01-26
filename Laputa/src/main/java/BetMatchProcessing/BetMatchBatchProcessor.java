@@ -27,6 +27,10 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         super(executorService, allBettingMatch, dbUtil);
     }
 
+    public BetMatchBatchProcessor(ExecutorService executorService, List<DBObject> allBettingMatch, MongoDBUtil dbUtil, boolean printOnly) {
+        super(executorService, allBettingMatch, dbUtil, printOnly);
+    }
+
     public static void main(String args[]) {
         final List<DBObject> matchList = BetMatchBatchProcessor.getAllBettingMatch();
         double minExpectation = Double.parseDouble(args[0]);
@@ -38,7 +42,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
-        BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor(executorService, matchList, dbUtil);
+        BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor(executorService, matchList, dbUtil, false);
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, matchList);
     }
 

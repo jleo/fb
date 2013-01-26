@@ -1,16 +1,23 @@
 package org
 
+import groovy.json.JsonSlurper
 import org.bson.types.ObjectId
 
 class Transaction {
     ObjectId id
-   String matchId
-int bet
+    String matchId
+    int bet
+    String cid
     float delta
-    int clientId
+    String clientId
     int resultRA
     int resultRB
     String betInfo
+    def jsonBetInfo
+
+    public void setBetInfo(String betInfo){
+        jsonBetInfo = new JsonSlurper().parseText(betInfo)
+    }
 
     static constraints = {
     }

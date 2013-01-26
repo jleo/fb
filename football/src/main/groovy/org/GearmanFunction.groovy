@@ -1,4 +1,5 @@
 package org
+
 import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
 import Util.MongoDBUtil
 import Util.Props
@@ -10,6 +11,7 @@ import org.gearman.worker.AbstractGearmanFunction
 
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -18,19 +20,20 @@ import java.util.concurrent.Executors
  * Let's RocknRoll
  */
 class GearmanFunction extends AbstractGearmanFunction {
-    static ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
+    static ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
     static MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
             Props.getProperty("MongoDBRemotePort"),
             Props.getProperty("MongoDBRemoteName"));
 
 
-    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch("2013-01-01", "2013-01-20", dbUtil);
+    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
-    Settle s = new Settle(dbUtil.getMongo())
+    static Settle s = new Settle(dbUtil.getMongo())
 
     @Override
     public GearmanJobResult executeFunction() {
+
         StringBuffer sb = new StringBuffer(ByteUtils.fromUTF8Bytes((byte[]) this.data));
 
         def args = sb.toString().split(",")
@@ -39,11 +42,12 @@ class GearmanFunction extends AbstractGearmanFunction {
         def seedProbability = args[1] as double
 
         StringBuilder text = new StringBuilder();
+
         BufferedReader reader = null;
         try {
             System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
-            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability);
+            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
 
             String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
             s.settle(guarantee, true, false)

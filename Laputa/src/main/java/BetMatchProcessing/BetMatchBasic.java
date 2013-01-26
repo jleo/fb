@@ -60,14 +60,23 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         for (DBObject dbObject : matchList) {
             if (dbObject.get("matchId").equals(matchId)) {
                 betQuery.put("mtype", dbObject.get("mtype"));
+                betQuery.put("time", dbObject.get("time"));
             }
         }
 
         MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
                 Props.getProperty("MongoDBRemotePort"), Props.getProperty("MongoDBRemoteName"));
 
-        dbUtil.upsert(uniqueQuery, betQuery, true, matchBetCollection);
 
+        if (betMatchBatchProcessor.printOnly()) {
+            System.out.println(betQuery.toString());
+        } else {
+            if (Boolean.parseBoolean(Props.getProperty("upsert"))) {
+                dbUtil.upsert(uniqueQuery, betQuery, false, matchBetCollection);
+            } else {
+                dbUtil.insert(betQuery, matchBetCollection);
+            }
+        }
     }
 
 }

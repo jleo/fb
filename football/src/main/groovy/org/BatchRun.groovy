@@ -14,19 +14,27 @@ import org.gearman.common.GearmanNIOJobServerConnection
  */
 class BatchRun {
     public static void main(String[] args) {
-        BigDecimal seedExpectation = new BigDecimal("0.0");
-        def initProbability = "0.675"
-        BigDecimal seedProbability = new BigDecimal(initProbability);
+        def initProbability = "0.6375"
+        def endProbability = "0.6376"
+        def probalilityStep = "0.0001"
 
-        int loopingExpectation = 20;
-        int loppingProbability = 50;
+
+
+        def expectation = "0.01"
+        def endExpectation = "0.1"
+        def expectationStep = "0.001"
+
+
+
+        BigDecimal seedExpectation = new BigDecimal(expectation);
+        BigDecimal seedProbability = new BigDecimal(initProbability);
 
         GearmanClientImpl client = new GearmanClientImpl();
         client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
 
-        for (int i = 0; i < loopingExpectation; ++i) {
-            for (int j = 0; j < loppingProbability; ++j) {
-                seedProbability = seedProbability.add(new BigDecimal("0.001"));
+        for (int i = 0; i < ((endExpectation as double) - (expectation as double)) / (expectationStep as double); ++i) {
+            for (int j = 0; j < ((endProbability as double) - (initProbability as double)) / (probalilityStep as double); ++j) {
+                seedProbability = seedProbability.add(new BigDecimal(probalilityStep));
                 System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
                 GearmanJob job = GearmanJobImpl.createBackgroundJob("org.GearmanFunction", (seedExpectation.toString() + "," + seedProbability.toString()).getBytes(),
@@ -34,7 +42,7 @@ class BatchRun {
 
                 client.submit(job)
             }
-            seedExpectation = seedExpectation.add(new BigDecimal("0.005"));
+            seedExpectation = seedExpectation.add(new BigDecimal(expectationStep));
             seedProbability = new BigDecimal(initProbability);
         }
     }

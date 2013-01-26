@@ -34,7 +34,7 @@ class MatchController {
     }
 
     def show() {
-        def matchInstance = Match.get(params.id)
+        def matchInstance = Match.findByMatchIdAndCid(params.matchId,params.cid)
         if (!matchInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'match.label', default: 'Match'), params.id])
             redirect(action: "list")
