@@ -190,6 +190,11 @@ public class Settle {
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
 
+            int abFlag = matchInfo.get("abFlag") as int
+            if (abFlag == 0) {
+                println "abFlag is 0, skip"
+                return
+            }
             def delta = null;
 
             ObjectId oid = it.get("_id")
@@ -204,6 +209,11 @@ public class Settle {
                 float h1 = matchInfo.get("h1") as float
                 float h2 = matchInfo.get("h2") as float
 
+                if (abFlag == 2) {//swap
+                    float temp = h1;
+                    h1 = h2;
+                    h2 = temp;
+                }
                 float result = handicap(type, resultRA, resultRB, betOn)
                 if (result == 0) {
                     delta = 0

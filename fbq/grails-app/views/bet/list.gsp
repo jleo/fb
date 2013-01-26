@@ -60,9 +60,9 @@
                     <td></td>
                 </g:else>
 
-                <td>${fieldValue(bean: betInstance, field: "teamA")}</td>
-                <td>${fieldValue(bean: betInstance, field: "teamB")}</td>
-                <td>${fieldValue(bean: betInstance, field: "mtype")}</td>
+                <td>${ListParser.parse(betInstance.teamA)[1]}</td>
+                <td>${ListParser.parse(betInstance.teamB)[1]}</td>
+                <td>${ListParser.parse(betInstance.mtype)[1]}</td>
                 <td>${fieldValue(bean: betInstance, field: "h1")}</td>
                 <td>${fieldValue(bean: betInstance, field: "h2")}</td>
                 <td>${fieldValue(bean: betInstance, field: "matchTime")}</td>
