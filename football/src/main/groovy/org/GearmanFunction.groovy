@@ -29,7 +29,7 @@ class GearmanFunction extends AbstractGearmanFunction {
 
     static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
-    static Settle s = new Settle(dbUtil.getMongo())
+//    static Settle s = new Settle(dbUtil.getMongo())
 
     @Override
     public GearmanJobResult executeFunction() {
@@ -49,8 +49,8 @@ class GearmanFunction extends AbstractGearmanFunction {
 
             betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
 
-            String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
-            s.settle(guarantee, true, false)
+//            String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
+//            s.settle(guarantee, true, false)
         } catch (Exception e) {
             e.printStackTrace()
             GearmanJobResult gjr = new GearmanJobResultImpl(this.jobHandle,
