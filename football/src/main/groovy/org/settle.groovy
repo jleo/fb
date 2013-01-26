@@ -182,7 +182,8 @@ public class Settle {
             def matchInfo = db.getCollection("result").findOne(new BasicDBObject().append("matchId", matchId).append("cid", "18"))
 
             if (!matchInfo) {
-                throw new RuntimeException(matchId + " not found")
+//                throw new RuntimeException(matchId + " not found")
+                println matchInfo.get("teamA") + " vs " + matchInfo.get("teamB") + " not started yet"
                 return
             }
 
