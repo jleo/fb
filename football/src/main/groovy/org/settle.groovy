@@ -183,7 +183,7 @@ public class Settle {
 
             if (!matchInfo) {
 //                throw new RuntimeException(matchId + " not found")
-                println matchInfo.get("teamA") + " vs " + matchInfo.get("teamB") + " not started yet"
+                println matchId + " not started yet"
                 return
             }
 
