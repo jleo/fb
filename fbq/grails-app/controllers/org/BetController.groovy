@@ -11,7 +11,6 @@ class BetController {
     }
 
     def latest() {
-        new Latest().latest()
         redirect(action: "list", params: params)
     }
 
