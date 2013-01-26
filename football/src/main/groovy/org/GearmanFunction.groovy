@@ -22,6 +22,7 @@ import java.util.concurrent.Executors
 class GearmanFunction extends AbstractGearmanFunction {
 
     static ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+
     static MongoDBUtil dbUtil = MongoDBUtil.getInstance(Props.getProperty("MongoDBRemoteHost"),
             Props.getProperty("MongoDBRemotePort"),
             Props.getProperty("MongoDBRemoteName"));

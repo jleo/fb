@@ -190,6 +190,10 @@ public class Settle {
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
 
+            if(matchInfo.get("abFlag")==null){
+                println "abFlag is null, skip"
+                return
+            }
             int abFlag = matchInfo.get("abFlag") as int
             if (abFlag == 0) {
                 println "abFlag is 0, skip"
