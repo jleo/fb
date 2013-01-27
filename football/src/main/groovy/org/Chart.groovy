@@ -126,7 +126,7 @@ class Visual extends ApplicationFrame {
 
                     def value = it.value.net
 
-                    map.put(x2, map.get(x2) + value)
+                    map.put(x1, map.get(x1) + value)
                 }
             }
             map.each { k, value ->
