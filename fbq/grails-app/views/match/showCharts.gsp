@@ -20,18 +20,46 @@
 <script src="${resource(dir: 'js', file: 'highcharts.js')}" type="text/javascript"></script>
 
 <div>
+    <select name="type">
+        <option value="spline" selected="selected">曲线图</option>
+        <option value="line">折线图</option>
+        <option value="column">柱状图(竖柱)</option>
+        <option value="bar"  >条形图(横条)</option>
+        <option value="pie">饼图</option>
+        <option value="area">面积图</option>
+        <option value="scatter">XY 散点图</option>
+    </select>
 
     <div id="container" style="width: 100%; height: 400px">1</div>
      %{--${matchInstanceJson}--}%
 </div>
 <script type="text/javascript">
     $(function () {
+        var thedata =  [{
+            name: '主队进球',
+            data: ${teamAGoals}
+        } ,  {
+            name: '客队进球',
+            data:  ${teamBGoals}
+        } ,
+            {
+                name:"${params.visiting?'客队-主队':'主队-客队'}进球差",
+                data: ${rs}
+
+
+            }
+
+        ] ;
         var chart;
         $(document).ready(function() {
+            var type = $('select[name=type]').val();
+
+
             chart = new Highcharts.Chart({
                 chart: {
                     renderTo: 'container',
-                    type: 'line',
+//                    type:'line',
+                    type: $('select[name=type]').val(),
                     marginRight: 130,
                     marginBottom: 25
                 },
@@ -79,23 +107,17 @@
                     y: 100,
                     borderWidth: 0
                 },
-                series: [{
-                    name: '主队进球',
-                    data: ${teamAGoals}
-                } ,  {
-                    name: '客队进球',
-                    data:  ${teamBGoals}
-                } ,
-                    {
-                       name:"${params.visiting?'客队-主队':'主队-客队'}进球差",
-                       data:${rs}
-
-
-                    }
-
-            ]
+                series: thedata
             });
+
+
+
         });
+        $('select').change(function(){
+            chart.options.chart.type = $(this).val();
+            chart = new Highcharts.Chart(chart.options);
+            chart.render();
+        })  ;
 
     });
 
