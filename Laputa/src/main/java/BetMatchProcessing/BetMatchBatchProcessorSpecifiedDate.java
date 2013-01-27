@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -45,12 +46,12 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemoteName"));
 
         List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil);
-//        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
-//        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
-//
-//        double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
-//        double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-//        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
+        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
+
+        double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
+        double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
     }
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
