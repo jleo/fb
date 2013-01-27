@@ -63,7 +63,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
-                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessorSpecifiedDate.this);
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessorSpecifiedDate.this, false);
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBetSpecifiedDate"));
