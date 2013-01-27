@@ -64,9 +64,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
 
                     bmp.setCollection(Props.getProperty("MatchBatchBet"));
 
-                    double win = ((Number) match.get("w1")).doubleValue();
-                    double push = ((Number) match.get("p1")).doubleValue();
-                    double lose = ((Number) match.get("l1")).doubleValue();
+                    double win = ((Number) match.get("w2")).doubleValue();
+                    double push = ((Number) match.get("p2")).doubleValue();
+                    double lose = ((Number) match.get("l2")).doubleValue();
                     double winRate = ((Number) match.get("h1")).doubleValue();
                     double loseRate = ((Number) match.get("h2")).doubleValue();
 
