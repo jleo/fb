@@ -65,7 +65,7 @@
                 <td>${ListParser.parse(betInstance.mtype)[1]}</td>
                 <td>${fieldValue(bean: betInstance, field: "h1")}</td>
                 <td>${fieldValue(bean: betInstance, field: "h2")}</td>
-                <td>${fieldValue(bean: betInstance, field: "matchTime")}</td>
+                <td>${betInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
             </tr>
         </g:each>
         </tbody>

@@ -69,12 +69,12 @@
 
                 <td>${fieldValue(bean: transactionInstance, field: "resultRA")}</td>
                 <td>${fieldValue(bean: transactionInstance, field: "resultRB")}</td>
-                <td>${new Date(Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", transactionInstance.jsonBetInfo.time.$date).getTime()+8*3600*1000).format("yyyy-MM-dd HH:mm")}</td>
-                <td><g:if test="${new Date(Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", transactionInstance.jsonBetInfo.time.$date).getTime()+8*3600*1000).after(new Date(new Date().getTime()))}">
+                <td>${transactionInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
+                <td><g:if test="${transactionInstance.matchTime.after(new Date())}">
                     未开赛
                 </g:if>
                 <g:else>
-                    <g:if test="${new Date(Date.parse("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", transactionInstance.jsonBetInfo.time.$date).getTime()+8*3600*1000).after(new Date(new Date().getTime()-7200*1000))}">
+                    <g:if test="${transactionInstance.matchTime.after(new Date(new Date().getTime()-7200*1000))}">
                         进行中
                     </g:if>
                     <g:else>
