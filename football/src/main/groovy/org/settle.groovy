@@ -264,7 +264,7 @@ public class Settle {
                     .append("matchTime", matchTime)
             )
 
-            betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
+//            betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
         }
 
 //        if (byDate) {
