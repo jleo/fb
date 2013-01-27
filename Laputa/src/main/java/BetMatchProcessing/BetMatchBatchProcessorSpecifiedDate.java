@@ -178,6 +178,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 dbObject.put("h1", handicapObject.get("h1"));
                 dbObject.put("h2", handicapObject.get("h2"));
             }
+            limit.close();
             results.add(dbObject);
         }
         c.close();

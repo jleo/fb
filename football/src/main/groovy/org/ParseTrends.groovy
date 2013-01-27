@@ -70,13 +70,21 @@ public class ParseTrends {
                     String time = it.children[0].children[0].replaceAll(new String((char) 160), "")
                     double h1 = it.children[1].children[0].children[0].children[0] as double
                     double h2 = it.children[3].children[0].children[0].children[0] as double
-                    String ch = it.children[2].children[0]
+                    def ch = it.children[2].children[0]
 
+                    boolean reverse = false
+                    if (ch.indexOf("受让") != -1) {
+                        reverse = true
+                    }
                     ch = Settle.GoalCn.findIndexOf {
                         it == ch.replaceAll("受让", "")
-                    }
+                    } as int
                     if (ch == -1) {
                         println ch + "not found"
+                    }
+
+                    if (reverse) {
+                        ch = -ch
                     }
                     map.time = time
                     map.h1 = h1
