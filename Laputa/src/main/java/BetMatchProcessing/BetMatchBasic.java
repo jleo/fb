@@ -57,6 +57,9 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         uniqueQuery.put("cid", cid);
         uniqueQuery.put("clientId", clientId);
         uniqueQuery.put("aid", aid);
+        uniqueQuery.put("ch", ch);
+        uniqueQuery.put("h1", h1);
+        uniqueQuery.put("h2", h2);
 
         List<DBObject> matchList = betMatchBatchProcessor.getMatchList();
         for (DBObject dbObject : matchList) {

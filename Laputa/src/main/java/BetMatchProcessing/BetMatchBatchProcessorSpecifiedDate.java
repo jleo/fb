@@ -4,6 +4,8 @@ import HandicapProcessing.HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
 import java.text.SimpleDateFormat;
@@ -49,7 +51,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability,allBettingMatches);
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
     }
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
@@ -152,7 +154,22 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         field.put("tNameB", 1);
         field.put("mtype", 1);
 
+        DBCollection handicap = dbUtil.getMongoDB().getCollection("handicap");
+        DBCursor c = dbUtil.findAllCursor(query, field, Props.getProperty("MatchHistoryResult"));
 
-        return dbUtil.findAll(query, field, Props.getProperty("MatchHistoryResult"));
+        List<DBObject> results = new ArrayList<DBObject>();
+        while (c.hasNext()) {
+            DBObject dbObject = c.next();
+            String matchId = (String) dbObject.get("matchId");
+            DBObject handicapObject = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1).next();
+
+            dbObject.put("ch", handicapObject.get("ch"));
+            dbObject.put("h1", handicapObject.get("h1"));
+            dbObject.put("h2", handicapObject.get("h2"));
+
+            results.add(dbObject);
+        }
+        c.close();
+        return results;
     }
 }
