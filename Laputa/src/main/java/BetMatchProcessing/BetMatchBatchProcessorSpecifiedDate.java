@@ -14,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -46,12 +45,12 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemoteName"));
 
         List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil);
-        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
-        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
-
-        double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
-        double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
+//        ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
+//        BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
+//
+//        double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
+//        double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
+//        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
     }
 
     public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
@@ -171,16 +170,18 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 continue;
 
 
+            DBCursor limit = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1);
+            if(limit.count() != 0){
+                DBObject handicapObject = limit.next();
 
-            DBObject handicapObject = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1).next();
-
-            dbObject.put("ch", handicapObject.get("ch"));
-            dbObject.put("h1", handicapObject.get("h1"));
-            dbObject.put("h2", handicapObject.get("h2"));
-
+                dbObject.put("ch", handicapObject.get("ch"));
+                dbObject.put("h1", handicapObject.get("h1"));
+                dbObject.put("h2", handicapObject.get("h2"));
+            }
             results.add(dbObject);
         }
         c.close();
+        System.out.println(results.size());
         return results;
     }
 }
