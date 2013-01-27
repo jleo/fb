@@ -161,6 +161,17 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         while (c.hasNext()) {
             DBObject dbObject = c.next();
             String matchId = (String) dbObject.get("matchId");
+            Integer abFlag = (Integer) dbObject.get("abFlag");
+            Integer ch = (Integer) dbObject.get("ch");
+
+            if(abFlag == 0 || abFlag == null)
+                continue;
+
+            if(ch == null)
+                continue;
+
+
+
             DBObject handicapObject = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1).next();
 
             dbObject.put("ch", handicapObject.get("ch"));
