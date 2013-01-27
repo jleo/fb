@@ -20,9 +20,11 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
     protected String matchBetCollection;
 
     private final BetMatchProcessor betMatchBatchProcessor;
+    private boolean upsert;
 
-    public BetMatchBasic(BetMatchProcessor betMatchBatchProcessor) {
+    public BetMatchBasic(BetMatchProcessor betMatchBatchProcessor, boolean upsert) {
         this.betMatchBatchProcessor = betMatchBatchProcessor;
+        this.upsert = upsert;
     }
 
     public void setCollection(String collection) {
@@ -61,6 +63,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
             if (dbObject.get("matchId").equals(matchId)) {
                 betQuery.put("mtype", dbObject.get("mtype"));
                 betQuery.put("time", dbObject.get("time"));
+                betQuery.put("abFlag", dbObject.get("abFlag"));
             }
         }
 
@@ -71,7 +74,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
         if (betMatchBatchProcessor.printOnly()) {
             System.out.println(betQuery.toString());
         } else {
-            if (Boolean.parseBoolean(Props.getProperty("upsert"))) {
+            if (upsert) {
                 dbUtil.upsert(uniqueQuery, betQuery, false, matchBetCollection);
             } else {
                 dbUtil.insert(betQuery, matchBetCollection);

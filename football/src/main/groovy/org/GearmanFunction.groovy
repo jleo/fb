@@ -51,7 +51,7 @@ class GearmanFunction extends AbstractGearmanFunction {
 
             betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
 
-            executorService2.execute(new Runnable() {
+            executorService2.submit(new Runnable() {
                 @Override
                 void run() {
                     String guarantee = "Guarantee" + seedExpectation.toString() + "" + seedProbability.toString()
