@@ -200,7 +200,7 @@ public class Settle {
             ObjectId oid = it.get("_id")
             if (betType == 0) {
                 if (matchInfo.get("ch") == null) {
-                    throw new RuntimeException(matchId + " ch not found")
+                    println(matchId + " ch not found")
                     return
                 }
 
