@@ -165,7 +165,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
             Integer abFlag = (Integer) dbObject.get("abFlag");
             Integer ch = (Integer) dbObject.get("ch");
 
-            if(abFlag == 0 || abFlag == null)
+            if(abFlag == null)
                 continue;
 
             if(ch == null)
