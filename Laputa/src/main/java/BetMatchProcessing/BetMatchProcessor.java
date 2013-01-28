@@ -38,6 +38,4 @@ public abstract class BetMatchProcessor {
     public boolean printOnly() {
         return printlnOnly;
     }
-
-    ;
 }

@@ -28,6 +28,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
     }
 
     public static void main(String args[]) {
+        // 包括fromDate，不包括toDate
         String fromDate = null;
         String toDate = null;
 

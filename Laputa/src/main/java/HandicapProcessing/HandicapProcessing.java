@@ -465,6 +465,17 @@ public class HandicapProcessing implements iHandicapProcessing {
         return 0;
     }
 
+    public double getMinRate(int betOn, double minExpectation) {
+        //betOn 0:主 1:客
+        //Probability * rate - (1 - Probability) = expectation
+        if (betOn == 0){
+            return ((minExpectation + 1) / winProbability - 1);
+        } else if (betOn == 1){
+            return ((minExpectation + 1) / loseProbability - 1);
+        }
+        return -1;
+    }
+
 
     private void clearInfo() {
         winExpectation = 0;

@@ -78,5 +78,4 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
             }
         }
     }
-
 }
