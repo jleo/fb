@@ -1,1 +1,1 @@
-java -Xmx1024m -cp target/Laputa-1.0-jar-with-dependencies.jar BetMatchProcessing.BetMatchBatchProcessor 0.033 0.6375
+java -Xmx1024m -cp target/Laputa-1.0-jar-with-dependencies.jar BetMatchProcessing.BetMatchBatchProcessor 0.032 0.6570

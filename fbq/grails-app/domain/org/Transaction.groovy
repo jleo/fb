@@ -14,6 +14,7 @@ class Transaction {
     int resultRB
     String betInfo
     def jsonBetInfo
+    Date matchTime
 
     public void setBetInfo(String betInfo){
         jsonBetInfo = new JsonSlurper().parseText(betInfo)

@@ -10,8 +10,8 @@ import HandicapProcessing.HandicapProcessing;
  * To change this template use File | Settings | File Templates.
  */
 public class BetHandicapMatchGuarantee extends BetMatchBasic {
-    public BetHandicapMatchGuarantee(BetMatchProcessor betMatchBatchProcessor) {
-        super(betMatchBatchProcessor);
+    public BetHandicapMatchGuarantee(BetMatchProcessor betMatchBatchProcessor, boolean upsert) {
+        super(betMatchBatchProcessor,upsert);
     }
 
     public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {

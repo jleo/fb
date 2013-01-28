@@ -14,7 +14,7 @@ public class HandicapProcessor {
 
     public static void main(String args[]){
         HandicapProcessor handicapProcessor = new HandicapProcessor();
-        handicapProcessor.betOneMatch(1.53, 4, 4.8, -1, 0.875, 0.925, "snow001", "8", "8");
+        handicapProcessor.betOneMatch(1.45, 3.8, 6, 1.25, 0.75, 1.05, "snow001", "8", "8");
 //        System.out.println("==========");
 //        handicapProcessor.betOneMatch(1.36, 4.75, 8.0, 1, 0.7, 1.23, "snow001", "8", "8");
 //        System.out.println("==========");

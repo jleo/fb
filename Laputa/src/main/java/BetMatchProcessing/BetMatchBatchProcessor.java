@@ -59,14 +59,14 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
-                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessor.this);
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessor.this,true);
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBet"));
 
-                    double win = ((Number) match.get("w1")).doubleValue();
-                    double push = ((Number) match.get("p1")).doubleValue();
-                    double lose = ((Number) match.get("l1")).doubleValue();
+                    double win = ((Number) match.get("w2")).doubleValue();
+                    double push = ((Number) match.get("p2")).doubleValue();
+                    double lose = ((Number) match.get("l2")).doubleValue();
                     double winRate = ((Number) match.get("h1")).doubleValue();
                     double loseRate = ((Number) match.get("h2")).doubleValue();
 
@@ -137,9 +137,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         field.put("ch", 1);
         field.put("matchId", 1);
         field.put("cid", 1);
-        field.put("w1", 1);
-        field.put("p1", 1);
-        field.put("l1", 1);
+        field.put("w2", 1);
+        field.put("p2", 1);
+        field.put("l2", 1);
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);
