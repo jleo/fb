@@ -38,7 +38,7 @@
             <g:sortableColumn property="h1" title="${message(code: 'bet.matchId.label', default: '主胜')}"/>
             <g:sortableColumn property="h2" title="${message(code: 'bet.matchId.label', default: '客胜')}"/>
             <g:sortableColumn property="matchTime" title="${message(code: 'bet.matchId.label', default: '客队')}"/>
-
+            <td>当前状态</td>
         </tr>
         </thead>
         <tbody>
@@ -60,12 +60,23 @@
                     <td></td>
                 </g:else>
 
-                <td>${fieldValue(bean: betInstance, field: "teamA")}</td>
-                <td>${fieldValue(bean: betInstance, field: "teamB")}</td>
-                <td>${fieldValue(bean: betInstance, field: "mtype")}</td>
+                <td>${ListParser.parse(betInstance.teamA)[1]}</td>
+                <td>${ListParser.parse(betInstance.teamB)[1]}</td>
+                <td>${ListParser.parse(betInstance.mtype)[1]}</td>
                 <td>${fieldValue(bean: betInstance, field: "h1")}</td>
                 <td>${fieldValue(bean: betInstance, field: "h2")}</td>
-                <td>${fieldValue(bean: betInstance, field: "matchTime")}</td>
+                <td>${betInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
+                <td><g:if test="${betInstance.matchTime.after(new Date())}">
+                    未开赛
+                </g:if>
+                <g:else>
+                    <g:if test="${betInstance.matchTime.after(new Date(new Date().getTime()-7200*1000))}">
+                        进行中
+                    </g:if>
+                    <g:else>
+                        已结束
+                    </g:else>
+                </g:else>
             </tr>
         </g:each>
         </tbody>

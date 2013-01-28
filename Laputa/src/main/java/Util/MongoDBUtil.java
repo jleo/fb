@@ -29,6 +29,10 @@ public class MongoDBUtil {
 
     private static MongoDBUtil dbUtil;
 
+    public DB getMongoDB() {
+        return mongoDB;
+    }
+
     private MongoDBUtil(String MongoDBHost, String MongoDBPort, String MongoDBName) {
         this.mongoDBHost = MongoDBHost;
         this.mongoDBPort = MongoDBPort;

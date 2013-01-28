@@ -16,7 +16,9 @@ class BetController {
 
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [betInstanceList: Bet.list(params), betInstanceTotal: Bet.count()]
+        params.sort = "matchTime"
+        params.order = "asc"
+        [betInstanceList: Bet.findAllByMatchTimeGreaterThan(new Date(),params), betInstanceTotal: Bet.count()]
     }
 
     def create() {

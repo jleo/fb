@@ -189,21 +189,36 @@ public class Settle {
 
             int resultRA = matchInfo.get("resultRA") as int
             int resultRB = matchInfo.get("resultRB") as int
+            Date matchTime = matchInfo.get("time") as Date
 
+            if(it.get("abFlag")==null){
+                println "abFlag is null, skip"
+                return
+            }
+            int abFlag = it.get("abFlag") as int
+//            if (abFlag == 0) {
+//                println "abFlag is 0, skip"
+//                return
+//            }
             def delta = null;
 
             ObjectId oid = it.get("_id")
             if (betType == 0) {
-                if (matchInfo.get("ch") == null) {
+                if (it.get("ch") == null) {
                     throw new RuntimeException(matchId + " ch not found")
                     return
                 }
 
-                int type = matchInfo.get("ch") as int
+                int type = it.get("ch") as int
 
-                float h1 = matchInfo.get("h1") as float
-                float h2 = matchInfo.get("h2") as float
+                float h1 = it.get("h1") as float
+                float h2 = it.get("h2") as float
 
+                if (abFlag == 2) {//swap
+                    float temp = h1;
+                    h1 = h2;
+                    h2 = temp;
+                }
                 float result = handicap(type, resultRA, resultRB, betOn)
                 if (result == 0) {
                     delta = 0
@@ -246,9 +261,10 @@ public class Settle {
                     .append("resultRA", resultRA)
                     .append("resultRB", resultRB)
                     .append("betInfo", it)
+                    .append("matchTime", matchTime)
             )
 
-            betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
+//            betCollection.update(new BasicDBObject("_id", new ObjectId(oid.toString())), new BasicDBObject().append("\$set", new BasicDBObject("status", "processed")))
         }
 
 //        if (byDate) {

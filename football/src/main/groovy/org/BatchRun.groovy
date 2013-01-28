@@ -14,18 +14,50 @@ import org.gearman.common.GearmanNIOJobServerConnection
  */
 class BatchRun {
     public static void main(String[] args) {
-        def initProbability = "0.6375"
-        def endProbability = "0.6376"
+//        def initProbability = "0.6375"
+//        def endProbability = "0.6376"
+//        def probalilityStep = "0.0001"
+//
+//
+//
+//        def expectation = "0.01"
+//        def endExpectation = "0.1"
+//        def expectationStep = "0.001"
+        //------iter 1--------
+//        def initProbability = "0.5"
+//        def endProbability = "0.85"
+//        def probalilityStep = "0.005"
+//
+//
+//
+//        def expectation = "0.01"
+//        def endExpectation = "0.1"
+//        def expectationStep = "0.005"
+        //------iter 1--------
+
+        //------iter 1.5--------
+//        def initProbability = "0.67"
+//        def endProbability = "0.74"
+//        def probalilityStep = "0.001"
+//
+//
+//
+//        def expectation = "0.01"
+//        def endExpectation = "0.1"
+//        def expectationStep = "0.005"
+        //------iter 1.5--------
+
+        //------iter 2--------
+                def initProbability = "0.681"
+        def endProbability = "0.6811"
         def probalilityStep = "0.0001"
 
 
 
-        def expectation = "0.01"
+        def expectation = "0.001"
         def endExpectation = "0.1"
         def expectationStep = "0.001"
-
-
-
+        //------iter2---------
         BigDecimal seedExpectation = new BigDecimal(expectation);
         BigDecimal seedProbability = new BigDecimal(initProbability);
 

@@ -1,7 +1,7 @@
 package org
 
+import grails.converters.JSON
 import org.springframework.dao.DataIntegrityViolationException
-import org.springframework.data.mongodb.core.query.Order
 
 class MatchController {
 
@@ -129,5 +129,47 @@ class MatchController {
             def count = Match.countByMatchId(matchId)
             render(view: 'list', model: [query: [cid: cid, matchId: matchId], matchInstanceList: Match.findAllByMatchId(matchId, params), matchInstanceTotal: count])
         }
+    }
+
+    def mongo
+    def showCharts(){
+        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        params.skip = params.skip?params.int('skip'):0
+        if (!params.team)
+            params.team = "Manchester United"
+        def db = mongo.getDB("fb")
+        params.sort = 'time'
+        params.order = "desc"
+        def ss1
+        println params.max
+        if (!params.visiting){
+            ss1 = db.result.find([tNameA:params.team ,cid:'18']).sort([time:-1]).skip(params.skip).limit(params.max)
+        } else{
+            ss1 = db.result.find([tNameB:params.team ,cid:'18']).sort([time:-1]).skip(params.skip).limit(params.max)
+        }
+
+//
+        def r1=[]
+        def r2=[]
+        def times =[]
+        def rs =[]
+          ss1.each{
+//            it.time = it.time.time
+                def score = "${it.resultRA}:${it.resultRB}"
+            r1<<[teamA:it.tNameA[2],teamB:it.tNameB[2],y:it.resultRA,x: it.time.time,Score:score]
+            r2<<[teamA:it.tNameA[2],teamB:it.tNameB[2],y:it.resultRB,x: it.time.time,Score:score]
+
+
+
+            rs << [teamA:it.tNameA[2],teamB:it.tNameB[2],x: it.time.time, y: params.visiting?it.resultRB-it.resultRA:it.resultRA-it.resultRB ,Score: score]
+            times << it.time.time
+        }
+         r1.sort{it.x}.reverse()
+         r2.sort{it.x}.reverse()
+        println r1
+        println r2
+
+//        [matchInstanceJson: Match.list(params) as JSON, matchInstanceTotal: Match.count()]
+        [ where:params.visiting?"客场":"主场",team:params.team  ,teamAGoals:r1 as JSON, rs: rs as JSON , teamBGoals: r2 as JSON]
     }
 }

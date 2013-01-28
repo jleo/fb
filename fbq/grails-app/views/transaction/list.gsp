@@ -29,10 +29,11 @@
         <tr>
 
             <g:sortableColumn property="matchId" title="${message(code: 'transaction.bet.label', default: 'Bet')}"/>
-             <td>A</td>
-             <td>B</td>
-             <td>Display</td>
-             <td>Type</td>
+            <td>A</td>
+            <td>B</td>
+            <td>联赛</td>
+            <td>Display</td>
+            <td>Type</td>
 
 
             <g:sortableColumn property="delta" title="${message(code: 'transaction.delta.label', default: 'Delta')}"/>
@@ -46,7 +47,7 @@
             <g:sortableColumn property="resultRB"
                               title="${message(code: 'transaction.resultRA.label', default: 'Result RB')}"/>
 
-             <td>Time</td>
+            <td>Time</td>
         </tr>
         </thead>
         <tbody>
@@ -56,8 +57,9 @@
                 <td><g:link controller="match" action="show"
                             params="${[matchId: transactionInstance.matchId, cid: "18"]}">${fieldValue(bean: transactionInstance, field: "matchId")}</g:link></td>
 
-                <td>${transactionInstance.jsonBetInfo.teamA}</td>
-                <td>${transactionInstance.jsonBetInfo.teamB}</td>
+                <td>${ListParser.parse(transactionInstance.jsonBetInfo.teamA)[1]}</td>
+                <td>${ListParser.parse(transactionInstance.jsonBetInfo.teamB)[1]}</td>
+                <td>${transactionInstance.jsonBetInfo.mtype[1]}</td>
                 <td>${transactionInstance.jsonBetInfo.betOnDisplay}</td>
                 <td>${transactionInstance.jsonBetInfo.typeDispaly}</td>
 
@@ -67,8 +69,19 @@
 
                 <td>${fieldValue(bean: transactionInstance, field: "resultRA")}</td>
                 <td>${fieldValue(bean: transactionInstance, field: "resultRB")}</td>
-                <td>${transactionInstance.jsonBetInfo.time.$date}</td>
-
+                <td>${transactionInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
+                <td><g:if test="${transactionInstance.matchTime.after(new Date())}">
+                    未开赛
+                </g:if>
+                <g:else>
+                    <g:if test="${transactionInstance.matchTime.after(new Date(new Date().getTime()-7200*1000))}">
+                        进行中
+                    </g:if>
+                    <g:else>
+                        已结束
+                    </g:else>
+                </g:else>
+                </td>
             </tr>
         </g:each>
         </tbody>
