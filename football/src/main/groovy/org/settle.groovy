@@ -196,10 +196,10 @@ public class Settle {
                 return
             }
             int abFlag = it.get("abFlag") as int
-            if (abFlag == 0) {
-                println "abFlag is 0, skip"
-                return
-            }
+//            if (abFlag == 0) {
+//                println "abFlag is 0, skip"
+//                return
+//            }
             def delta = null;
 
             ObjectId oid = it.get("_id")
