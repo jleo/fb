@@ -145,12 +145,12 @@ public class HandicapProcessing implements iHandicapProcessing {
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
                          String matchId, String clientId, String cid, Date date, String teamA, String teamB, int ch) {
 
-        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, date, teamA, teamB,ch);
+        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, date, teamA, teamB, ch);
     }
 
     public void setMatch(double win, double push, double lose, double handicap, double winRate, double loseRate,
-                         String matchId, String clientId, String cid, String teamA, String teamB,int ch) {
-        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, teamA, teamB,ch);
+                         String matchId, String clientId, String cid, String teamA, String teamB, int ch) {
+        matchInformation = new MatchInformation(win, push, lose, handicap, winRate, loseRate, matchId, clientId, cid, teamA, teamB, ch);
     }
 
     public int getResult(boolean display) {
@@ -161,6 +161,8 @@ public class HandicapProcessing implements iHandicapProcessing {
         double pushFactorInc = matchInformation.getPush() * supportIncrease;
         double loseFactorInc = matchInformation.getLose() * supportIncrease;
 
+        DBObject query = new BasicDBObject("matchId", matchInformation.getMatchId());
+        MongoDBUtil.getInstance(null, null, null).remove(query, "bet");
         bdp.processBasicData(matchInformation.getWin(), matchInformation.getPush(), matchInformation.getLose(), winFactor,
                 pushFactor, loseFactor);
         basicData = bdp.getBasicData();
