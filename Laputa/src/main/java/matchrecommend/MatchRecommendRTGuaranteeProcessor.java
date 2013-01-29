@@ -39,8 +39,12 @@ public class MatchRecommendRTGuaranteeProcessor extends MatchRecommendProcessor{
             double win = ((Number) match.get("w1")).doubleValue();
             double push = ((Number) match.get("p1")).doubleValue();
             double lose = ((Number) match.get("l1")).doubleValue();
-            double winRate = ((Number) match.get("h1")).doubleValue();
-            double loseRate = ((Number) match.get("h2")).doubleValue();
+
+            double h1 = ((Number) match.get("h1")).doubleValue();
+            double h2 = ((Number) match.get("h2")).doubleValue();
+            int abFlag = ((Number) match.get("abFlag")).intValue();
+            double winRate = (abFlag == 1) ? h1 : h2;
+            double loseRate = (abFlag == 1) ? h2 : h1;
 
             String matchId = (String) match.get("matchId");
             int ch = ((Number) match.get("ch")).intValue();
