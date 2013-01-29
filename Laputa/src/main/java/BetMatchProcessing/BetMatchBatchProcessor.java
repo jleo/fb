@@ -59,7 +59,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
             Future future = executorService.submit(new Runnable() {
 
                 public void run() {
-                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessor.this,true);
+                    iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessor.this, true);
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBet"));
@@ -67,8 +67,12 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                     double win = ((Number) match.get("w2")).doubleValue();
                     double push = ((Number) match.get("p2")).doubleValue();
                     double lose = ((Number) match.get("l2")).doubleValue();
-                    double winRate = ((Number) match.get("h1")).doubleValue();
-                    double loseRate = ((Number) match.get("h2")).doubleValue();
+
+                    int abFlag = ((Number) match.get("abFlag")).intValue();
+                    double h1 = ((Number) match.get("h1")).doubleValue();
+                    double h2 = ((Number) match.get("h2")).doubleValue();
+                    double winRate = (abFlag == 1) ? h1 : h2;
+                    double loseRate = (abFlag == 1) ? h2 : h1;
 
                     String teamA = match.get("tNameA").toString();
                     String teamB = match.get("tNameB").toString();
@@ -77,10 +81,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                     int ch = ((Number) match.get("ch")).intValue();
                     String cid = (String) match.get("cid");
 
-                    int abFlag = ((Number) match.get("abFlag")).intValue();
 
-                    DBObject query = new BasicDBObject("matchId",matchId);
-                    dbUtil.remove(query,"bet");
+                    DBObject query = new BasicDBObject("matchId", matchId);
+                    dbUtil.remove(query, "bet");
 
 
                     Date matchTime = ((Date) match.get("time"));
