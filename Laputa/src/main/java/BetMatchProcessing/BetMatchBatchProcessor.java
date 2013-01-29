@@ -146,9 +146,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         field.put("ch", 1);
         field.put("matchId", 1);
         field.put("cid", 1);
-        field.put("w2", 1);
-        field.put("p2", 1);
-        field.put("l2", 1);
+        field.put("w1", 1);
+        field.put("p1", 1);
+        field.put("l1", 1);
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);
