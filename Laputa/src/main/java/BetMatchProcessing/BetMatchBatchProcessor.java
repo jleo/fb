@@ -76,7 +76,13 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                     String matchId = (String) match.get("matchId");
                     int ch = ((Number) match.get("ch")).intValue();
                     String cid = (String) match.get("cid");
+
                     int abFlag = ((Number) match.get("abFlag")).intValue();
+
+                    DBObject query = new BasicDBObject("matchId",matchId);
+                    dbUtil.remove(query,"bet");
+
+
                     Date matchTime = ((Date) match.get("time"));
 
                     double handicap = ch / 4.0;
