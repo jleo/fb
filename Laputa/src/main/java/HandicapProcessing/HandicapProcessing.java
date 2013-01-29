@@ -161,8 +161,8 @@ public class HandicapProcessing implements iHandicapProcessing {
         double pushFactorInc = matchInformation.getPush() * supportIncrease;
         double loseFactorInc = matchInformation.getLose() * supportIncrease;
 
-        DBObject query = new BasicDBObject("matchId", matchInformation.getMatchId());
-        MongoDBUtil.getInstance(null, null, null).remove(query, "bet");
+//        DBObject query = new BasicDBObject("matchId", matchInformation.getMatchId());
+//        MongoDBUtil.getInstance(null, null, null).remove(query, "bet");
         bdp.processBasicData(matchInformation.getWin(), matchInformation.getPush(), matchInformation.getLose(), winFactor,
                 pushFactor, loseFactor);
         basicData = bdp.getBasicData();

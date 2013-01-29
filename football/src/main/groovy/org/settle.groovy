@@ -214,11 +214,11 @@ public class Settle {
                 float h1 = it.get("h1") as float
                 float h2 = it.get("h2") as float
 
-                if (abFlag != 1) {//swap
-                    float temp = h1;
-                    h1 = h2;
-                    h2 = temp;
-                }
+//                if (abFlag != 1) {//swap
+//                    float temp = h1;
+//                    h1 = h2;
+//                    h2 = temp;
+//                }
                 float result = handicap(type, resultRA, resultRB, betOn)
                 if (result == 0) {
                     delta = 0
