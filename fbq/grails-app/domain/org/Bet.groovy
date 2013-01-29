@@ -18,6 +18,7 @@ class Bet {
     int ch
     double h1
     double h2
+    int abFlag
 
     static constraints = {
     }

@@ -191,7 +191,7 @@ public class Settle {
             int resultRB = matchInfo.get("resultRB") as int
             Date matchTime = matchInfo.get("time") as Date
 
-            if(it.get("abFlag")==null){
+            if (it.get("abFlag") == null) {
                 println "abFlag is null, skip"
                 return
             }
@@ -214,7 +214,7 @@ public class Settle {
                 float h1 = it.get("h1") as float
                 float h2 = it.get("h2") as float
 
-                if (abFlag == 2) {//swap
+                if (abFlag != 1) {//swap
                     float temp = h1;
                     h1 = h2;
                     h2 = temp;

@@ -1,6 +1,7 @@
 package org
 
 import com.mongodb.BasicDBObject
+import com.mongodb.DBCollection
 import com.mongodb.Mongo
 import org.ccil.cowan.tagsoup.AutoDetector
 
@@ -21,7 +22,7 @@ public class ParseTrends {
         def result = db.getCollection("result")
         def collection = db.getCollection("handicap")
 
-        def c = result.find([cid: "18", "time": ["\$gte": Date.parse("yyyy-MM-dd", "2013-01-01"), "\$lt": Date.parse("yyyy-MM-dd", "2013-01-27")]] as BasicDBObject)
+        def c = result.find([cid: "18", "time": ["\$gte": Date.parse("yyyy-MM-dd", "2013-01-27"), "\$lt": Date.parse("yyyy-MM-dd", "2013-01-29")]] as BasicDBObject)
         def count = c.count()
         def index = 0
         c.each {
@@ -51,13 +52,14 @@ public class ParseTrends {
         new XmlSlurper(parser).parseText(content)
     }
 
-    public void fetchHandicapHistory(abFlag, long queryId, collection, matchId) {
+    public void fetchHandicapHistory(abFlag, long queryId, DBCollection collection, matchId) {
         def handicap = collection
 
         def body = new URL("http://odds2.zso8.com/app/midDetailA.asp?a=" + abFlag + "&id=" + queryId + "&cid=18").getText("utf-8")
         println "http://odds2.zso8.com/app/midDetailA.asp?a=" + abFlag + "&id=" + queryId + "&cid=18"
         def html = asHTML(body)
 
+        handicap.remove([queryId: queryId] as BasicDBObject)
 
         try {
             def map = [:]

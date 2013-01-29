@@ -47,8 +47,8 @@
                 <td><g:link controller="todayMatch" action="show"
                             params="${[matchId: betInstance.matchId, cid: betInstance.cid]}">${betInstance.matchId}</g:link></td>
 
-                <td>${betInstance.betOn==0?"主":"客"}</td>
-                <g:if test="${betInstance.ch!=null}">
+                <td>${betInstance.betOn == 0 ? "主" : "客"}</td>
+                <g:if test="${betInstance.ch != null}">
                     <g:if test="${betInstance.ch >= 0}">
                         <td>${org.HandicapMapping.GoalCn[(betInstance.ch)]}</td>
                     </g:if>
@@ -63,14 +63,14 @@
                 <td>${ListParser.parse(betInstance.teamA)[1]}</td>
                 <td>${ListParser.parse(betInstance.teamB)[1]}</td>
                 <td>${ListParser.parse(betInstance.mtype)[1]}</td>
-                <td>${fieldValue(bean: betInstance, field: "h1")}</td>
-                <td>${fieldValue(bean: betInstance, field: "h2")}</td>
+                <td>${betInstance.abFlag == 1 ? betInstance.h1 : betInstance.h2}</td>
+                <td>${betInstance.abFlag == 1 ? betInstance.h2 : betInstance.h1}</td>
                 <td>${betInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
                 <td><g:if test="${betInstance.matchTime.after(new Date())}">
                     未开赛
                 </g:if>
                 <g:else>
-                    <g:if test="${betInstance.matchTime.after(new Date(new Date().getTime()-7200*1000))}">
+                    <g:if test="${betInstance.matchTime.after(new Date(new Date().getTime() - 7200 * 1000))}">
                         进行中
                     </g:if>
                     <g:else>
