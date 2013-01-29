@@ -59,8 +59,6 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         long t1 = System.currentTimeMillis();
 
         final int[] BetOnMatch = {0};
-        final double minExp = minExpectation;
-        final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
         for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
@@ -98,7 +96,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExp, minPro, 10, hp);
+                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
@@ -121,10 +119,6 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         long t2 = System.currentTimeMillis();
 
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
-    }
-
-    private double getHandicap(double type, int abFlag) {
-        return type / 4.0;
     }
 
     public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil) {
@@ -165,10 +159,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
             Integer abFlag = (Integer) dbObject.get("abFlag");
             Integer ch = (Integer) dbObject.get("ch");
 
-            if(abFlag == null)
-                continue;
-
-            if(ch == null)
+            if(abFlag == null || ch == null)
                 continue;
 
 

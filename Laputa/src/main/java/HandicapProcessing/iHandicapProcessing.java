@@ -14,7 +14,7 @@ public interface iHandicapProcessing {
 
     public int getResult (boolean display);
 
-    public double getMinRate(int betOn, double minExpectation);
+    public double getMinRate(int betOn, double minExpectation, String type);
 
     public void saveMatchResult (String matchName, String betWinOrLose, String resultWinOrLose, double betMoney, double resultGain);
 }

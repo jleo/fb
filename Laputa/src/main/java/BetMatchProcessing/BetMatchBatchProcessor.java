@@ -52,8 +52,6 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
 
 
         final int[] BetOnMatch = {0};
-        final double minExp = minExpectation;
-        final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
         for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
@@ -64,9 +62,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
 
                     bmp.setCollection(Props.getProperty("MatchBatchBet"));
 
-                    double win = ((Number) match.get("w2")).doubleValue();
-                    double push = ((Number) match.get("p2")).doubleValue();
-                    double lose = ((Number) match.get("l2")).doubleValue();
+                    double win = ((Number) match.get("w1")).doubleValue();
+                    double push = ((Number) match.get("p1")).doubleValue();
+                    double lose = ((Number) match.get("l1")).doubleValue();
                     double winRate = ((Number) match.get("h1")).doubleValue();
                     double loseRate = ((Number) match.get("h2")).doubleValue();
 
@@ -92,7 +90,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExp, minPro, 10, hp);
+                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
@@ -118,10 +116,6 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         executorService.shutdown();
     }
 
-    private double getHandicap(double type, int abFlag) {
-        return type / 4.0;
-    }
-
     public static List<DBObject> getAllBettingMatch() {
         String cid = Props.getProperty("betCId");
 
@@ -137,9 +131,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         field.put("ch", 1);
         field.put("matchId", 1);
         field.put("cid", 1);
-        field.put("w2", 1);
-        field.put("p2", 1);
-        field.put("l2", 1);
+        field.put("w1", 1);
+        field.put("p1", 1);
+        field.put("l1", 1);
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);
@@ -149,9 +143,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
-        List<DBObject> matchList = dbUtil.findAll(query, field, Props.getProperty("BettingMatch"));
-
-        return matchList;
+        return dbUtil.findAll(query, field, Props.getProperty("BettingMatch"));
     }
 
 }
