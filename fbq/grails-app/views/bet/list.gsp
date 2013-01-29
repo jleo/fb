@@ -63,8 +63,8 @@
                 <td>${ListParser.parse(betInstance.teamA)[1]}</td>
                 <td>${ListParser.parse(betInstance.teamB)[1]}</td>
                 <td>${ListParser.parse(betInstance.mtype)[1]}</td>
-                <td>${betInstance.abFlag == 1 ? betInstance.h1 : betInstance.h2}</td>
-                <td>${betInstance.abFlag == 1 ? betInstance.h2 : betInstance.h1}</td>
+                <td>${betInstance.h1}</td>
+                <td>${betInstance.h2}</td>
                 <td>${betInstance.matchTime.format("yyyy-MM-dd HH:mm")}</td>
                 <td><g:if test="${betInstance.matchTime.after(new Date())}">
                     未开赛
