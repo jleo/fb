@@ -17,22 +17,36 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
     public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {
         String aid = "Guarantee" + String.valueOf(minExpectation) + String.valueOf(minProbability);
         if (handicapProcessing.getWinExpectation() > minExpectation && (handicapProcessing.getWinProbability() +
-                handicapProcessing.getWinHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability) {
+                handicapProcessing.getWinHalfProbability() * 0.75 +
+                handicapProcessing.getDrawProbability() * 0.5) > minProbability) {
             betOnMatch(handicapProcessing.getMatchInformation().getMatchId(),
                     handicapProcessing.getMatchInformation().getCid(),
                     handicapProcessing.getMatchInformation().getClientId(),
                     0, baseMoney, aid, handicapProcessing.getWinExpectation(),
-                    (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(), handicapProcessing.getMatchInformation().getCh(), handicapProcessing.getMatchInformation().getWinRate(), handicapProcessing.getMatchInformation().getLoseRate());
+                    (handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability() * 0.75
+                            + handicapProcessing.getDrawProbability() * 0.5),
+                    handicapProcessing.getMatchInformation().getMatchTime(),
+                    handicapProcessing.getMatchInformation().getTeamA(),
+                    handicapProcessing.getMatchInformation().getTeamB(),
+                    handicapProcessing.getMatchInformation().getCh(),
+                    handicapProcessing.getMatchInformation().getWinRate(),
+                    handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         } else if (handicapProcessing.getLoseExpectation() > minExpectation && (handicapProcessing.getLoseProbability()
-                + handicapProcessing.getLoseHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability) {
+                + handicapProcessing.getLoseHalfProbability() * 0.75 +
+                handicapProcessing.getDrawProbability() * 0.5) > minProbability) {
             betOnMatch(handicapProcessing.getMatchInformation().getMatchId(),
                     handicapProcessing.getMatchInformation().getCid(),
                     handicapProcessing.getMatchInformation().getClientId(),
                     1, baseMoney, aid, handicapProcessing.getLoseExpectation(),
-                    (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability()
-                            + handicapProcessing.getDrawProbability()), handicapProcessing.getMatchInformation().getMatchTime(), handicapProcessing.getMatchInformation().getTeamA(), handicapProcessing.getMatchInformation().getTeamB(), handicapProcessing.getMatchInformation().getCh(), handicapProcessing.getMatchInformation().getWinRate(), handicapProcessing.getMatchInformation().getLoseRate());
+                    (handicapProcessing.getLoseProbability() + handicapProcessing.getLoseHalfProbability() * 0.75
+                            + handicapProcessing.getDrawProbability() * 0.5),
+                    handicapProcessing.getMatchInformation().getMatchTime(),
+                    handicapProcessing.getMatchInformation().getTeamA(),
+                    handicapProcessing.getMatchInformation().getTeamB(),
+                    handicapProcessing.getMatchInformation().getCh(),
+                    handicapProcessing.getMatchInformation().getWinRate(),
+                    handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         }
 
