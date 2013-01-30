@@ -3,10 +3,7 @@ package BetMatchProcessing;
 import HandicapProcessing.HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -128,7 +125,10 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
 
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne", null));
-        query.put("abFlag", new BasicDBObject("$ne", null));
+        BasicDBList list = new BasicDBList();
+        list.add(new BasicDBObject("$ne", null));
+        list.add(new BasicDBObject("$ne", 0));
+        query.put("abFlag", list);
         query.put("cid", cid);
         try {
             query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateFrom + " 00:00:00")).append("$lte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTo + " 00:00:00")));
@@ -161,12 +161,12 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
             Integer abFlag = (Integer) dbObject.get("abFlag");
             Integer ch = (Integer) dbObject.get("ch");
 
-            if(abFlag == null || ch == null)
+            if (abFlag == null || ch == null)
                 continue;
 
 
             DBCursor limit = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1);
-            if(limit.count() != 0){
+            if (limit.count() != 0) {
                 DBObject handicapObject = limit.next();
 
                 dbObject.put("ch", handicapObject.get("ch"));
