@@ -3,6 +3,7 @@ package BetMatchProcessing;
 import HandicapProcessing.HandicapProcessing;
 import Util.MongoDBUtil;
 import Util.Props;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -136,7 +137,12 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
 
         DBObject query = new BasicDBObject();
         query.put("ch", new BasicDBObject("$ne", null));
-        query.put("abFlag", new BasicDBObject("$ne", null));
+
+        BasicDBList list = new BasicDBList();
+        list.add(new BasicDBObject("$ne", null));
+        list.add(new BasicDBObject("$ne", 0));
+        query.put("abFlag", list);
+
         query.put("cid", cid);
 
         DBObject field = new BasicDBObject();
@@ -146,9 +152,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         field.put("ch", 1);
         field.put("matchId", 1);
         field.put("cid", 1);
-        field.put("w2", 1);
-        field.put("p2", 1);
-        field.put("l2", 1);
+        field.put("w1", 1);
+        field.put("p1", 1);
+        field.put("l1", 1);
         field.put("time", 1);
         field.put("tNameA", 1);
         field.put("tNameB", 1);

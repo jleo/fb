@@ -14,7 +14,7 @@ class TransactionController {
     def list(Integer max) {
         params.max = Math.min(max ?: 10, 100)
         params.order ="desc"
-        params.sort = "matchId"
+        params.sort = "matchTime"
         [transactionInstanceList: Transaction.list(params), transactionInstanceTotal: Transaction.count()]
     }
 
