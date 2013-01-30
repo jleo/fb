@@ -139,9 +139,9 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         query.put("ch", new BasicDBObject("$ne", null));
 
         BasicDBList list = new BasicDBList();
-        list.add(new BasicDBObject("$ne", null));
-        list.add(new BasicDBObject("$ne", 0));
-        query.put("abFlag", list);
+        list.add(new BasicDBObject("abFlag", new BasicDBObject("$ne", 0)));
+        list.add(new BasicDBObject("abFlag", new BasicDBObject("$ne", null)));
+        query.put("$and", list);
 
         query.put("cid", cid);
 
