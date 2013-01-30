@@ -135,7 +135,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        System.out.println(query.toString());
         DBObject field = new BasicDBObject();
         field.put("h1", 1);
         field.put("h2", 1);
