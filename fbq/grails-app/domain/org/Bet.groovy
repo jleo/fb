@@ -10,6 +10,7 @@ class Bet {
     String cid
     int betOn
     float bet
+    int status
     String aid
     Date matchTime
     String teamA

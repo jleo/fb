@@ -11,6 +11,7 @@ class TodayMatch {
     Double wr
     Double pr
     Double lr
+    int status
     String matchId
     String cid
     float w1

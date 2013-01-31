@@ -40,6 +40,7 @@ class Match {
     Double h1
     Double h2
     Integer ch
+    int status
 
     static constraints = {
         returnRate(nullable:true)
