@@ -156,7 +156,7 @@ public class Latest {
         odd = [:]
         handicap = [:]
 
-        def start = new Date() - 30
+        def start = new Date() - 1
         def end = new Date()
 
         def index = 0
