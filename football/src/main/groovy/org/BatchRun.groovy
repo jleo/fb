@@ -36,8 +36,8 @@ class BatchRun {
         //------iter 1--------
 
         //------iter 1.5--------
-//        def initProbability = "0.67"
-//        def endProbability = "0.71"
+//        def initProbability = "0.55"
+//        def endProbability = "0.60"
 //        def probalilityStep = "0.001"
 //
 //        def expectation = "0.01"
