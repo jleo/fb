@@ -12,8 +12,8 @@ import HandicapProcessing.HandicapProcessing;
 public class MatchRecommendGuarantee extends MatchRecommendBasic{
 
     public int getRecommendMatch(double minProbability, double minExpectation, HandicapProcessing handicapProcessing) {
-        if ((handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability() +
-                handicapProcessing.getDrawProbability()) > minProbability){
+        if ((handicapProcessing.getWinProbability() + handicapProcessing.getWinHalfProbability()  +
+                handicapProcessing.getDrawProbability() ) > minProbability){
             saveRecommendMatch(handicapProcessing.getMatchInformation().getMatchId(), 0,
                     handicapProcessing.getMatchInformation().getCid(),
                     handicapProcessing.getMinRate(0, minExpectation, "guarantee"));
