@@ -469,12 +469,14 @@ public class HandicapProcessing implements iHandicapProcessing {
 
     public double getMinRate(int betOn, double minExpectation, String type) {
         //betOn 0:主 1:客
-        //Probability * rate - (1 - Probability) = expectation
+        //WinProbability * rate - (1 - LoseProbability) = expectation
         if (type.equalsIgnoreCase("guarantee")){
             if (betOn == 0){
-                return ((minExpectation + 1) / (winProbability + winHalfProbability * 0.5) - 1);
+                return ((minExpectation + 1 - (loseProbability + loseHalfProbability * 0.75 + drawProbability * 0.5))
+                        / (winProbability + winHalfProbability * 0.75 + drawProbability * 0.5));
             } else if (betOn == 1){
-                return ((minExpectation + 1) / (loseProbability + loseHalfProbability * 0.5) - 1);
+                return ((minExpectation + 1 - (winExpectation + winHalfProbability * 0.75 + drawProbability * 0.5))
+                        / (loseProbability + loseHalfProbability * 0.75 + drawProbability * 0.5));
             }
         }
         return -1;
