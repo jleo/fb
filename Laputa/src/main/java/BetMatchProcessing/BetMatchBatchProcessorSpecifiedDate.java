@@ -130,6 +130,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         list.add(new BasicDBObject("abFlag", new BasicDBObject("$ne", null)));
         query.put("$and", list);
         query.put("cid", cid);
+        query.put("status", 4);
         try {
             query.put("time", new BasicDBObject("$gte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateFrom + " 00:00:00")).append("$lte", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateTo + " 00:00:00")));
         } catch (Exception ex) {

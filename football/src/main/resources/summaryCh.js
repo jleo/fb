@@ -1,12 +1,8 @@
 m = function () {
     var aid = this.betInfo.aid;
+    var ch = this.betInfo.ch;
 
-    var mtype = this.betInfo.matchTime;
-    var year = mtype.getFullYear();
-    var month = mtype.getMonth();
-    var day = mtype.getDate();
-
-    emit({aid: aid,year:year,month:month,day:day}, {net: this.delta, bet: this.bet, count: 1,correct: this.delta > 0?1:0, push:this.delta==0?1:0,lose:this.delta<0?1:0,total:1});
+    emit({ch:ch,aid: aid}, {net: this.delta, bet: this.bet, count: 1,correct: this.delta > 0?1:0, push:this.delta==0?1:0,lose:this.delta<0?1:0,total:1});
 }
 r = function (k, vals) {
     var totalBet = 0
@@ -35,4 +31,4 @@ f = function (key, reducedValue) {
     reducedValue.loseRate = reducedValue.lose / reducedValue.total;
     return reducedValue;
 };
-res = db.transactionDate.mapReduce(m, r, {finalize: f, out: {replace:"summaryDateByDate"}});
+res = db.transactionDate.mapReduce(m, r, {finalize: f, out: {replace:"summaryDateByCh"}});
