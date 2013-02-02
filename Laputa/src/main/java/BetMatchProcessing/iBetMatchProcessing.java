@@ -13,6 +13,6 @@ public interface iBetMatchProcessing {
 
     public void setCollection(String collection);
 
-    public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing);
+    public int betMatch(ProbabilityAndExpectation probabilityAndExpectation, double baseMoney, HandicapProcessing handicapProcessing);
 
 }

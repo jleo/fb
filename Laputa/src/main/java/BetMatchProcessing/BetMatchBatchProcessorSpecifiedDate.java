@@ -49,10 +49,12 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
+
+        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability,minExpectation);
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(probabilityAndExpectation, allBettingMatches);
     }
 
-    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
+    public void betBatchMatchHandicapGuarantee(final ProbabilityAndExpectation probabilityAndExpectation, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
 
         final int[] BetOnMatch = {0};
@@ -95,7 +97,8 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
+
+                    isBet = bmp.betMatch(probabilityAndExpectation, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }

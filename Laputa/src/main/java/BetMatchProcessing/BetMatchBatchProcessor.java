@@ -43,18 +43,18 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
+        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability,minExpectation);
+
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor(executorService, matchList, dbUtil, false);
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, matchList);
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(probabilityAndExpectation, matchList);
     }
 
-    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
+    public void betBatchMatchHandicapGuarantee(final ProbabilityAndExpectation probabilityAndExpectation, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
         int cpuNum = Runtime.getRuntime().availableProcessors();
 
 
         final int[] BetOnMatch = {0};
-        final double minExp = minExpectation;
-        final double minPro = minProbability;
         List<Future> futures = new ArrayList<Future>();
         for (final DBObject match : matchList) {
             Future future = executorService.submit(new Runnable() {
@@ -102,7 +102,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExp, minPro, 10, hp);
+                    isBet = bmp.betMatch(probabilityAndExpectation, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
