@@ -15,8 +15,14 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
     }
 
     public int betMatch(ProbabilityAndExpectation fixedProbabilityAndExpectation, double baseMoney, HandicapProcessing handicapProcessing) {
-        double minExpectation = fixedProbabilityAndExpectation.get(handicapProcessing.getMatchInformation()).getExpectation();
-        double minProbability = fixedProbabilityAndExpectation.get(handicapProcessing.getMatchInformation()).getProbability();
+        ProbabilityAndExpectationValue probabilityAndExpectationValue = fixedProbabilityAndExpectation.get(handicapProcessing.getMatchInformation());
+        if (probabilityAndExpectationValue == null) {
+            System.out.println("ch:" + handicapProcessing.getMatchInformation().getCh() + " not supported yet");
+            return -1;
+        }
+
+        double minExpectation = probabilityAndExpectationValue.getExpectation();
+        double minProbability = probabilityAndExpectationValue.getProbability();
 
         String aid = "Guarantee" + String.valueOf(minExpectation) + String.valueOf(minProbability);
         if (handicapProcessing.getWinExpectation() > minExpectation && (handicapProcessing.getWinProbability() +

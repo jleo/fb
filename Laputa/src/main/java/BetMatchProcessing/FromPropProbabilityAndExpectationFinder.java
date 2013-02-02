@@ -14,7 +14,7 @@ public class FromPropProbabilityAndExpectationFinder implements ProbabilityAndEx
     public ProbabilityAndExpectationValue findByCh(int ch) {
         String tuple = Props.getProperty("ch" + ch);
         if (tuple == null)
-            tuple = Props.getProperty("ch-default");
+            return null;
 
 
         String[] tuples = tuple.split(",");
