@@ -60,4 +60,8 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
 
         return -1;
     }
+
+    public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {
+        return -1;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
