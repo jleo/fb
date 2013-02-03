@@ -43,7 +43,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
-        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability,minExpectation);
+        ProbabilityAndExpectation probabilityAndExpectation = new ByChProbabilityAndExpectation(new FromPropProbabilityAndExpectationFinder());
 
         BetMatchBatchProcessor betMatchBatchProcessor = new BetMatchBatchProcessor(executorService, matchList, dbUtil, false);
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(probabilityAndExpectation, matchList);

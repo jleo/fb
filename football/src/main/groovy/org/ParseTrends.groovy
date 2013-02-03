@@ -17,12 +17,12 @@ public class ParseTrends {
     final autoDetectorPropertyName = 'http://www.ccil.org/~cowan/tagsoup/properties/auto-detector'
 
     public static void main(String[] args) {
-        ParseTrends trends = new ParseTrends()
         def db = new Mongo("rm4", 15000).getDB("fb");
+        ParseTrends trends = new ParseTrends()
         def result = db.getCollection("result")
         def collection = db.getCollection("handicap")
 
-        def c = result.find([cid: "18", "time": ["\$gte": Date.parse("yyyy-MM-dd", "2013-01-27"), "\$lt": Date.parse("yyyy-MM-dd", "2013-01-29")]] as BasicDBObject)
+        def c = result.find([cid: "18", "time": ["\$gte": new Date() - args[0] as int, "\$lt": new Date()]] as BasicDBObject)
         def count = c.count()
         def index = 0
         c.each {
@@ -94,7 +94,7 @@ public class ParseTrends {
                     map.ch = ch
                     map.matchId = matchId
                     map.queryId = queryId
-                    handicap.save(map as BasicDBObject)
+                    handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, true, true)
                 }
             } else {
                 def path = "single/" + (((queryId / 100000) as int) + 1) + "/" + queryId + ".xml";
@@ -116,7 +116,7 @@ public class ParseTrends {
                     map.ch = ch
                     map.matchId = matchId
                     map.queryId = queryId
-                    handicap.save(map as BasicDBObject)
+                    handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, true, true)
                 }
             }
 
