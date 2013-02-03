@@ -11,10 +11,19 @@ import HandicapProcessing.HandicapProcessing;
  */
 public class BetHandicapMatchGuarantee extends BetMatchBasic {
     public BetHandicapMatchGuarantee(BetMatchProcessor betMatchBatchProcessor, boolean upsert) {
-        super(betMatchBatchProcessor,upsert);
+        super(betMatchBatchProcessor, upsert);
     }
 
-    public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing) {
+    public int betMatch(ProbabilityAndExpectation fixedProbabilityAndExpectation, double baseMoney, HandicapProcessing handicapProcessing) {
+        ProbabilityAndExpectationValue probabilityAndExpectationValue = fixedProbabilityAndExpectation.get(handicapProcessing.getMatchInformation());
+        if (probabilityAndExpectationValue == null) {
+            System.out.println("ch:" + handicapProcessing.getMatchInformation().getCh() + " not supported yet");
+            return -1;
+        }
+
+        double minExpectation = probabilityAndExpectationValue.getExpectation();
+        double minProbability = probabilityAndExpectationValue.getProbability();
+
         String aid = "Guarantee" + String.valueOf(minExpectation) + String.valueOf(minProbability);
         if (handicapProcessing.getWinExpectation() > minExpectation && (handicapProcessing.getWinProbability() +
                 handicapProcessing.getWinHalfProbability() + handicapProcessing.getDrawProbability()) > minProbability) {
@@ -32,7 +41,7 @@ public class BetHandicapMatchGuarantee extends BetMatchBasic {
                     handicapProcessing.getMatchInformation().getLoseRate());
             return 0;
         } else if (handicapProcessing.getLoseExpectation() > minExpectation && (handicapProcessing.getLoseProbability()
-                + handicapProcessing.getLoseHalfProbability()  +
+                + handicapProcessing.getLoseHalfProbability() +
                 handicapProcessing.getDrawProbability()) > minProbability) {
             betOnMatch(handicapProcessing.getMatchInformation().getMatchId(),
                     handicapProcessing.getMatchInformation().getCid(),

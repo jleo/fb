@@ -43,16 +43,18 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
-        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil);
+        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil, new int[]{}, new String[]{});
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
-        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(minExpectation, minProbability, allBettingMatches);
+
+        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability,minExpectation);
+        betMatchBatchProcessor.betBatchMatchHandicapGuarantee(probabilityAndExpectation, allBettingMatches);
     }
 
-    public void betBatchMatchHandicapGuarantee(final double minExpectation, final double minProbability, List<DBObject> matchList) {
+    public void betBatchMatchHandicapGuarantee(final ProbabilityAndExpectation probabilityAndExpectation, List<DBObject> matchList) {
         long t1 = System.currentTimeMillis();
 
         final int[] BetOnMatch = {0};
@@ -95,7 +97,8 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                     if (isBet != 0) {
                         return;
                     }
-                    isBet = bmp.betMatch(minExpectation, minProbability, 10, hp);
+
+                    isBet = bmp.betMatch(probabilityAndExpectation, 10, hp);
                     if (isBet == 0) {
                         ++BetOnMatch[0];
                     }
@@ -110,9 +113,9 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 f.get();
                 System.out.println("done with" + index++);
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             } catch (ExecutionException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
         long t2 = System.currentTimeMillis();
@@ -120,11 +123,30 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
-    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil) {
+    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil, int[] chs, String[] mtypes) {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
-        query.put("ch", new BasicDBObject("$ne", null));
+        if (chs.length == 0) {
+            query.put("ch", new BasicDBObject("$ne", null));
+        } else {
+            BasicDBList chList = new BasicDBList();
+            for (int i = 0; i < chs.length; i++) {
+                chList.add(chs[i]);
+            }
+            query.put("ch", new BasicDBObject("$in", chList));
+        }
+
+        if (mtypes.length == 0) {
+            query.put("mtype", new BasicDBObject("$ne", null));
+        } else {
+            BasicDBList mtypeist = new BasicDBList();
+            for (int i = 0; i < mtypes.length; i++) {
+                mtypeist.add(mtypes[i]);
+            }
+            query.put("mtype", new BasicDBObject("$in", mtypeist));
+        }
+
         BasicDBList list = new BasicDBList();
         list.add(new BasicDBObject("abFlag", new BasicDBObject("$ne", 0)));
         list.add(new BasicDBObject("abFlag", new BasicDBObject("$ne", null)));
