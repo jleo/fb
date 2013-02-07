@@ -74,6 +74,7 @@ public class ParseTrends {
                     double h2 = it.children[3].children[0].children[0].children[0] as double
                     def ch = it.children[2].children[0]
 
+                    def ch2 = ch
                     boolean reverse = false
                     if (ch.indexOf("受让") != -1) {
                         reverse = true
@@ -82,7 +83,7 @@ public class ParseTrends {
                         it == ch.replaceAll("受让", "")
                     } as int
                     if (ch == -1) {
-                        println ch + "not found"
+                        println ch + "not found,"+ch2
                     }
 
                     if (reverse) {
