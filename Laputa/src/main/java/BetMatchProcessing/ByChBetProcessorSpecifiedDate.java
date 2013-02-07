@@ -34,7 +34,7 @@ public class ByChBetProcessorSpecifiedDate {
                 Props.getProperty("MongoDBRemoteName"));
 
         boolean lastCh = true;
-        if (!args[0].equals("true")) {
+        if (!args[2].equals("true")) {
             lastCh = false;
         }
         List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil, new int[]{}, new String[]{}, lastCh);

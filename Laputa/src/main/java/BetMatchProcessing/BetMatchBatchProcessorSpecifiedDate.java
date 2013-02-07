@@ -44,7 +44,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemoteName"));
 
         boolean lastCh = true;
-        if (!args[0].equals("true")) {
+        if (!args[2].equals("true")) {
             lastCh = false;
         }
 
