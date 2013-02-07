@@ -43,14 +43,14 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
                 Props.getProperty("MongoDBRemotePort"),
                 Props.getProperty("MongoDBRemoteName"));
 
-        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil, new int[]{}, new String[]{});
+        List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(fromDate, toDate, dbUtil, new int[]{}, new String[]{},true);
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
         BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
 
         double minExpectation = Double.parseDouble(Props.getProperty("minExpectation"));//0.03;
         double minProbability = Double.parseDouble(Props.getProperty("minProbability"));//0.58;
 
-        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability,minExpectation);
+        ProbabilityAndExpectation probabilityAndExpectation = new FixedProbabilityAndExpectation(minProbability, minExpectation);
         betMatchBatchProcessor.betBatchMatchHandicapGuarantee(probabilityAndExpectation, allBettingMatches);
     }
 
@@ -123,7 +123,7 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
         System.out.println("\n****\nTotal Match: " + matchList.size() + "\nBet on match: " + BetOnMatch[0] + "\ntotal time:" + (t2 - t1));
     }
 
-    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil, int[] chs, String[] mtypes) {
+    public static List<DBObject> getAllBettingMatch(String dateFrom, String dateTo, MongoDBUtil dbUtil, int[] chs, String[] mtypes, boolean lastCh) {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
@@ -187,16 +187,17 @@ public class BetMatchBatchProcessorSpecifiedDate extends BetMatchProcessor {
             if (abFlag == null || ch == null)
                 continue;
 
+            if (lastCh) {
+                DBCursor limit = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1);
+                if (limit.count() != 0) {
+                    DBObject handicapObject = limit.next();
 
-            DBCursor limit = handicap.find(new BasicDBObject("matchId", matchId)).sort(new BasicDBObject("time", 1)).limit(1);
-            if (limit.count() != 0) {
-                DBObject handicapObject = limit.next();
-
-                dbObject.put("ch", handicapObject.get("ch"));
-                dbObject.put("h1", handicapObject.get("h1"));
-                dbObject.put("h2", handicapObject.get("h2"));
+                    dbObject.put("ch", handicapObject.get("ch"));
+                    dbObject.put("h1", handicapObject.get("h1"));
+                    dbObject.put("h2", handicapObject.get("h2"));
+                }
+                limit.close();
             }
-            limit.close();
             results.add(dbObject);
         }
         c.close();
