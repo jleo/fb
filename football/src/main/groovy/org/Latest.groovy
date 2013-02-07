@@ -11,7 +11,7 @@ public class Latest {
         latest.latest()
     }
 
-    public void latest() {
+    public void latest(dayBefore) {
         def matches = new URL("http://odds2.zso8.com/html/match.html").getText("utf-8")
         def odds = new URL("http://odds2.zso8.com/html/fixed.html").getText("utf-8")
         def handicaps = new URL("http://odds2.zso8.com/html/handicap.html").getText("utf-8")
@@ -156,7 +156,7 @@ public class Latest {
         odd = [:]
         handicap = [:]
 
-        def start = new Date() - 1
+        def start = new Date() - (dayBefore as int)
         def end = new Date()
 
         def index = 0
