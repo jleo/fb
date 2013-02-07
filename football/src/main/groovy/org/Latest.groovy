@@ -8,7 +8,7 @@ import com.mongodb.Mongo
 public class Latest {
     public static void main(String[] args) {
         Latest latest = new Latest()
-        latest.latest()
+        latest.latest(args[0])
     }
 
     public void latest(dayBefore) {
