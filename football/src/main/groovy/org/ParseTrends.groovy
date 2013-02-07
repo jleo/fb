@@ -22,7 +22,7 @@ public class ParseTrends {
         def result = db.getCollection("result")
         def collection = db.getCollection("handicap")
 
-        def c = result.find([cid: "18", "time": ["\$gte": new Date() - args[0] as int, "\$lt": new Date()]] as BasicDBObject)
+        def c = result.find([cid: "18", "time": ["\$gte": new Date() - (args[0] as int), "\$lt": new Date()]] as BasicDBObject)
         def count = c.count()
         def index = 0
         c.each {
