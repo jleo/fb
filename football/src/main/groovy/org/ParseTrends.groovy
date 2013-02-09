@@ -80,11 +80,15 @@ public class ParseTrends {
                     if (ch.indexOf("受让") != -1) {
                         reverse = true
                     }
+                    if (ch.indexOf("受") != -1) {
+                        reverse = true
+                    }
                     ch = Settle.GoalCn.findIndexOf {
-                        it == ch.replaceAll("受让", "")
+                        it.trim() == ch.replaceAll("受让", "").replaceAll("受", "").trim()
                     } as int
                     if (ch == -1) {
                         println ch + "not found," + ch2
+                        return
                     }
 
                     if (reverse) {
