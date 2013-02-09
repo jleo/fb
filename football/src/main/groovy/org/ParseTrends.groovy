@@ -22,7 +22,8 @@ public class ParseTrends {
         def result = db.getCollection("result")
         def collection = db.getCollection("handicap")
 
-        def c = result.find([cid: "18", "time": ["\$gte": new Date() - (args[0] as int), "\$lt": new Date()]] as BasicDBObject)
+//        def c = result.find([cid: "18", "time": ["\$gte": new Date() - (args[0] as int), "\$lt": new Date()]] as BasicDBObject)
+        def c = result.find([matchId: "528986", cid: '18'] as BasicDBObject)
         def count = c.count()
         def index = 0
         c.each {
@@ -83,7 +84,7 @@ public class ParseTrends {
                         it == ch.replaceAll("受让", "")
                     } as int
                     if (ch == -1) {
-                        println ch + "not found,"+ch2
+                        println ch + "not found," + ch2
                     }
 
                     if (reverse) {
@@ -117,7 +118,13 @@ public class ParseTrends {
                     map.ch = ch
                     map.matchId = matchId
                     map.queryId = queryId
-                    handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, true, true)
+
+                    def existing = handicap.findOne(new BasicDBObject("matchId", matchId).append("time", time))
+                    if (existing) {
+                        def writeResult = handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, false, true)
+                    } else {
+                        handicap.insert(map as BasicDBObject)
+                    }
                 }
             }
 
