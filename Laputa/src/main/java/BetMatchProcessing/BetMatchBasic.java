@@ -21,6 +21,7 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
 
     private final BetMatchProcessor betMatchBatchProcessor;
     private boolean upsert;
+    private OnBetListener onBetListener;
 
     public BetMatchBasic(BetMatchProcessor betMatchBatchProcessor, boolean upsert) {
         this.betMatchBatchProcessor = betMatchBatchProcessor;
@@ -29,6 +30,10 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
 
     public void setCollection(String collection) {
         this.matchBetCollection = collection;
+    }
+
+    public void setOnBet(OnBetListener onBetListener) {
+        this.onBetListener = onBetListener;
     }
 
     protected void betOnMatch(String matchId, String cid, String clientId, int betOn, double bet, String aid,
@@ -82,6 +87,11 @@ public abstract class BetMatchBasic implements iBetMatchProcessing {
             } else {
                 dbUtil.insert(betQuery, matchBetCollection);
             }
+        }
+
+        if (onBetListener != null) {
+
+            onBetListener.onBet(betQuery.toMap());
         }
     }
 }

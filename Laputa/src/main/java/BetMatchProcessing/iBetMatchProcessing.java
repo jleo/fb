@@ -15,6 +15,5 @@ public interface iBetMatchProcessing {
 
     public int betMatch(ProbabilityAndExpectation probabilityAndExpectation, double baseMoney, HandicapProcessing handicapProcessing);
 
-    public int betMatch(double minExpectation, double minProbability, double baseMoney, HandicapProcessing handicapProcessing);
-
+    public void setOnBet(OnBetListener onBetListener);
 }

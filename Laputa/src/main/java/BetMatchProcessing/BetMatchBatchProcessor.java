@@ -6,10 +6,12 @@ import Util.Props;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.SimpleEmail;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,9 +35,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
     }
 
     public static void main(String args[]) {
-        final List<DBObject> matchList = BetMatchBatchProcessor.getAllBettingMatch();
-        double minExpectation = Double.parseDouble(args[0]);
-        double minProbability = Double.parseDouble(args[1]);
+        final List<DBObject> matchList = BetMatchBatchProcessor.getAllBettingMatch(false);
 
         ExecutorService executorService = Executors.newFixedThreadPool(Integer.parseInt(Props.getProperty("thread")));
 
@@ -61,6 +61,63 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
 
                 public void run() {
                     iBetMatchProcessing bmp = new BetHandicapMatchGuarantee(BetMatchBatchProcessor.this, true);
+                    bmp.setOnBet(new OnBetListener() {
+                        public void onBet(Map map) {
+                            try {
+                                String matchId = (String) map.get("matchId");
+                                DBObject query = new BasicDBObject();
+                                query.put("matchId", matchId);
+
+                                DBObject update = new BasicDBObject();
+                                update.put("matchId", matchId);
+
+                                int newBetOn = (Integer) map.get("betOn");
+                                update.put("betOn", newBetOn);
+
+                                DBObject result = dbUtil.findOne(query, "email");
+                                if (result == null) {
+                                    sendMail(map);
+                                    dbUtil.insert(update, "email");
+                                } else {
+                                    int betOn = (Integer) result.get("betOn");
+                                    if (map.get("betOn").equals(betOn)) {
+                                        System.out.println(matchId + "already sent,skip");
+                                    } else {
+                                        sendMail(map);
+                                        dbUtil.update(query, update, "email");
+                                    }
+                                }
+
+                            } catch (EmailException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+                        }
+
+                        private void sendMail(Map map) throws EmailException {
+                            System.out.println("sending email...");
+
+                            SimpleEmail email = new SimpleEmail();
+                            email.setCharset("utf-8");
+                            email.setHostName("smtp.googlemail.com");
+                            email.setSmtpPort(465);
+                            email.setAuthenticator(new DefaultAuthenticator("ggyyleo", "jf3hf2l1"));
+                            email.setSSLOnConnect(true);
+                            email.setFrom("ggyyleo@gmail.com");
+                            email.setSubject("Let's roll");
+
+                            int betOn = (Integer) map.get("betOn");
+                            double h1 = (Double) map.get("h1");
+                            double h2 = (Double) map.get("h2");
+                            String teamA = (String) map.get("teamA");
+                            String teamB = (String) map.get("teamB");
+                            String msg = teamA + " vs " + teamB + "\nbet on " + (betOn == 0 ? teamA : teamB) + "\n h1:" + h1 + ", h2:" + h2 +", \nmatch starts at:"+ new SimpleDateFormat("MM-dd HH:mm").format(map.get("matchTime"));
+                            email.setMsg(msg);
+                            email.addTo("ggyyleo@gmail.com");
+                            email.addTo("snowhyzhang@gmail.com");
+                            email.send();
+                        }
+                    });
+
                     HandicapProcessing hp = new HandicapProcessing();
 
                     bmp.setCollection(Props.getProperty("MatchBatchBet"));
@@ -132,7 +189,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         return type / 4.0;
     }
 
-    public static List<DBObject> getAllBettingMatch() {
+    public static List<DBObject> getAllBettingMatch(boolean startSoon) {
         String cid = Props.getProperty("betCId");
 
         DBObject query = new BasicDBObject();
@@ -144,6 +201,12 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
         query.put("$and", list);
 
         query.put("cid", cid);
+
+        if (startSoon) {
+            Calendar c = new GregorianCalendar();
+            c.add(Calendar.MINUTE, 30);
+            query.put("time", new BasicDBObject("$lte", c.getTime()));
+        }
 
         DBObject field = new BasicDBObject();
         field.put("h1", 1);
