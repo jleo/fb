@@ -123,12 +123,19 @@ public class MongoDBUtil {
     public DBCursor findAllCursor(DBObject query, DBObject filed, String collectionName) {
         List<DBObject> resultList = new ArrayList<DBObject>();
         DBCollection collection = mongoDB.getCollection(collectionName);
+        if (filed == null)
+            return collection.find(query);
+
         return collection.find(query, filed);
     }
 
-    public void update(DBObject query, DBObject update, String collectionName) {
+    public void update(DBObject query, DBObject update, String collectionName, boolean multi) {
         DBCollection collection = mongoDB.getCollection(collectionName);
-        collection.update(query, update);
+        if (multi) {
+            collection.updateMulti(query, update);
+        } else {
+            collection.update(query, update);
+        }
     }
 
     public void upsert(DBObject query, DBObject update, boolean multi, String collectionName) {

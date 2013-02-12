@@ -84,7 +84,7 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                                         System.out.println(matchId + "already sent,skip");
                                     } else {
                                         sendMail(map);
-                                        dbUtil.update(query, update, "email");
+                                        dbUtil.update(query, update, "email", true);
                                     }
                                 }
 
@@ -106,16 +106,17 @@ public class BetMatchBatchProcessor extends BetMatchProcessor {
                             email.setSubject("Let's roll");
 
                             int betOn = (Integer) map.get("betOn");
+                            int ch = (Integer) map.get("ch");
                             double h1 = (Double) map.get("h1");
                             double h2 = (Double) map.get("h2");
                             String teamA = (String) map.get("teamA");
                             String teamB = (String) map.get("teamB");
                             BasicDBList mType = (BasicDBList) map.get("mtype");
                             String mtypeStr = "";
-                            for (int i=0;i<mType.size();i++){
+                            for (int i = 0; i < mType.size(); i++) {
                                 mtypeStr += mType.get(i);
                             }
-                            String msg = mtypeStr+"\n"+teamA + " vs " + teamB + "\nbet on " + (betOn == 0 ? teamA : teamB) + "\n h1:" + h1 + ", h2:" + h2 +", \nmatch starts at:"+ new SimpleDateFormat("MM-dd HH:mm").format(map.get("matchTime"));
+                            String msg = mtypeStr + "\n" + map.get("matchId") + "\n" + ch + "\n" + teamA + " vs " + teamB + "\nbet on " + (betOn == 0 ? teamA : teamB) + "\n h1:" + h1 + ", h2:" + h2 + ", \nmatch starts at:" + new SimpleDateFormat("MM-dd HH:mm").format(map.get("matchTime"));
                             email.setMsg(msg);
                             email.addTo("ggyyleo@gmail.com");
                             email.addTo("snowhyzhang@gmail.com");

@@ -4,6 +4,12 @@ import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import org.ccil.cowan.tagsoup.AutoDetector
 
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -25,14 +31,36 @@ class GameLogParser {
         new XmlSlurper(parser).parseText(content)
     }
 
+    final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
+
     public static void main(String[] args) {
         GameLogParser gameLogParser = new GameLogParser()
 
-        def output = new File("/Users/jleo/list.txt")
-        output.eachLine {
-            def url = "http://www.basketball-reference.com" + it
-            gameLogParser.parse(url, Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7]))
+        Thread.start {
+            def output = new File("/Users/jleo/list.txt")
+            output.eachLine {
+                def url = "http://www.basketball-reference.com" + it
+                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
+            }
         }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(11);
+        10.times {
+            executorService.submit(new Runnable() {
+
+                @Override
+                void run() {
+                    while (true) {
+                        def task = tasks.poll(30, TimeUnit.SECONDS)
+                        def url = task.url
+                        def date = task.date
+
+                        gameLogParser.parse(url, date)
+                    }
+                }
+            })
+        }
+        executorService.shutdown()
     }
 
     GameLogParser() {
@@ -50,7 +78,7 @@ class GameLogParser {
         }
 
 
-        def teamA, teamB
+        def teamA = null, teamB = null
 
         def currentQuarter = 0
         def skip = false
@@ -69,18 +97,39 @@ class GameLogParser {
             }
 
             def timeLeft = it.children()[0].children()[0]
-            def events = null
-            if (it.children().size() >= 2)
-                events = it.children()[1..-1]
-            else
-                events = it.children()[1]
-
             def eventsString = ""
-            events.each { eventNode ->
-                eventsString += eventNode.text()
+            def doc = new BasicDBObject()
+
+            if (it.children().size() == 2) {
+                it.children()[1..-1].each { eventNode ->
+                    eventsString += eventNode.text()
+                }
+                doc.append("eventBoth", eventsString)
+            } else if (it.children().size() == 4) {
+                return
+            } else if (it.children().size() == 6) {
+                def events = it.children()[1..-1]
+                def eventA = events[0].text()
+                def eventB = events[4].text()
+                def scoreDiffA = events[1].text()
+                def scoreDiffB = events[3].text()
+                def score = events[2].text()
+
+                doc.append("eventA", eventA)
+                        .append("eventB", eventB)
+                        .append("diffA", scoreDiffA)
+                        .append("diffB", scoreDiffB)
+                        .append("score", score)
             }
 
-            def doc = new BasicDBObject().append("time", timeLeft).append("quarter", currentQuarter).append("event", eventsString).append("date", date)
+
+
+            doc.append("time", timeLeft)
+            doc.append("quarter", currentQuarter)
+                    .append("date", date).append("url", url)
+                    .append("teamA", teamA)
+                    .append("teamB", teamB)
+
             mongoDBUtil.insert(doc, "log")
         }
     }
