@@ -16,6 +16,8 @@ import java.util.concurrent.*
 class Sharding {
     private MongoDBUtil mongoDBUtil
 
+    static def keyEvent = ['misses 2-pt shot', 'Defensive rebound', 'misses 3-pt shot', 'Turnover', 'makes 2-pt shot', 'Offensive foul', 'Personal foul', 'enters the game for', 'makes 3-pt shot', 'full timeout', 'Offensive rebound', 'Shooting foul', 'makes free throw', 'Violation by', 'Loose ball foul', 'misses free throw', 'Violation by', 'Technical foul', 'makes no shot', '20 second timeout', 'def tech foul', 'Clear path foul', 'Official timeout', 'Non unsport tech foul', 'Double technical foul', 'Away from play foul', 'Flagrant foul type 1', 'ejected from game', 'Double personal foul', 'Hanging tech foul', 'Team ejected from game', 'Delay tech foul', 'misses no shot', 'Taunting technical foul', 'Elbow foul by', 'Inbound foul', 'Flagrant foul type 2', 'makes technical free throw', 'Defensive three seconds', 'misses technical free throw', 'makes flagrant free throw', 'no timeout', 'misses flagrant free throw', 'Punching foul by', 'Def 3 sec tech foul', 'misses clear path free throw', 'makes clear path free throw', 'Shooting block foul', 'Offensive charge foul', 'Personal take foul']
+    static def keyEventAbbr = ['misses 2-pt shot': 'ms2s', 'Defensive rebound': 'dr', 'misses 3-pt shot': 'm3s', 'Turnover': 'to', 'makes 2-pt shot': 'mk2s', 'Offensive foul': 'of', 'Personal foul': 'pf', 'enters the game for': 'egf', 'makes 3-pt shot': 'mk3s', 'full timeout': 'ft', 'Offensive rebound': 'or', 'Shooting foul': 'sf', 'makes free throw': 'mft', 'Violation by': 'vb', 'Loose ball foul': 'lbf', 'misses free throw': 'mft', 'Technical foul': 'tf', 'makes no shot': 'mns', '20 second timeout': '2st', 'def tech foul': 'dtf', 'Clear path foul': 'cpf', 'Official timeout': 'ot', 'Non unsport tech foul': 'nutf', 'Double technical foul': 'dtf', 'Away from play foul': 'afpf', 'Flagrant foul type 1': 'fft1', 'ejected from game': 'efg', 'Double personal foul': 'dpf', 'Hanging tech foul': 'htf', 'Team ejected from game': 'tefg', 'Delay tech foul': 'dlytf', 'misses no shot': 'msns', 'Taunting technical foul': 'ttf', 'Elbow foul by': 'efb', 'Inbound foul': 'if', 'Flagrant foul type 2': 'fft2', 'makes technical free throw': 'mktft', 'Defensive three seconds': 'dts', 'misses technical free throw': 'mstft', 'makes flagrant free throw': 'mkfft', 'no timeout': 'nt', 'misses flagrant free throw': 'msfft', 'Punching foul by': 'pfb', 'Def 3 sec tech foul': 'd3stf', 'misses clear path free throw': 'mscpft', 'makes clear path free throw': 'mkcpft', 'Shooting block foul': 'sbf', 'Offensive charge foul': 'ocf', 'Personal take foul': 'ptf']
 
     final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
 
@@ -41,7 +43,7 @@ class Sharding {
                         def url = task.url
                         def date = task.date
 
-                        parse(url, date)
+                        gameLogParser.parse(url, date)
                     }
                 }
             })
@@ -50,18 +52,18 @@ class Sharding {
     }
 
     Sharding() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "15000", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
     }
 
-    static def parse = { url, date ->
-        statA = [:].withDefault {
+    void parse(url, date) {
+        def statA = [:].withDefault {
             return 0
         }
-        statB = [:].withDefault {
+        def statB = [:].withDefault {
             return 0
         }
 
-        def urlShorten = url.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
+        def urlShorten = url.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "").replaceAll("http://www.basketball-reference.com", "")
         def events = []
 
         def c = mongoDBUtil.findAllCursor(new BasicDBObject("url", urlShorten), null, "log").sort(new BasicDBObject("sec": -1))
