@@ -34,7 +34,7 @@ class Trainer {
 
         int index = 0
         Thread.start {
-            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201210300CLE'] as BasicDBObject), null, "log").each {
+            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200110300CLE'] as BasicDBObject), null, "log").each {
                 index++
                 if (!it.get("total"))
                     return
@@ -80,22 +80,22 @@ class Trainer {
             tasks2.put(it)
         }
 
+        cpu.times {
+            executorService2.submit(new Runnable() {
+                @Override
+                void run() {
+                    while (true) {
+                        def task = tasks2.poll(30, TimeUnit.SECONDS)
+                        def result = classifier.classify(task) as int
+                        def answer = task.get("total") as int
 
-        executorService2.submit(new Runnable() {
-            @Override
-            void run() {
-                while (true) {
-                    def task = tasks2.poll(30, TimeUnit.SECONDS)
-                    def result = classifier.classify(task) as int
-                    def answer = task.get("total") as int
-
-                    if (answer > result * 5 && answer < result * 5 + 5) {
-                        hit.incrementAndGet()
+                        if (answer > result * 5 && answer < result * 5 + 5) {
+                            hit.incrementAndGet()
+                        }
                     }
                 }
-            }
-        })
-
+            })
+        }
         executorService2.shutdown()
         executorService2.awaitTermination(2, TimeUnit.HOURS)
 
