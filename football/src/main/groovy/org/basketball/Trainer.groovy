@@ -62,7 +62,7 @@ class Trainer {
                 }
             })
         }
-        executorService.shutdown()
+        executorService.awaitTermination(2, TimeUnit.HOURS)
 
         println "time ellapsed:" + (System.currentTimeMillis() - t1) / 1000
 
