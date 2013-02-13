@@ -31,6 +31,7 @@ class BasketballClassifier extends SimpleClassifier {
                 featureAndCount.add(new AbbrAndCount("be:" + abbr, countB as int))
             }
         }
+        featureAndCount.add(new AbbrAndCount("time": snapshot.get("sec")))
         return featureAndCount
     }
 
