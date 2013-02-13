@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 class Trainer {
 
     public static void main(String[] args) {
-
+        long t1 = System.currentTimeMillis()
         final BlockingQueue tasks = new ArrayBlockingQueue<>(15000);
 
         final Classifier classifier = new BasketballClassifier();
@@ -64,7 +64,7 @@ class Trainer {
         }
         executorService.shutdown()
 
-
+        println "time ellapsed:" + (System.currentTimeMillis() - t1) / 1000
 
         def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject), null, "log")
         def count = tests.count()
