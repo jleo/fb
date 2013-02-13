@@ -48,6 +48,7 @@ class Trainer {
 
 
         int cpu = Runtime.getRuntime().availableProcessors()
+        println "cpu number is " + cpu
         ExecutorService executorService = Executors.newFixedThreadPool(cpu + 1);
         cpu.times {
             executorService.submit(new Runnable() {
