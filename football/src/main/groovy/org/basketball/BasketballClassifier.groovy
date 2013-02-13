@@ -3,7 +3,7 @@ package org.basketball
 import com.enigmastation.ml.bayes.Feature
 import com.enigmastation.ml.bayes.annotations.BayesClassifier
 import com.enigmastation.ml.bayes.annotations.NaiveBayesClassifier
-import com.enigmastation.ml.bayes.impl.SimpleClassifier
+import com.enigmastation.ml.bayes.impl.FisherClassifier
 import com.mongodb.BasicDBObject
 
 /**
@@ -15,7 +15,7 @@ import com.mongodb.BasicDBObject
  */
 @BayesClassifier
 @NaiveBayesClassifier
-class BasketballClassifier extends SimpleClassifier {
+class BasketballClassifier extends FisherClassifier {
     protected List<Object> getFeatures(Object source) {
         BasicDBObject snapshot = (BasicDBObject) source;
 
@@ -23,14 +23,17 @@ class BasketballClassifier extends SimpleClassifier {
         Sharding.keyEventAbbr.values().each { abbr ->
             def countA = snapshot.get("ae").get(abbr)
             if (countA) {
-                featureAndCount.add(new AbbrAndCount("ae:" + abbr, countA as int))
+                featureAndCount.add(new AbbrAndCount(abbr, countA as int))
             }
 
             def countB = snapshot.get("be").get(abbr)
             if (countB) {
-                featureAndCount.add(new AbbrAndCount("be:" + abbr, countB as int))
+                featureAndCount.add(new AbbrAndCount(abbr, countB as int))
             }
         }
+        def scores = snapshot.get("score").split("-")
+        int current = (scores[0] as int) + (scores[1] as int)
+        featureAndCount.add(new AbbrAndCount("current", current))
         featureAndCount.add(new AbbrAndCount("time", snapshot.get("sec") as int))
         return featureAndCount
     }

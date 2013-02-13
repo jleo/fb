@@ -34,7 +34,7 @@ class Trainer {
 
         int index = 0
         Thread.start {
-            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201210300CLE'] as BasicDBObject), null, "log").each {
+            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200103300CLE'] as BasicDBObject), null, "log").each {
                 index++
                 if (!it.get("total"))
                     return
