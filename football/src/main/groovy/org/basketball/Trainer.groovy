@@ -14,6 +14,7 @@ import java.util.concurrent.BlockingQueue
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Created with IntelliJ IDEA.
@@ -68,18 +69,37 @@ class Trainer {
 
         println "time ellapsed:" + (System.currentTimeMillis() - t1) / 1000
 
+
+        final BlockingQueue tasks2 = new ArrayBlockingQueue<>(30000);
+        ExecutorService executorService2 = Executors.newFixedThreadPool(cpu + 1);
+
         def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject), null, "log")
         def count = tests.count()
-        def hit = 0
+        def hit = new AtomicInteger()
         tests.each {
-            def result = classifier.classify(it) as int
-            def answer = it.get("total") as int
-
-            if (answer > result * 5 && answer < result * 5 + 5) {
-                hit++
-            }
+            tasks2.add(it)
         }
-        println "hit rate: " + hit / count * 100 + "%"
+
+
+        executorService2.submit(new Runnable() {
+            @Override
+            void run() {
+                while (true) {
+                    def task = tasks2.poll(30, TimeUnit.SECONDS)
+                    def result = classifier.classify(task) as int
+                    def answer = task.get("total") as int
+
+                    if (answer > result * 5 && answer < result * 5 + 5) {
+                        hit.incrementAndGet()
+                    }
+                }
+            }
+        })
+
+        executorService2.shutdown()
+        executorService2.awaitTermination(2, TimeUnit.HOURS)
+
+        println "hit rate: " + hit.get() / count * 100 + "%"
         println "done"
 
         def server = Vertx.newVertx().createHttpServer()
