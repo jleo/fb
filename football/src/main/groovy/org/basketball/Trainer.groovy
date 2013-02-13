@@ -40,14 +40,14 @@ class Trainer {
 
                 tasks.put(it)
 
-                if (index % 100 == 0) {
+                if (index % 10000 == 0) {
                     println index
                 }
             }
         }
 
 
-        int cpu = Runtime.getRuntime().availableProcessors() * 2
+        int cpu = Runtime.getRuntime().availableProcessors()
         ExecutorService executorService = Executors.newFixedThreadPool(cpu + 1);
         cpu.times {
             executorService.submit(new Runnable() {
