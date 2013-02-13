@@ -4,6 +4,10 @@ import Util.MongoDBUtil
 import com.enigmastation.ml.bayes.Classifier
 import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
+import org.vertx.groovy.core.Vertx
+import org.vertx.groovy.core.buffer.Buffer
+import org.vertx.groovy.core.http.RouteMatcher
+import org.vertx.java.core.json.JsonObject
 
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.BlockingQueue
@@ -29,7 +33,7 @@ class Trainer {
 
         int index = 0
         Thread.start {
-            mongoDBUtil.findAllCursor(["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject, null, "log").each {
+            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject), null, "log").each {
                 index++
                 if (!it.get("total"))
                     return
@@ -53,7 +57,7 @@ class Trainer {
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         int score = task.get("total") as int
-                        classifier.train(task, score)
+                        classifier.train(task, Math.floor(score / 5))
                     }
                 }
             })
@@ -61,5 +65,31 @@ class Trainer {
         executorService.shutdown()
 
         println "done"
+
+        def server = Vertx.newVertx().createHttpServer()
+        def routeMatcher = new RouteMatcher()
+        routeMatcher.get("/cal2") { req ->
+            req.response.end("jello")
+        }
+
+        routeMatcher.post("/cal") { req ->
+            def body = new Buffer()
+            req.dataHandler { buf ->
+                body << buf
+            }
+            req.endHandler {
+                JsonObject queryObject = new JsonObject(body.toString())
+                def response = req.response
+                response.chunked = true
+                response.headers['Content-Type'] = "text/json; charset=utf-8"
+
+                def result = classifier.classify(queryObject.getObject("info").toMap() as BasicDBObject)
+                println(result as int) * 5 + "-" + (result as int) * 5 + 5
+                response.write("{\"results\":")
+                response.end(result + "}")
+            }
+        }
+        println "deploying server"
+        server.requestHandler(routeMatcher.asClosure()).listen(9090, args[2])
     }
 }
