@@ -26,7 +26,7 @@ class Trainer {
 
     public static void main(String[] args) {
 
-        final BlockingQueue tasks = new ArrayBlockingQueue<>(3000);
+        final BlockingQueue tasks = new ArrayBlockingQueue<>(15000);
 
         final Classifier classifier = new BasketballClassifier();
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance(args[0], args[1], "bb")
@@ -47,7 +47,7 @@ class Trainer {
         }
 
 
-        int cpu = Runtime.getRuntime().availableProcessors()
+        int cpu = Runtime.getRuntime().availableProcessors() * 2
         ExecutorService executorService = Executors.newFixedThreadPool(cpu + 1);
         cpu.times {
             executorService.submit(new Runnable() {
