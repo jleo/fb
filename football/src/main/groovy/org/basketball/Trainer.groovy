@@ -33,7 +33,7 @@ class Trainer {
 
         int index = 0
         Thread.start {
-            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject), null, "log").each {
+            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201210300CLE'] as BasicDBObject), null, "log").each {
                 index++
                 if (!it.get("total"))
                     return
@@ -64,6 +64,20 @@ class Trainer {
         }
         executorService.shutdown()
 
+
+
+        def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject), null, "log")
+        def count = tests.count()
+        def hit = 0
+        tests.each {
+            def result = classifier.classify(it) as int
+            def answer = it.get("total") as int
+
+            if (answer > result * 5 && answer < result * 5 + 5) {
+                hit++
+            }
+        }
+        println "hit rate: " + hit / count * 100 + "%"
         println "done"
 
         def server = Vertx.newVertx().createHttpServer()
