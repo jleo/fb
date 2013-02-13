@@ -35,6 +35,7 @@ class BasketballClassifier extends SimpleClassifier {
         return featureAndCount
     }
 
+
     @Override
     public void train(Object source, Object classification) {
         List<Object> features = getFeatures(source);
@@ -64,5 +65,17 @@ class BasketballClassifier extends SimpleClassifier {
             oldCount = 0;
         }
         categories.put(category, oldCount + 1);
+    }
+
+    int featureCount(Object feature, Object category) {
+        //if (features.containsKey(feature) && features.get(feature).containsKey(category)) {
+        //  return features.get(feature).get(category);
+        //}
+        AbbrAndCount abbrAndCount = feature;
+        Feature f = features.get(abbrAndCount.getAbbr());
+        if (f == null) {
+            return 0;
+        }
+        return f.getCountForCategory(category);
     }
 }

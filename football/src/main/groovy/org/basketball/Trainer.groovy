@@ -34,7 +34,7 @@ class Trainer {
 
         int index = 0
         Thread.start {
-            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200110300CLE'] as BasicDBObject), null, "log").each {
+            mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201210300CLE'] as BasicDBObject), null, "log").each {
                 index++
                 if (!it.get("total"))
                     return
@@ -58,8 +58,12 @@ class Trainer {
                 void run() {
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
+                        if (!task)
+                            return
+
                         int score = task.get("total") as int
-                        classifier.train(task, Math.floor(score / 5))
+                        def floor = Math.floor(score / 5)
+                        classifier.train(task, floor)
                     }
                 }
             })
@@ -73,11 +77,14 @@ class Trainer {
         final BlockingQueue tasks2 = new ArrayBlockingQueue<>(30000);
         ExecutorService executorService2 = Executors.newFixedThreadPool(cpu + 1);
 
-        def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject), null, "log")
+        def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject).append("sec",['\$lte',720] as BasicDBObject), null, "log")
+        tests = tests.sort(new BasicDBObject(url: 1).append("sec", -1))
         def count = tests.count()
         def hit = new AtomicInteger()
-        tests.each {
-            tasks2.put(it)
+        Thread.start {
+            tests.each {
+                tasks2.put(it)
+            }
         }
 
         cpu.times {
@@ -89,6 +96,7 @@ class Trainer {
                         def result = classifier.classify(task) as int
                         def answer = task.get("total") as int
 
+                        println result * 5 + " vs " + answer
                         if (answer > result * 5 && answer < result * 5 + 5) {
                             hit.incrementAndGet()
                         }
