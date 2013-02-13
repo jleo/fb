@@ -77,7 +77,7 @@ class Trainer {
         def count = tests.count()
         def hit = new AtomicInteger()
         tests.each {
-            tasks2.add(it)
+            tasks2.put(it)
         }
 
 
