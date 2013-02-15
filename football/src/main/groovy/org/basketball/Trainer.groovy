@@ -27,7 +27,7 @@ class Trainer {
 
     public static void main(String[] args) {
         long t1 = System.currentTimeMillis()
-        final BlockingQueue tasks = new ArrayBlockingQueue<>(30000);
+        final BlockingQueue tasks = new ArrayBlockingQueue<>(200);
 
         final Classifier classifier = new BasketballClassifier();
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance(args[0], args[1], "bb")
