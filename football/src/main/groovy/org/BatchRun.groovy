@@ -46,15 +46,15 @@ class BatchRun {
         //------iter 1.5--------
 
         //------iter 2--------
-                def initProbability = "0.6890"
-        def endProbability = "0.6900"
-        def probalilityStep = "0.0001"
+                def initProbability = "0.51"
+        def endProbability = "0.79"
+        def probalilityStep = "0.01"
 
 
 
-        def expectation = "0.001"
-        def endExpectation = "0.1"
-        def expectationStep = "0.001"
+        def expectation = "0.01"
+        def endExpectation = "0.3"
+        def expectationStep = "0.01"
         //------iter2---------
         BigDecimal seedExpectation = new BigDecimal(expectation);
         BigDecimal seedProbability = new BigDecimal(initProbability);
