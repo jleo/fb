@@ -60,7 +60,7 @@ class BatchRun {
         BigDecimal seedProbability = new BigDecimal(initProbability);
 
         GearmanClientImpl client = new GearmanClientImpl();
-        client.addJobServer(new GearmanNIOJobServerConnection("58.215.168.165", 5730));
+        client.addJobServer(new GearmanNIOJobServerConnection("rm3", 5730));
 
         for (int i = 0; i < ((endExpectation as double) - (expectation as double)) / (expectationStep as double); ++i) {
             for (int j = 0; j < ((endProbability as double) - (initProbability as double)) / (probalilityStep as double); ++j) {

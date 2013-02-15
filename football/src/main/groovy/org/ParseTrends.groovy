@@ -17,12 +17,13 @@ public class ParseTrends {
     final autoDetectorPropertyName = 'http://www.ccil.org/~cowan/tagsoup/properties/auto-detector'
 
     public static void main(String[] args) {
-        ParseTrends trends = new ParseTrends()
         def db = new Mongo("rm4", 15000).getDB("fb");
+        ParseTrends trends = new ParseTrends()
         def result = db.getCollection("result")
         def collection = db.getCollection("handicap")
 
-        def c = result.find([cid: "18", "time": ["\$gte": Date.parse("yyyy-MM-dd", "2013-01-27"), "\$lt": Date.parse("yyyy-MM-dd", "2013-01-29")]] as BasicDBObject)
+        def c = result.find([cid: "18", "time": ["\$gte": new Date() - (args[0] as int), "\$lt": new Date()]] as BasicDBObject)
+//        def c = result.find([matchId: "528986", cid: '18'] as BasicDBObject)
         def count = c.count()
         def index = 0
         c.each {
@@ -74,15 +75,20 @@ public class ParseTrends {
                     double h2 = it.children[3].children[0].children[0].children[0] as double
                     def ch = it.children[2].children[0]
 
+                    def ch2 = ch
                     boolean reverse = false
                     if (ch.indexOf("受让") != -1) {
                         reverse = true
                     }
+                    if (ch.indexOf("受") != -1) {
+                        reverse = true
+                    }
                     ch = Settle.GoalCn.findIndexOf {
-                        it == ch.replaceAll("受让", "")
+                        it.trim() == ch.replaceAll("受让", "").replaceAll("受", "").trim()
                     } as int
                     if (ch == -1) {
-                        println ch + "not found"
+                        println ch + "not found," + ch2
+                        return
                     }
 
                     if (reverse) {
@@ -94,7 +100,7 @@ public class ParseTrends {
                     map.ch = ch
                     map.matchId = matchId
                     map.queryId = queryId
-                    handicap.save(map as BasicDBObject)
+                    handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, true, true)
                 }
             } else {
                 def path = "single/" + (((queryId / 100000) as int) + 1) + "/" + queryId + ".xml";
@@ -116,7 +122,13 @@ public class ParseTrends {
                     map.ch = ch
                     map.matchId = matchId
                     map.queryId = queryId
-                    handicap.save(map as BasicDBObject)
+
+                    def existing = handicap.findOne(new BasicDBObject("matchId", matchId).append("time", time))
+                    if (existing) {
+                        def writeResult = handicap.update(new BasicDBObject("matchId", matchId).append("time", time), map as BasicDBObject, false, true)
+                    } else {
+                        handicap.insert(map as BasicDBObject)
+                    }
                 }
             }
 

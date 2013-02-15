@@ -1,6 +1,7 @@
 package org
 
 import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
+import BetMatchProcessing.FixedProbabilityAndExpectation
 import Util.MongoDBUtil
 import Util.Props
 import com.mongodb.DBObject
@@ -29,7 +30,7 @@ class GearmanFunction extends AbstractGearmanFunction {
             Props.getProperty("MongoDBRemoteName"));
 
 
-    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil, new int[0]{}, new String[0]{});
+    static List<DBObject> allBettingMatches = BetMatchBatchProcessorSpecifiedDate.getAllBettingMatch(Props.getProperty("SpecifiedDateFrom"), Props.getProperty("SpecifiedDateTo"), dbUtil, new int[0], new String[0], true);
     static BetMatchBatchProcessorSpecifiedDate betMatchBatchProcessor = new BetMatchBatchProcessorSpecifiedDate(executorService, allBettingMatches, dbUtil);
     static Settle s = new Settle(dbUtil.getMongo())
 
@@ -49,7 +50,7 @@ class GearmanFunction extends AbstractGearmanFunction {
         try {
             System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
-            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
+            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(new FixedProbabilityAndExpectation(seedProbability, seedExpectation), allBettingMatches);
 
 //            executorService2.submit(new Runnable() {
 //                @Override
