@@ -1,6 +1,7 @@
 package org
 
 import BetMatchProcessing.BetMatchBatchProcessorSpecifiedDate
+import BetMatchProcessing.FixedProbabilityAndExpectation
 import Util.MongoDBUtil
 import Util.Props
 import com.mongodb.DBObject
@@ -49,7 +50,7 @@ class GearmanFunction extends AbstractGearmanFunction {
         try {
             System.out.println("trying seedExpectation:" + seedExpectation + ", " + "seedProbability:" + seedProbability);
 
-            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(seedExpectation, seedProbability, allBettingMatches);
+            betMatchBatchProcessor.betBatchMatchHandicapGuarantee(new FixedProbabilityAndExpectation(seedProbability, seedExpectation), allBettingMatches);
 
 //            executorService2.submit(new Runnable() {
 //                @Override
