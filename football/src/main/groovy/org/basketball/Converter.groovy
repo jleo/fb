@@ -3,6 +3,12 @@ package org.basketball
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -12,51 +18,64 @@ import com.mongodb.BasicDBObject
  */
 class Converter {
 
+    final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
+    final static MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
+
     public static void main(String[] args) {
+        def output = new File("/Users/jleo/list.txt")
 
-        MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
-        if (args[0] == "1")
-            updateQuarter(mongoDBUtil, 2160, 2880, 1)
+        Thread.start {
+            output.eachLine { line ->
+                line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
+                tasks.put(line)
+            }
+        }
 
+        ExecutorService executorService = Executors.newFixedThreadPool(11);
+        (args[0] as int).times {
+            executorService.submit(new Runnable() {
 
-        if (args[0] == "2")
-            updateQuarter(mongoDBUtil, 1440, 2160, 2)
+                @Override
+                void run() {
+                    while (true) {
+                        def task = tasks.poll(30, TimeUnit.SECONDS)
+                        updateQuarter(task, 2160, 2880, 1)
+                        updateQuarter(task, 1440, 2160, 2)
+                        updateQuarter(task, 720, 1440, 3)
+                        updateQuarter(task, 0, 720, 4)
+                    }
+                }
+            })
+        }
+        executorService.shutdown()
+        executorService.awaitTermination(2, TimeUnit.HOURS);
 
-        if (args[0] == "3")
-            updateQuarter(mongoDBUtil, 720, 1440, 3)
-
-        if (args[0] == "4")
-            updateQuarter(mongoDBUtil, 0, 720, 4)
     }
 
-    private static void updateQuarter(mongoDBUtil, to, from, quarter) {
-        def output = new File("/Users/jleo/list.txt")
-        output.eachLine { line ->
-            int scoreA = 0
-            int scoreB = 0
+    private static void updateQuarter(line, to, from, quarter) {
+        int scoreA = 0
+        int scoreB = 0
 
-            line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-            mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, new BasicDBObject("diffA", 1).append("diffB", 1), "log").sort(["sec": -1] as BasicDBObject).each { c ->
-                String diffA = c.get("diffA")
-                String diffB = c.get("diffB")
+        mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, new BasicDBObject("diffA", 1).append("diffB", 1), "log").sort(["sec": -1] as BasicDBObject).each { c ->
+            String diffA = c.get("diffA")
+            String diffB = c.get("diffB")
 
-                if (diffA.indexOf("+") != -1) {
-                    diffA = diffA - "+"
-                    scoreA += diffA as int
-                }
-
-                if (diffB.indexOf("+") != -1) {
-                    diffB = diffB - "+"
-                    scoreB += diffB as int
-                }
-
-                println scoreA
-                println scoreB
-
-                println "------------"
+            if (diffA.indexOf("+") != -1) {
+                diffA = diffA - "+"
+                scoreA += diffA as int
             }
 
-            mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
+            if (diffB.indexOf("+") != -1) {
+                diffB = diffB - "+"
+                scoreB += diffB as int
+            }
+
+            println scoreA
+            println scoreB
+
+            println "------------"
         }
+
+        mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
     }
 }
