@@ -44,6 +44,7 @@ public class Joone implements NeuralNetListener, Serializable {
         // the input to the neural net
         inputSynapse = new MemoryInputSynapse();
         input.addInputSynapse(inputSynapse);
+
         // the output of the neural net
         outputSynapse = new MemoryOutputSynapse();
         output.addOutputSynapse(outputSynapse);
@@ -92,6 +93,14 @@ public class Joone implements NeuralNetListener, Serializable {
         inputSynapse.setInputFull(true)
 
         inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
+
+//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+//        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
+//        normalizerPlugIn.setMax(1);//setting the max value as 1
+//        normalizerPlugIn.setMin(0);//setting the min value as 0
+//        normalizerPlugIn.setName("InputPlugin");
+//        inputSynapse.addPlugIn(normalizerPlugIn);
+
         // set the desired outputs
         desiredOutputSynapse.setInputArray(desiredOutputArray);
         desiredOutputSynapse.setAdvancedColumnSelector((1..outputSize).join(","));
@@ -141,7 +150,7 @@ public class Joone implements NeuralNetListener, Serializable {
         joone.initNeuralNet();
 
 
-        def cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201203300CLE'] as BasicDBObject).append("sec", 720).append("ot", 0), null, "log")
+        def cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200203300CLE'] as BasicDBObject).append("sec", 720).append("ot", 0), null, "log")
         def allTraining = new double[cursor.count()][inputSize]
         def allReal = new double[cursor.count()][outputSize]
         int number = 0
@@ -149,11 +158,11 @@ public class Joone implements NeuralNetListener, Serializable {
         int startFrom = 0
         add(cursor, allReal, startFrom, number, allTraining, true, 1)
 
-        cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201203300CLE'] as BasicDBObject).append("sec", 1440).append("ot", 0), null, "log")
+        cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200203300CLE'] as BasicDBObject).append("sec", 1440).append("ot", 0), null, "log")
         startFrom += numberOfFeature * 2
         add(cursor, allReal, startFrom, number, allTraining, false, 2 / 3)
 
-        cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '201203300CLE'] as BasicDBObject).append("sec", 2160).append("ot", 0), null, "log")
+        cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$lte': '200203300CLE'] as BasicDBObject).append("sec", 2160).append("ot", 0), null, "log")
         startFrom += numberOfFeature * 2
         add(cursor, allReal, startFrom, number, allTraining, false, 1 / 3)
 
@@ -235,7 +244,7 @@ public class Joone implements NeuralNetListener, Serializable {
             toTest[0] = it
             def expected = allReal[idx].findIndexOf { it == 1 }
             def result = joone.test(toTest)
-//            println "actual:" + result + ", expected:" + expected;
+            println "actual:" + result + ", expected:" + expected;
             if (Math.abs(expected - result) <= 2)
                 hit++
         }
@@ -248,8 +257,8 @@ public class Joone implements NeuralNetListener, Serializable {
             if (!it.get("total"))
                 return
 
-            if (number >= allTraining.size()){
-                println allTraining.size()+" over"
+            if (number >= allTraining.size()) {
+                println allTraining.size() + " over"
                 return
             }
             double[] stats = allTraining[number];
