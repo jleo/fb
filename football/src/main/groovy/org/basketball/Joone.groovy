@@ -152,7 +152,7 @@ public class Joone implements NeuralNetListener, Serializable {
                 if (countA) {
                     countA = countA as int
 
-                    if (abbr == "or")
+                    if (abbr == "mft")
                         println countA
                     if (countA > Sharding.divide.get(abbr)) {
                         stats[index] = 1

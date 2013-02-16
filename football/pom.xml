@@ -12,7 +12,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-
+        <dependency>
+            <groupId>joone</groupId>
+            <artifactId>joone</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/joone-engine.jar</systemPath>
+        </dependency>
         <dependency>
             <groupId>org.vert-x</groupId>
             <artifactId>vertx-platform</artifactId>
