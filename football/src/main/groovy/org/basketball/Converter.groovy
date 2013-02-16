@@ -1,5 +1,8 @@
 package org.basketball
 
+import Util.MongoDBUtil
+import com.mongodb.BasicDBObject
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -11,12 +14,41 @@ class Converter {
 
     public static void main(String[] args) {
 
-        [
-                "ae:ms2s":20,
-                "ae:dr":18,
-                "ae:m3s":10,
-//                "ae:"
+        MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
+        updateQuarter(mongoDBUtil, 2160, 2880, 1)
+        updateQuarter(mongoDBUtil, 1440, 2160, 2)
+        updateQuarter(mongoDBUtil, 720, 1440, 3)
+        updateQuarter(mongoDBUtil, 0, 720, 4)
+    }
 
-        ]
+    private static void updateQuarter(mongoDBUtil, to, from, quarter) {
+        def output = new File("/Users/jleo/list.txt")
+        output.eachLine { line ->
+            int scoreA = 0
+            int scoreB = 0
+
+            line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
+            mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, new BasicDBObject("diffA", 1).append("diffB", 1), "log").sort(["sec": -1] as BasicDBObject).each { c ->
+                String diffA = c.get("diffA")
+                String diffB = c.get("diffB")
+
+                if (diffA.indexOf("+") != -1) {
+                    diffA = diffA - "+"
+                    scoreA += diffA as int
+                }
+
+                if (diffB.indexOf("+") != -1) {
+                    diffB = diffB - "+"
+                    scoreB += diffB as int
+                }
+
+                println scoreA
+                println scoreB
+
+                println "------------"
+            }
+
+            mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
+        }
     }
 }
