@@ -15,10 +15,18 @@ class Converter {
     public static void main(String[] args) {
 
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
-        updateQuarter(mongoDBUtil, 2160, 2880, 1)
-        updateQuarter(mongoDBUtil, 1440, 2160, 2)
-        updateQuarter(mongoDBUtil, 720, 1440, 3)
-        updateQuarter(mongoDBUtil, 0, 720, 4)
+        if (args[0] == "1")
+            updateQuarter(mongoDBUtil, 2160, 2880, 1)
+
+
+        if (args[0] == "2")
+            updateQuarter(mongoDBUtil, 1440, 2160, 2)
+
+        if (args[0] == "3")
+            updateQuarter(mongoDBUtil, 720, 1440, 3)
+
+        if (args[0] == "4")
+            updateQuarter(mongoDBUtil, 0, 720, 4)
     }
 
     private static void updateQuarter(mongoDBUtil, to, from, quarter) {
