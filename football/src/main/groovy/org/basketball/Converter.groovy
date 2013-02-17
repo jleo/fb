@@ -39,6 +39,7 @@ class Converter {
                 void run() {
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
+                        println task
                         updateQuarter(task, 2160, 2880, 1)
                         updateQuarter(task, 1440, 2160, 2)
                         updateQuarter(task, 720, 1440, 3)
@@ -69,11 +70,6 @@ class Converter {
                 diffB = diffB - "+"
                 scoreB += diffB as int
             }
-
-            println scoreA
-            println scoreB
-
-            println "------------"
         }
 
         mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
