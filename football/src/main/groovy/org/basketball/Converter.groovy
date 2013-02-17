@@ -55,7 +55,6 @@ class Converter {
         }
         executorService.shutdown()
         executorService.awaitTermination(10, TimeUnit.HOURS);
-
     }
 
     private static void updateQuarter(line, to, from, quarter) {
@@ -76,7 +75,7 @@ class Converter {
                 scoreB += diffB as int
             }
         }
-        mongoDBUtil.insert([url:line, quarter:quarter, scoreA:scoreA, scoreB:scoreB] as BasicDBObject, "quarter")
+        mongoDBUtil.insert([url: line, quarter: quarter, scoreA: scoreA, scoreB: scoreB] as BasicDBObject, "quarter")
         //mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
     }
 }
