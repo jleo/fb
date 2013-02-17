@@ -272,7 +272,7 @@ public class Joone implements NeuralNetListener, Serializable {
                     countA = countA as int
 
 //                    if (countA >= Sharding.divide.get(abbr) * discount) {
-                        stats[index] = countA/40
+                        stats[index] = countA/40 as double
 //                    }
                 } else {
                     stats[index] = 0
@@ -282,7 +282,7 @@ public class Joone implements NeuralNetListener, Serializable {
                 if (countB) {
                     countB = countB as int
 //                    if (countB >= Sharding.divide.get(abbr) * discount) {
-                        stats[index] = countB/40
+                        stats[index] = countB/40 as double
 //                    }
                 } else {
                     stats[index] = 0

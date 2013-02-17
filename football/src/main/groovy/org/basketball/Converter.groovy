@@ -48,7 +48,7 @@ class Converter {
             })
         }
         executorService.shutdown()
-        executorService.awaitTermination(2, TimeUnit.HOURS);
+        executorService.awaitTermination(10, TimeUnit.HOURS);
 
     }
 
