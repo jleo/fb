@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import org.joone.engine.*
 import org.joone.engine.learning.TeachingSynapse
+import org.joone.helpers.factory.JooneTools
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
@@ -20,7 +21,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     protected void initNeuralNet() {
         // First create the three layers
-        LinearLayer input = new LinearLayer();
+        SigmoidLayer input = new SigmoidLayer();
         SigmoidLayer hidden = new SigmoidLayer();
         SigmoidLayer output = new SigmoidLayer();
         input.setLayerName("input");
@@ -29,7 +30,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // set the dimensions of the layers
 
         input.setRows(inputSize);
-        hidden.setRows(20);
+        hidden.setRows(50);
         output.setRows(outputSize);
 
         // Now create the two Synapses
@@ -50,40 +51,24 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.addOutputSynapse(outputSynapse);
         // The Trainer and its desired output
         desiredOutputSynapse = new MemoryInputSynapse();
-        TeachingSynapse trainer = new TeachingSynapse();
-        trainer.setDesired(desiredOutputSynapse);
+
         nnet = new NeuralNet();
         nnet.addLayer(input, NeuralNet.INPUT_LAYER);
-        30.times {
+        200.times {
             nnet.addLayer(hidden, NeuralNet.HIDDEN_LAYER);
         }
         nnet.addLayer(output, NeuralNet.OUTPUT_LAYER);
+
+
+        TeachingSynapse trainer = new TeachingSynapse();
+        trainer.setDesired(desiredOutputSynapse);
+
+
         nnet.setTeacher(trainer);
         output.addOutputSynapse(trainer);
 //      File
     }
 
-    public int test(double[][] d) {
-        inputSynapse.setInputArray(d);
-        inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
-        nnet.getMonitor().setTotCicles(10);
-        nnet.start();
-        nnet.getMonitor().Go();
-        for (Object o : outputSynapse.getAllPatterns()) {
-            Pattern p = (Pattern) o;
-
-            double max = -1;
-            int maxIndex = 0;
-            for (int i = 0; i < p.getArray().length; i++) {
-                double c = p.getArray()[i];
-                if (c > max) {
-                    max = c
-                    maxIndex = i;
-                }
-            }
-            return maxIndex;
-        }
-    }
 
     public void train(double[][] inputArray, double[][] desiredOutputArray) {
         // set the inputs
@@ -97,7 +82,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         normalizerPlugIn.setMax(1);//setting the max value as 1
         normalizerPlugIn.setMin(0);//setting the min value as 0
         normalizerPlugIn.setName("InputPlugin");
-//
+////
 //
 //        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
 //        averagePlugIn.setAdvancedMovAvgSpec("2");
@@ -113,8 +98,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // get the monitor object to train or feed forward
         Monitor monitor = nnet.getMonitor();
         // set the monitor parameters
-        monitor.setLearningRate(0.0001);
-        monitor.setMomentum(0.00000001);
+        monitor.setLearningRate(0.8);
+        monitor.setMomentum(0.3);
+//        monitor.setLearningRate(0.0001);
+//        monitor.setMomentum(0.00000001);
         monitor.setTrainingPatterns(inputArray.length);
         monitor.setTotCicles(50);
         monitor.setLearning(true);
@@ -127,9 +114,6 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         }
     }
 
-    public void cicleTerminated(NeuralNetEvent e) {
-
-    }
 
     public void errorChanged(NeuralNetEvent e) {
     }
@@ -139,7 +123,14 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     public void netStopped(NeuralNetEvent e) {
-        // TODO Auto-generated method stub
+        System.out.println("Training finished");
+    }
+
+    public void cicleTerminated(NeuralNetEvent e) {
+        Monitor mon = (Monitor) e.getSource();
+        long c = mon.getCurrentCicle();
+        if (c % 100 == 0)
+            System.out.println(c + " epochs remaining - RMSE = " + mon.getGlobalError());
     }
 
     public void netStoppedError(NeuralNetEvent e, String error) {
@@ -147,7 +138,23 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     static final int numberOfFeature = 11
     static final int inputSize = 3
-    static final int outputSize = 1
+    static final int outputSize = 110
+
+    public void saveNeuralNet(String fileName) {
+        try {
+            FileOutputStream stream = new FileOutputStream(fileName); ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(nnet);
+            out.close();
+        } catch (Exception excp) {
+            excp.printStackTrace(); }
+    }
+
+
+    public NeuralNet restoreNeuralNet(String filename) {
+        try {
+            FileInputStream stream = new FileInputStream(filename); ObjectInputStream inp = new ObjectInputStream(stream); return (NeuralNet)inp.readObject();
+        } catch (Exception excp) { excp.printStackTrace();
+            return null; }
+    }
 
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
@@ -174,29 +181,21 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             idx++
         }
 
-        joone.train(allTraining, allReal);
+        Monitor monitor = joone.nnet.getMonitor();
+        // set the monitor parameters
+        monitor.setLearningRate(0.8);
+        monitor.setMomentum(0.3);
+//        monitor.setLearningRate(0.0001);
+//        monitor.setMomentum(0.00000001);
+        monitor.setTrainingPatterns(allTraining.length);
+        monitor.setLearning(true);
 
-        int hit = 0;
+        JooneTools.train(joone.nnet, allTraining, allReal,1000,0.01d,100,joone,false);
+//        joone.train(allTraining, allReal);
+        joone.saveNeuralNet("trained")
 
-        output = new File("/Users/jleo/list.txt")
-        int total = output.readLines().size()
-        count = output.readLines().findIndexOf {
-            it == "/boxscores/pbp/201203240LAC.html"
-        }
-        idx = count
-        allTraining = new double[count+1][inputSize]
-        allReal = new double[count+1][outputSize]
-        int scanned = 0
-        output.eachLine { line ->
-            if (scanned >= count) {
-                line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
-                add(cursor, allReal, 0, allTraining, false, 1, scanned-count)
-            }
-            scanned++
-        }
 
-        println joone.test(allTraining);
+
 //        def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", ['\$ge': '201003300CLE'] as BasicDBObject), null, "quarter").sort([quarter: 1] as BasicDBObject)
 //        def count = cursor.count()
 //        allTraining = new double[count][inputSize]
@@ -229,8 +228,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             if (quarter != 4)
                 stats[quarter - 1] = sum
             else
-                allReal[number][0] = sum
-
+                allReal[number][sum - 20] = 1
         }
         cursor.close()
     }
