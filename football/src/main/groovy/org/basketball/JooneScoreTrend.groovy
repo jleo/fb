@@ -1,5 +1,4 @@
 package org.basketball
-
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
@@ -8,7 +7,6 @@ import org.joone.engine.learning.TeachingSynapse
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
-import org.joone.util.MovingAveragePlugIn
 import org.joone.util.NormalizerPlugIn
 
 public class JooneScoreTrend implements NeuralNetListener, Serializable {
@@ -90,7 +88,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public void train(double[][] inputArray, double[][] desiredOutputArray) {
         // set the inputs
         inputSynapse.setInputArray(inputArray);
-        inputSynapse.setInputFull(true)
+//        inputSynapse.setInputFull(true)
 
         inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
 
@@ -99,14 +97,14 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         normalizerPlugIn.setMax(1);//setting the max value as 1
         normalizerPlugIn.setMin(0);//setting the min value as 0
         normalizerPlugIn.setName("InputPlugin");
-
-
-        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
-        averagePlugIn.setAdvancedMovAvgSpec("2");
-        averagePlugIn.setAdvancedSerieSelector((1..inputSize).join(","));
-        averagePlugIn.setName("Average Plugin");
-        normalizerPlugIn.addPlugIn(averagePlugIn);
-
+//
+//
+//        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
+//        averagePlugIn.setAdvancedMovAvgSpec("2");
+//        averagePlugIn.setAdvancedSerieSelector((1..inputSize).join(","));
+//        averagePlugIn.setName("Average Plugin");
+//
+//        normalizerPlugIn.addPlugIn(averagePlugIn);
         inputSynapse.addPlugIn(normalizerPlugIn);
 
         // set the desired outputs
@@ -167,34 +165,35 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         def allReal = new double[count + 1][outputSize]
         int idx = 0
 
-//        output.eachLine { line ->
-//            if (idx < count) {
-//                line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-//                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
-//                add(cursor, allReal, 0, allTraining, true, 1, idx)
-//            }
-//            idx++
-//        }
-//
-//        joone.train(allTraining, allReal);
+        output.eachLine { line ->
+            if (idx < count) {
+                line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
+                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
+                add(cursor, allReal, 0, allTraining, true, 1, idx)
+            }
+            idx++
+        }
+
+        joone.train(allTraining, allReal);
 
         int hit = 0;
 
         output = new File("/Users/jleo/list.txt")
         int total = output.readLines().size()
-        count = total - 1 - output.readLines().findIndexOf {
+        count = output.readLines().findIndexOf {
             it == "/boxscores/pbp/201203240LAC.html"
         }
-
-        allTraining = new double[count][inputSize]
-        allReal = new double[count][outputSize]
+        idx = count
+        allTraining = new double[count+1][inputSize]
+        allReal = new double[count+1][outputSize]
+        int scanned = 0
         output.eachLine { line ->
-            if (idx >= count) {
+            if (scanned >= count) {
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
                 def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
-                add(cursor, allReal, 0, allTraining, false, 1, idx - count)
-                idx++
+                add(cursor, allReal, 0, allTraining, false, 1, scanned-count)
             }
+            scanned++
         }
 
         println joone.test(allTraining);
