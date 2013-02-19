@@ -58,8 +58,8 @@ class ConverterSec {
     }
 
     private static def updateQuarter(line, to, from, order, lastScore) {
-        int scoreA = 0
-        int scoreB = 0
+        int scoreA = lastScore[0]
+        int scoreB = lastScore[1]
 
         boolean toSave = false
         mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, new BasicDBObject("diffA", 1).append("diffB", 1), "log").sort(["sec": -1] as BasicDBObject).each { c ->
