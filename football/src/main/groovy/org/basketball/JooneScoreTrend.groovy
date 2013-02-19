@@ -1,4 +1,5 @@
 package org.basketball
+
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
@@ -20,7 +21,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     protected void initNeuralNet() {
         // First create the three layers
-        LinearLayer input = new LinearLayer();
+        DelayLayer input = new DelayLayer();
         SigmoidLayer hidden = new SigmoidLayer();
         SigmoidLayer output = new SigmoidLayer();
         input.setLayerName("input");
@@ -28,7 +29,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.setLayerName("output");
         // set the dimensions of the layers
 
-        input.setRows(inputSize);
+        input.setTaps(2)
+        input.setRows(1);
         hidden.setRows(50);
         output.setRows(outputSize);
 
@@ -81,8 +83,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         normalizerPlugIn.setName("InputPlugin");
 ////
 //
-//        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
-//        averagePlugIn.setAdvancedMovAvgSpec("2");
+//        MaxM averagePlugIn = new MovingAveragePlugIn();
+//        averagePlugIn.setAdvancedMovAvgSpec("1");
 //        averagePlugIn.setAdvancedSerieSelector((1..inputSize).join(","));
 //        averagePlugIn.setName("Average Plugin");
 //
@@ -95,10 +97,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // get the monitor object to train or feed forward
         Monitor monitor = nnet.getMonitor();
         // set the monitor parameters
-//        monitor.setLearningRate(0.8);
-//        monitor.setMomentum(0.3);
-        monitor.setLearningRate(0.0001);
-        monitor.setMomentum(0.00000001);
+        monitor.setLearningRate(0.8);
+        monitor.setMomentum(0.3);
+//        monitor.setLearningRate(0.0001);
+//        monitor.setMomentum(0.00000001);
         monitor.setTrainingPatterns(inputArray.length);
         monitor.setTotCicles(100);
         monitor.setLearning(true);

@@ -103,10 +103,12 @@ class Test {
             }
             if (Math.abs(expected - maxIndex) < 3)
                 hit++
+
+            println allTraining[j]
             println "actual:" + (maxIndex + 20) + ", expected:" + (expected + 20)
             j++
         }
 
-        println hit/allTraining.length*100+"%"
+        println hit / allTraining.length * 100 + "%"
     }
 }
