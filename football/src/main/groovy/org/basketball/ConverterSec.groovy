@@ -79,9 +79,9 @@ class ConverterSec {
             }
         }
         if (toSave)
-            mongoDBUtil.insert([url: line, order: order, scoreA: scoreA, scoreB: scoreB] as BasicDBObject, "second")
+            mongoDBUtil.insert([url: line, to: to, scoreA: scoreA, scoreB: scoreB] as BasicDBObject, "second")
         else
-            mongoDBUtil.insert([url: line, order: order, scoreA: lastScore[0], scoreB: lastScore[1]] as BasicDBObject, "second")
+            mongoDBUtil.insert([url: line, to: to, scoreA: lastScore[0], scoreB: lastScore[1]] as BasicDBObject, "second")
 
 
         return [scoreA, scoreB]
