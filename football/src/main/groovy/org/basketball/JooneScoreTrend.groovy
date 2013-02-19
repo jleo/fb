@@ -21,7 +21,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     protected void initNeuralNet() {
         // First create the three layers
-        DelayLayer input = new DelayLayer();
+        LinearLayer input = new LinearLayer();
         SigmoidLayer hidden = new SigmoidLayer();
         SigmoidLayer output = new SigmoidLayer();
         input.setLayerName("input");
@@ -29,8 +29,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.setLayerName("output");
         // set the dimensions of the layers
 
-        input.setTaps(576)
-        input.setRows(1);
+        input.setRows(inputSize);
         hidden.setRows(50);
         output.setRows(outputSize);
 
@@ -102,7 +101,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //        monitor.setLearningRate(0.0001);
 //        monitor.setMomentum(0.00000001);
         monitor.setTrainingPatterns(inputArray.length);
-        monitor.setTotCicles(100);
+        monitor.setTotCicles(500);
         monitor.setLearning(true);
         nnet.addNeuralNetListener(this);
         nnet.start();
@@ -136,8 +135,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 11
-    static final int inputSize = 432
-    static final int outputSize = 110
+    static final int inputSize = numberOfFeature * 2 * 3 + 3
+    static final int outputSize = 220
 
     public void saveNeuralNet(String fileName) {
         try {
@@ -161,8 +160,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
 
-        JooneScoreTrend joone = new JooneScoreTrend();
-        joone.initNeuralNet();
+
 
         def output = new File("/Users/jleo/list.txt")
 
@@ -176,11 +174,25 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
         output.eachLine { line ->
             if (idx < count) {
+                int startFrom = 0
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "second").sort([second: 1] as BasicDBObject)
+                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, 0, allTraining, false, 1, idx)
+
+                startFrom += numberOfFeature * 2 + 1
+                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, startFrom, allTraining, false, 1, idx)
+
+                startFrom += numberOfFeature * 2 + 1
+                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, startFrom, allTraining, false, 1, idx)
+
+                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, 0, allTraining, true, 1, idx)
             }
             idx++
+            if (idx % 100 == 0)
+                println idx
         }
 
 //        inputSynapse.setInputArray(inputArray);
@@ -211,8 +223,17 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //        monitor.setLearning(true);
 
 //        JooneTools.train(joone.nnet, allTraining, allReal, 200, 0.01d, 100, joone, false);
-        joone.train(allTraining, allReal);
-        joone.saveNeuralNet("trained")
+
+        FileOutputStream stream = new FileOutputStream("train");
+        ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(allTraining);
+        out.close()
+
+        stream = new FileOutputStream("real");
+        out = new ObjectOutputStream(stream); out.writeObject(allReal);
+        out.close()
+//
+//        joone.train(allTraining, allReal);
+//        joone.saveNeuralNet("trained")
 //        JooneTools.create_standard()
 //        def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", ['\$ge': '201003300CLE'] as BasicDBObject), null, "quarter").sort([quarter: 1] as BasicDBObject)
 //        def count = cursor.count()
@@ -238,17 +259,38 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     public static void add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, discount, number) {
         cursor.each {
-            double[] stats = allTraining[number];
+            int sum = (it.get("score") as String).split("-").sum {
+                it as int
+            }
 
-            int second = (it.get("to") as int)
+            if (!addReal) {
+                double[] stats = allTraining[number];
 
-            second /= 5
+                int index = startFrom
+                Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
+                    def countA = it.get("ae").get(abbr)
+                    if (countA) {
+                        countA = countA as int
+                        stats[index] = countA
+                    } else {
+                        stats[index] = 0
+                    }
+                    index += 1
+                    def countB = it.get("be").get(abbr)
+                    if (countB) {
+                        countB = countB as int
+                        stats[index] = countB
+                    } else {
+                        stats[index] = 0
+                    }
+                    index += 1
+                }
 
-            int sum = (it.get("scoreA") as int) + (it.get("scoreB") as int)
-            if (second >= 144)
-                stats[575 - second] = sum
-            else if (second == 5)
-                allReal[number][Math.floor((sum - 100) / 5) as int] = 1
+
+                stats[index] = sum
+            }
+            if (addReal)
+                allReal[number][(Math.floor(sum) as int) - 100] = 1
         }
         cursor.close()
     }

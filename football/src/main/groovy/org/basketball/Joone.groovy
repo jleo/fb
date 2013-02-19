@@ -1,4 +1,5 @@
 package org.basketball
+
 import Util.MongoDBUtil
 import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
@@ -8,6 +9,7 @@ import org.joone.engine.learning.TeachingSynapse
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
+import org.joone.util.NormalizerPlugIn
 
 public class Joone implements NeuralNetListener, Serializable {
     /**
@@ -77,8 +79,6 @@ public class Joone implements NeuralNetListener, Serializable {
             for (int i = 0; i < p.getArray().length; i++) {
                 double c = p.getArray()[i];
                 if (c > max) {
-                    if (i == 13)
-                        continue;
                     max = c
                     maxIndex = i;
                 }
@@ -94,12 +94,12 @@ public class Joone implements NeuralNetListener, Serializable {
 
         inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
 
-//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
-//        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
-//        normalizerPlugIn.setMax(1);//setting the max value as 1
-//        normalizerPlugIn.setMin(0);//setting the min value as 0
-//        normalizerPlugIn.setName("InputPlugin");
-//        inputSynapse.addPlugIn(normalizerPlugIn);
+        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
+        normalizerPlugIn.setMax(1);//setting the max value as 1
+        normalizerPlugIn.setMin(0);//setting the min value as 0
+        normalizerPlugIn.setName("InputPlugin");
+        inputSynapse.addPlugIn(normalizerPlugIn);
 
         // set the desired outputs
         desiredOutputSynapse.setInputArray(desiredOutputArray);
@@ -107,8 +107,8 @@ public class Joone implements NeuralNetListener, Serializable {
         // get the monitor object to train or feed forward
         Monitor monitor = nnet.getMonitor();
         // set the monitor parameters
-        monitor.setLearningRate(0.0001);
-        monitor.setMomentum(0.00000001);
+        monitor.setLearningRate(0.8);
+        monitor.setMomentum(0.3);
         monitor.setTrainingPatterns(inputArray.length);
         monitor.setTotCicles(50);
         monitor.setLearning(true);
@@ -118,6 +118,25 @@ public class Joone implements NeuralNetListener, Serializable {
         for (Object o : outputSynapse.getAllPatterns()) {
             Pattern p = (Pattern) o;
             System.out.println(10 * p.getArray()[0]);
+        }
+    }
+
+    public void saveNeuralNet(String fileName) {
+        try {
+            FileOutputStream stream = new FileOutputStream(fileName); ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(nnet);
+            out.close();
+        } catch (Exception excp) {
+            excp.printStackTrace();
+        }
+    }
+
+
+    public NeuralNet restoreNeuralNet(String filename) {
+        try {
+            FileInputStream stream = new FileInputStream(filename); ObjectInputStream inp = new ObjectInputStream(stream); return (NeuralNet) inp.readObject();
+        } catch (Exception excp) {
+            excp.printStackTrace();
+            return null;
         }
     }
 
@@ -167,7 +186,9 @@ public class Joone implements NeuralNetListener, Serializable {
         add(cursor, allReal, startFrom, number, allTraining, false, 1 / 3)
 
         joone.train(allTraining, allReal);
+        joone.saveNeuralNet("train")
 
+        println "saved network"
 //        def tests = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gt': '201210300CLE'] as BasicDBObject).append("sec", 720).append("ot", 0), null, "log")
 //        def count = tests.count()
 //        def hit = new AtomicInteger()
@@ -221,6 +242,31 @@ public class Joone implements NeuralNetListener, Serializable {
 //            }
 //        }
         int hit = 0;
+        joone.nnet.getInputLayer().removeAllInputs()
+        joone.nnet.getOutputLayer().removeAllOutputs()
+
+        def inputSynapse = new MemoryInputSynapse();
+        inputSynapse.setInputArray(allTraining);
+        inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
+
+        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
+        normalizerPlugIn.setMax(1);//setting the max value as 1
+        normalizerPlugIn.setMin(0);//setting the min value as 0
+        normalizerPlugIn.setName("InputPlugin");
+        inputSynapse.addPlugIn(normalizerPlugIn);
+
+        joone.nnet.getInputLayer().addInputSynapse(inputSynapse)
+
+        def outputSynapse = new MemoryOutputSynapse();
+        joone.nnet.getOutputLayer().addOutputSynapse(outputSynapse)
+
+        joone.nnet.getMonitor().setTrainingPatterns(allTraining.length)
+        joone.nnet.getMonitor().setTotCicles(1);
+        joone.nnet.getMonitor().setLearning(false);
+
+        joone.nnet.start();
+        joone.nnet.getMonitor().Go();
 
         cursor = mongoDBUtil.findAllCursor((["\$or": [["ae": ["\$exists": true] as BasicDBObject] as BasicDBObject, ["be": ["\$exists": true] as BasicDBObject] as BasicDBObject] as BasicDBList] as BasicDBObject).append("url", ['\$gte': '201210300CLE'] as BasicDBObject).append("sec", 720).append("ot", 0), null, "log")
         def count = cursor.count()
@@ -265,15 +311,10 @@ public class Joone implements NeuralNetListener, Serializable {
             int index = startFrom
             Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
                 def countA = it.get("ae").get(abbr)
-//                println abbr
-//                println countA
 
                 if (countA) {
                     countA = countA as int
-
-//                    if (countA >= Sharding.divide.get(abbr) * discount) {
-                        stats[index] = countA/40 as double
-//                    }
+                    stats[index] = countA
                 } else {
                     stats[index] = 0
                 }
@@ -281,9 +322,7 @@ public class Joone implements NeuralNetListener, Serializable {
                 def countB = it.get("be").get(abbr)
                 if (countB) {
                     countB = countB as int
-//                    if (countB >= Sharding.divide.get(abbr) * discount) {
-                        stats[index] = countB/40 as double
-//                    }
+                    stats[index] = countB
                 } else {
                     stats[index] = 0
                 }

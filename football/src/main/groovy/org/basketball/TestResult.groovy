@@ -1,7 +1,5 @@
 package org.basketball
 
-import Util.MongoDBUtil
-import com.mongodb.BasicDBObject
 import org.joone.engine.Pattern
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
@@ -11,38 +9,27 @@ import org.joone.util.NormalizerPlugIn
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
- * Date: 13-2-18
- * Time: 下午3:22
- * Let's RocknRoll
+ * Date: 13-2-19
+ * Time: 下午10:21
+ * To change this template use File | Settings | File Templates.
  */
-class Test {
+class TestResult {
     public static void main(String[] args) {
-        MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
-
         JooneScoreTrend joone = new JooneScoreTrend();
-
-        NeuralNet nn = joone.restoreNeuralNet("trained")
 
         int hit = 0;
 
-        def output = new File("/Users/jleo/list.txt")
-        int total = output.readLines().size()
-        def count = output.readLines().findIndexOf {
-            it == "/boxscores/pbp/201203240LAC.html"
-        }
-        def idx = count
-        def allTraining = new double[total - count][JooneScoreTrend.inputSize]
-        def allReal = new double[total - count][JooneScoreTrend.outputSize]
-        int scanned = 0
-        output.eachLine { line ->
-            if (scanned >= count) {
-                line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
-                joone.add(cursor, allReal, 0, allTraining, true, 1, scanned - count)
-            }
-            scanned++
-        }
+        FileInputStream stream = new FileInputStream("test");
+        ObjectInputStream out = new ObjectInputStream(stream);
+        def allTraining = out.readObject()
+        out.close()
 
+        stream = new FileInputStream("testreal");
+        out = new ObjectInputStream(stream);
+        def allReal = out.readObject()
+        out.close()
+
+        NeuralNet nn = joone.restoreNeuralNet("trained")
         nn.getInputLayer().removeAllInputs()
 
         def inputSynapse = new MemoryInputSynapse();
@@ -54,14 +41,6 @@ class Test {
         normalizerPlugIn.setMax(1);//setting the max value as 1
         normalizerPlugIn.setMin(0);//setting the min value as 0
         normalizerPlugIn.setName("InputPlugin");
-////////
-//////
-//        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
-//        averagePlugIn.setAdvancedMovAvgSpec("2");
-//        averagePlugIn.setAdvancedSerieSelector((1..JooneScoreTrend.inputSize).join(","));
-//        averagePlugIn.setName("Average Plugin");
-//
-//        normalizerPlugIn.addPlugIn(averagePlugIn);
         inputSynapse.addPlugIn(normalizerPlugIn);
 
         nn.getInputLayer().addInputSynapse(inputSynapse)
@@ -77,7 +56,6 @@ class Test {
         nn.start();
         nn.getMonitor().Go();
 
-        double[] result = new double[allTraining.length];
 
         int j = 0;
         for (Object o : outputSynapse.getAllPatterns()) {
@@ -96,16 +74,14 @@ class Test {
                     maxIndex = i;
                 }
             }
-            result[j] = maxIndex + 20
 
             int expected = allReal[j].findIndexOf {
                 it == 1
             }
-            if (Math.abs(expected - maxIndex) < 3)
+            if (Math.abs(expected - maxIndex) <= 5)
                 hit++
 
-            println allTraining[j]
-            println "actual:" + (maxIndex + 20) + ", expected:" + (expected + 20)
+            println "actual:" + (maxIndex+100)  + ", expected:" + (expected+100)
             j++
         }
 

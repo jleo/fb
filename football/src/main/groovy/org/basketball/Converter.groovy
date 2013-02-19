@@ -60,8 +60,30 @@ class Converter {
     private static void updateQuarter(line, to, from, quarter) {
         int scoreA = 0
         int scoreB = 0
+//
+//        def stats = [:].withDefault {
+//            0
+//        }
 
-        mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, new BasicDBObject("diffA", 1).append("diffB", 1), "log").sort(["sec": -1] as BasicDBObject).each { c ->
+        mongoDBUtil.findAllCursor([url: line, sec: ["\$gte": to, "\$lt": from]] as BasicDBObject, null, "log").sort(["sec": -1] as BasicDBObject).each { c ->
+//            Sharding.keyEventAbbr.values().asList()[0..Joone.numberOfFeature - 1].each { abbr ->
+//                def countA = c.get("ae").get(abbr)
+//
+//                if (countA) {
+//                    countA = countA as int
+//                    stats[abbr + 'A'] = (countA as int) + (stats[abbr + 'A'] as int)
+//                } else {
+//                    stats[abbr + 'A'] = 0
+//                }
+//                def countB = c.get("be").get(abbr)
+//                if (countB) {
+//                    countB = countB as int
+//                    stats[abbr + 'B'] = (countB as int) + (stats[abbr + 'B'] as int)
+//                } else {
+//                    stats[abbr + 'B'] = 0
+//                }
+//            }
+
             String diffA = c.get("diffA")
             String diffB = c.get("diffB")
 
@@ -75,7 +97,6 @@ class Converter {
                 scoreB += diffB as int
             }
         }
-        mongoDBUtil.insert([url: line, quarter: quarter, scoreA: scoreA, scoreB: scoreB] as BasicDBObject, "quarter")
-        //mongoDBUtil.update([url: line, sec: to] as BasicDBObject, ['\$set': ["q${quarter}a": scoreA, "q${quarter}b": scoreB]] as BasicDBObject, "log", true)
+        mongoDBUtil.insert(([url: line, quarter: quarter, scoreA: scoreA, scoreB: scoreB]) as BasicDBObject, "quarter")
     }
 }
