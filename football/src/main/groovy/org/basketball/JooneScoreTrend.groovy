@@ -29,7 +29,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.setLayerName("output");
         // set the dimensions of the layers
 
-        input.setTaps(2)
+        input.setTaps(576)
         input.setRows(1);
         hidden.setRows(50);
         output.setRows(outputSize);
@@ -136,7 +136,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 11
-    static final int inputSize = 3
+    static final int inputSize = 432
     static final int outputSize = 110
 
     public void saveNeuralNet(String fileName) {
@@ -177,7 +177,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.eachLine { line ->
             if (idx < count) {
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "quarter").sort([quarter: 1] as BasicDBObject)
+                def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", line), null, "second").sort([second: 1] as BasicDBObject)
                 add(cursor, allReal, 0, allTraining, true, 1, idx)
             }
             idx++
@@ -240,13 +240,15 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         cursor.each {
             double[] stats = allTraining[number];
 
-            int quarter = it.get("quarter") as int
+            int second = (it.get("to") as int)
+
+            second /= 5
 
             int sum = (it.get("scoreA") as int) + (it.get("scoreB") as int)
-            if (quarter != 4)
-                stats[quarter - 1] = sum
-            else
-                allReal[number][sum - 20] = 1
+            if (second >= 144)
+                stats[575 - second] = sum
+            else if (second == 5)
+                allReal[number][Math.floor((sum - 100) / 5) as int] = 1
         }
         cursor.close()
     }
