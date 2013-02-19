@@ -1,10 +1,13 @@
 package org.basketball
+
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import org.joone.engine.Pattern
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
+import org.joone.util.NormalizerPlugIn
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -28,8 +31,8 @@ class Test {
             it == "/boxscores/pbp/201203240LAC.html"
         }
         def idx = count
-        def allTraining = new double[total - count + 1][JooneScoreTrend.inputSize]
-        def allReal = new double[total - count + 1][JooneScoreTrend.outputSize]
+        def allTraining = new double[total - count][JooneScoreTrend.inputSize]
+        def allReal = new double[total - count][JooneScoreTrend.outputSize]
         int scanned = 0
         output.eachLine { line ->
             if (scanned >= count) {
@@ -40,15 +43,17 @@ class Test {
             scanned++
         }
 
+        nn.getInputLayer().removeAllInputs()
+
         def inputSynapse = new MemoryInputSynapse();
         inputSynapse.setInputArray(allTraining);
         inputSynapse.setAdvancedColumnSelector((1..JooneScoreTrend.inputSize).join(","));
 
-//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
-//        normalizerPlugIn.setAdvancedSerieSelector((1..JooneScoreTrend.inputSize).join(","))
-//        normalizerPlugIn.setMax(1);//setting the max value as 1
-//        normalizerPlugIn.setMin(0);//setting the min value as 0
-//        normalizerPlugIn.setName("InputPlugin");
+        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+        normalizerPlugIn.setAdvancedSerieSelector((1..JooneScoreTrend.inputSize).join(","))
+        normalizerPlugIn.setMax(1);//setting the max value as 1
+        normalizerPlugIn.setMin(0);//setting the min value as 0
+        normalizerPlugIn.setName("InputPlugin");
 ////////
 //////
 //        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
@@ -57,16 +62,17 @@ class Test {
 //        averagePlugIn.setName("Average Plugin");
 //
 //        normalizerPlugIn.addPlugIn(averagePlugIn);
-//        inputSynapse.addPlugIn(normalizerPlugIn);
+        inputSynapse.addPlugIn(normalizerPlugIn);
+
+        nn.getInputLayer().addInputSynapse(inputSynapse)
+
+        nn.getOutputLayer().removeAllOutputs()
+        def outputSynapse = new MemoryOutputSynapse();
+        nn.getOutputLayer().addOutputSynapse(outputSynapse)
 
         nn.getMonitor().setTrainingPatterns(allTraining.length)
         nn.getMonitor().setTotCicles(1);
         nn.getMonitor().setLearning(false);
-
-        nn.getInputLayer().addInputSynapse(inputSynapse)
-        def outputSynapse = new MemoryOutputSynapse();
-
-        nn.getOutputLayer().addOutputSynapse(outputSynapse)
 
         nn.start();
         nn.getMonitor().Go();
@@ -74,8 +80,6 @@ class Test {
         double[] result = new double[allTraining.length];
 
         int j = 0;
-
-
         for (Object o : outputSynapse.getAllPatterns()) {
 
             Pattern p = (Pattern) o;
@@ -85,13 +89,24 @@ class Test {
             for (int i = 0; i < p.getArray().length; i++) {
                 double c = p.getArray()[i];
                 if (c > max) {
+//                    if (i == 24)
+//                        continue
+
                     max = c
                     maxIndex = i;
                 }
             }
             result[j] = maxIndex + 20
+
+            int expected = allReal[j].findIndexOf {
+                it == 1
+            }
+            if (Math.abs(expected - maxIndex) < 3)
+                hit++
+            println "actual:" + (maxIndex + 20) + ", expected:" + (expected + 20)
             j++
         }
-        println result
+
+        println hit/allTraining.length*100+"%"
     }
 }

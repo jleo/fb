@@ -4,7 +4,6 @@ import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
 import org.joone.engine.*
 import org.joone.engine.learning.TeachingSynapse
-import org.joone.helpers.factory.JooneTools
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
@@ -21,7 +20,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     protected void initNeuralNet() {
         // First create the three layers
-        SigmoidLayer input = new SigmoidLayer();
+        LinearLayer input = new LinearLayer();
         SigmoidLayer hidden = new SigmoidLayer();
         SigmoidLayer output = new SigmoidLayer();
         input.setLayerName("input");
@@ -54,7 +53,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
         nnet = new NeuralNet();
         nnet.addLayer(input, NeuralNet.INPUT_LAYER);
-        200.times {
+        30.times {
             nnet.addLayer(hidden, NeuralNet.HIDDEN_LAYER);
         }
         nnet.addLayer(output, NeuralNet.OUTPUT_LAYER);
@@ -73,8 +72,6 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public void train(double[][] inputArray, double[][] desiredOutputArray) {
         // set the inputs
         inputSynapse.setInputArray(inputArray);
-//        inputSynapse.setInputFull(true)
-
         inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
 
         NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
@@ -98,12 +95,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // get the monitor object to train or feed forward
         Monitor monitor = nnet.getMonitor();
         // set the monitor parameters
-        monitor.setLearningRate(0.8);
-        monitor.setMomentum(0.3);
-//        monitor.setLearningRate(0.0001);
-//        monitor.setMomentum(0.00000001);
+//        monitor.setLearningRate(0.8);
+//        monitor.setMomentum(0.3);
+        monitor.setLearningRate(0.0001);
+        monitor.setMomentum(0.00000001);
         monitor.setTrainingPatterns(inputArray.length);
-        monitor.setTotCicles(50);
+        monitor.setTotCicles(100);
         monitor.setLearning(true);
         nnet.addNeuralNetListener(this);
         nnet.start();
@@ -145,15 +142,18 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             FileOutputStream stream = new FileOutputStream(fileName); ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(nnet);
             out.close();
         } catch (Exception excp) {
-            excp.printStackTrace(); }
+            excp.printStackTrace();
+        }
     }
 
 
     public NeuralNet restoreNeuralNet(String filename) {
         try {
-            FileInputStream stream = new FileInputStream(filename); ObjectInputStream inp = new ObjectInputStream(stream); return (NeuralNet)inp.readObject();
-        } catch (Exception excp) { excp.printStackTrace();
-            return null; }
+            FileInputStream stream = new FileInputStream(filename); ObjectInputStream inp = new ObjectInputStream(stream); return (NeuralNet) inp.readObject();
+        } catch (Exception excp) {
+            excp.printStackTrace();
+            return null;
+        }
     }
 
     public static void main(String[] args) {
@@ -168,8 +168,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             it == "/boxscores/pbp/200201120CHI.html"
         }
 
-        def allTraining = new double[count + 1][inputSize]
-        def allReal = new double[count + 1][outputSize]
+        def allTraining = new double[count][inputSize]
+        def allReal = new double[count][outputSize]
         int idx = 0
 
         output.eachLine { line ->
@@ -181,21 +181,37 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             idx++
         }
 
-        Monitor monitor = joone.nnet.getMonitor();
-        // set the monitor parameters
-        monitor.setLearningRate(0.8);
-        monitor.setMomentum(0.3);
-//        monitor.setLearningRate(0.0001);
-//        monitor.setMomentum(0.00000001);
-        monitor.setTrainingPatterns(allTraining.length);
-        monitor.setLearning(true);
+//        inputSynapse.setInputArray(inputArray);
+//        joone.inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
+//
+//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+//        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
+//        normalizerPlugIn.setMax(1);//setting the max value as 1
+//        normalizerPlugIn.setMin(0);//setting the min value as 0
+//        normalizerPlugIn.setName("InputPlugin");
+////
+//
+//        MovingAveragePlugIn averagePlugIn = new MovingAveragePlugIn();
+//        averagePlugIn.setAdvancedMovAvgSpec("2");
+//        averagePlugIn.setAdvancedSerieSelector((1..inputSize).join(","));
+//        averagePlugIn.setName("Average Plugin");
+//
+//        normalizerPlugIn.addPlugIn(averagePlugIn);
+//        joone.inputSynapse.addPlugIn(normalizerPlugIn);
 
-        JooneTools.train(joone.nnet, allTraining, allReal,1000,0.01d,100,joone,false);
-//        joone.train(allTraining, allReal);
+//        Monitor monitor = joone.nnet.getMonitor();
+//        // set the monitor parameters
+//        monitor.setLearningRate(0.8);
+//        monitor.setMomentum(0.3);
+////        monitor.setLearningRate(0.0001);
+////        monitor.setMomentum(0.00000001);
+//        monitor.setTrainingPatterns(allTraining.length);
+//        monitor.setLearning(true);
+
+//        JooneTools.train(joone.nnet, allTraining, allReal, 200, 0.01d, 100, joone, false);
+        joone.train(allTraining, allReal);
         joone.saveNeuralNet("trained")
-
-
-
+//        JooneTools.create_standard()
 //        def cursor = mongoDBUtil.findAllCursor(([:] as BasicDBObject).append("url", ['\$ge': '201003300CLE'] as BasicDBObject), null, "quarter").sort([quarter: 1] as BasicDBObject)
 //        def count = cursor.count()
 //        allTraining = new double[count][inputSize]
