@@ -1,5 +1,7 @@
 package org.basketball
 
+import org.joone.util.DynamicAnnealing
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -29,6 +31,7 @@ class Train {
         out = new ObjectInputStream(stream);
         def allReal = out.readObject()
         out.close()
+
 
 
         joone.train(allTraining, allReal);

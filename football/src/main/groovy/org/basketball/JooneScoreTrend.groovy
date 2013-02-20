@@ -8,6 +8,7 @@ import org.joone.engine.learning.TeachingSynapse
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
+import org.joone.util.DynamicAnnealing
 import org.joone.util.NormalizerPlugIn
 
 public class JooneScoreTrend implements NeuralNetListener, Serializable {
@@ -115,6 +116,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         monitor.setTotCicles(cycle);
         monitor.setLearning(true);
 
+        DynamicAnnealing dynamicAnnealing = new DynamicAnnealing()
+        dynamicAnnealing.setRate(5)
+        dynamicAnnealing.setStep(0.15);
+        dynamicAnnealing.setNeuralNet(nnet);
+
+        nnet.addNeuralNetListener(dynamicAnnealing);
         if (useRProp) {
             monitor.getLearners().add(0, "org.joone.engine.RpropLearner");
             monitor.setLearningMode(1);
