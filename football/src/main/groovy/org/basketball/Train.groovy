@@ -23,6 +23,7 @@ class Train {
         def allReal = out.readObject()
         out.close()
 
+
         joone.train(allTraining, allReal);
         joone.saveNeuralNet("trained");
     }

@@ -30,7 +30,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // set the dimensions of the layers
 
         input.setRows(inputSize);
-        hidden.setRows(50);
+        hidden.setRows(200);
         output.setRows(outputSize);
 
         // Now create the two Synapses
@@ -103,6 +103,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         monitor.setTrainingPatterns(inputArray.length);
         monitor.setTotCicles(500);
         monitor.setLearning(true);
+
         nnet.addNeuralNetListener(this);
         nnet.start();
         nnet.getMonitor().Go();
@@ -114,6 +115,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
 
     public void errorChanged(NeuralNetEvent e) {
+        println "RMSE:" + ((Monitor) e.getSource()).getGlobalError();
     }
 
     public void netStarted(NeuralNetEvent e) {
@@ -127,7 +129,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public void cicleTerminated(NeuralNetEvent e) {
         Monitor mon = (Monitor) e.getSource();
         long c = mon.getCurrentCicle();
-        if (c % 100 == 0)
+        if (c % 20 == 0)
             System.out.println(c + " epochs remaining - RMSE = " + mon.getGlobalError());
     }
 
