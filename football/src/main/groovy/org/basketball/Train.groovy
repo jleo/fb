@@ -17,9 +17,10 @@ class Train {
         joone.learnRate = args[3] as double
         joone.mon = args[4] as double
         joone.useRProp = args[5] as boolean
+        String outputName = args[6]
         joone.initNeuralNet();
 
-        FileInputStream stream = new FileInputStream("train");
+        FileInputStream stream = new FileInputStream(outputName);
         ObjectInputStream out = new ObjectInputStream(stream);
         def allTraining = out.readObject()
         out.close()
