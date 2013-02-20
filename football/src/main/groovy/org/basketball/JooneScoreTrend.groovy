@@ -28,6 +28,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     BigDecimal learnRate = 0.8
 
     BigDecimal mon = 0.3
+    boolean useRProp = false
 
     protected void initNeuralNet() {
         // First create the three layers
@@ -113,6 +114,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         monitor.setTrainingPatterns(inputArray.length);
         monitor.setTotCicles(cycle);
         monitor.setLearning(true);
+
+        if (useRProp) {
+            monitor.getLearners().add(0, "org.joone.engine.RpropLearner");
+            monitor.setLearningMode(1);
+            monitor.setLearningRate(1.0)
+        }
 
         nnet.addNeuralNetListener(this);
         nnet.start();
