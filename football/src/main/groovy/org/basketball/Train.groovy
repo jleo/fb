@@ -20,7 +20,7 @@ class Train {
         String outputName = args[6]
         joone.initNeuralNet();
 
-        FileInputStream stream = new FileInputStream(outputName);
+        FileInputStream stream = new FileInputStream("train");
         ObjectInputStream out = new ObjectInputStream(stream);
         def allTraining = out.readObject()
         out.close()
@@ -32,6 +32,6 @@ class Train {
 
 
         joone.train(allTraining, allReal);
-        joone.saveNeuralNet("trained");
+        joone.saveNeuralNet(outputName);
     }
 }
