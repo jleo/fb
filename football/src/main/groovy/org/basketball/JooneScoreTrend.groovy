@@ -19,6 +19,16 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     private MemoryInputSynapse inputSynapse, desiredOutputSynapse;
     private MemoryOutputSynapse outputSynapse;
 
+    int row = 200
+
+    int layer = 30
+
+    int cycle = 500
+
+    BigDecimal learnRate = 0.8
+
+    BigDecimal mon = 0.3
+
     protected void initNeuralNet() {
         // First create the three layers
         LinearLayer input = new LinearLayer();
@@ -30,7 +40,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // set the dimensions of the layers
 
         input.setRows(inputSize);
-        hidden.setRows(200);
+        hidden.setRows(row);
         output.setRows(outputSize);
 
         // Now create the two Synapses
@@ -54,7 +64,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
         nnet = new NeuralNet();
         nnet.addLayer(input, NeuralNet.INPUT_LAYER);
-        30.times {
+        layer.times {
             nnet.addLayer(hidden, NeuralNet.HIDDEN_LAYER);
         }
         nnet.addLayer(output, NeuralNet.OUTPUT_LAYER);
@@ -96,12 +106,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         // get the monitor object to train or feed forward
         Monitor monitor = nnet.getMonitor();
         // set the monitor parameters
-        monitor.setLearningRate(0.8);
-        monitor.setMomentum(0.3);
+        monitor.setLearningRate(learnRate);
+        monitor.setMomentum(mon);
 //        monitor.setLearningRate(0.0001);
 //        monitor.setMomentum(0.00000001);
         monitor.setTrainingPatterns(inputArray.length);
-        monitor.setTotCicles(500);
+        monitor.setTotCicles(cycle);
         monitor.setLearning(true);
 
         nnet.addNeuralNetListener(this);

@@ -11,6 +11,7 @@ class Train {
     public static void main(String[] args) {
 
         JooneScoreTrend joone = new JooneScoreTrend();
+        joone.cycle = args[0] as int
         joone.initNeuralNet();
 
         FileInputStream stream = new FileInputStream("train");
