@@ -31,7 +31,7 @@ class TestResult {
         def allReal = out.readObject()
         out.close()
 
-        NeuralNet nn = joone.restoreNeuralNet("trained")
+        NeuralNet nn = joone.restoreNeuralNet(args[0])
         nn.getInputLayer().removeAllInputs()
 
         def inputSynapse = new MemoryInputSynapse();
