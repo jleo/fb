@@ -17,7 +17,9 @@ class TestResult {
     public static void main(String[] args) {
         JooneScoreTrend joone = new JooneScoreTrend();
 
-        int hit = 0;
+        int hit5 = 0;
+        int hit10 = 0;
+        int hit15 = 0;
 
         FileInputStream stream = new FileInputStream("test");
         ObjectInputStream out = new ObjectInputStream(stream);
@@ -79,12 +81,20 @@ class TestResult {
                 it == 1
             }
             if (Math.abs(expected - maxIndex) <= 5)
-                hit++
+                hit5++
+
+            if (Math.abs(expected - maxIndex) <= 10)
+                hit10++
+
+            if (Math.abs(expected - maxIndex) <= 15)
+                hit15++
 
             println "actual:" + (maxIndex+100)  + ", expected:" + (expected+100)
             j++
         }
 
-        println hit / allTraining.length * 100 + "%"
+        println hit5 / allTraining.length * 100 + "%"
+        println hit10 / allTraining.length * 100 + "%"
+        println hit15 / allTraining.length * 100 + "%"
     }
 }
