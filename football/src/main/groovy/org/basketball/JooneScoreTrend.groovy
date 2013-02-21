@@ -215,7 +215,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
 
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, 0, allTraining, true, 1, last)
+                add(cursor, allReal, 0, allTraining, true, 1, idx, last)
 
                 idx++
             }
