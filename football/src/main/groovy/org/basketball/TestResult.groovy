@@ -17,6 +17,7 @@ class TestResult {
     public static void main(String[] args) {
         JooneScoreTrend joone = new JooneScoreTrend();
 
+        int hit0 = 0;
         int hit5 = 0;
         int hit10 = 0;
         int hit15 = 0;
@@ -80,6 +81,9 @@ class TestResult {
             int expected = allReal[j].findIndexOf {
                 it == 1
             }
+            if (Math.abs(expected - maxIndex) == 0)
+                hit0++
+
             if (Math.abs(expected - maxIndex) <= 5)
                 hit5++
 
@@ -89,10 +93,11 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-            println "actual:" + (maxIndex+20)  + ", expected:" + (expected+20)
+            println "actual:" + (maxIndex + 20) + ", expected:" + (expected + 20)
             j++
         }
 
+        println hit0 / allTraining.length * 100 + "%"
         println hit5 / allTraining.length * 100 + "%"
         println hit10 / allTraining.length * 100 + "%"
         println hit15 / allTraining.length * 100 + "%"
