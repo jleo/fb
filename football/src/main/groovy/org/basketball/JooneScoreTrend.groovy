@@ -201,22 +201,24 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         output.eachLine { line ->
             if (idx < count) {
                 int startFrom = 0
+                def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
                 def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, 0, allTraining, false, 1, idx)
+                add(cursor, allReal, 0, allTraining, false, 1, idx, last)
 
                 startFrom += numberOfFeature * 2 + 1
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, startFrom, allTraining, false, 1, idx)
+                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
 
                 startFrom += numberOfFeature * 2 + 1
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, startFrom, allTraining, false, 1, idx)
+                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
 
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, 0, allTraining, true, 1, idx)
+                add(cursor, allReal, 0, allTraining, true, 1, last)
+
+                idx++
             }
-            idx++
             if (idx % 100 == 0)
                 println idx
         }
@@ -283,21 +285,23 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //        println hit / count * 100 + "%"
     }
 
-    public static void add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, discount, number) {
+    public static def add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, discount, number, last) {
+        int sum = 0
         cursor.each {
-            int sum = (it.get("score") as String).split("-").sum {
+            sum = (it.get("score") as String).split("-").sum {
                 it as int
             }
 
+            int index = startFrom
+            double[] stats = allTraining[number];
             if (!addReal) {
-                double[] stats = allTraining[number];
 
-                int index = startFrom
                 Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
                     def countA = it.get("ae").get(abbr)
                     if (countA) {
                         countA = countA as int
-                        stats[index] = countA
+                        stats[index] = countA - last["ae"][abbr]
+                        last["ae"][abbr] = countA as int
                     } else {
                         stats[index] = 0
                     }
@@ -305,19 +309,20 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                     def countB = it.get("be").get(abbr)
                     if (countB) {
                         countB = countB as int
-                        stats[index] = countB
+                        stats[index] = countB - last["be"][abbr]
+                        last["be"][abbr] = countB as int
                     } else {
                         stats[index] = 0
                     }
                     index += 1
                 }
-
-
-                stats[index] = sum
+                stats[index] = sum - last["score"]
+                last["score"] = sum
             }
             if (addReal)
-                allReal[number][(Math.floor(sum) as int) - 100] = 1
+                allReal[number][sum - last["be"]["score"]-100] = 1
         }
         cursor.close()
+        return last
     }
 }

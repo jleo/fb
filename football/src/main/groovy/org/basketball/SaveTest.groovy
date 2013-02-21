@@ -1,6 +1,8 @@
 package org.basketball
+
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -28,26 +30,28 @@ class SaveTest {
             if (scanned >= count) {
                 int startFrom = 0
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
+
+                def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
+
                 def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                joone.add(cursor, allReal, 0, allTraining, false, 1, scanned - count)
+                joone.add(cursor, allReal, 0, allTraining, false, 1, scanned - count, last)
 
                 startFrom += joone.numberOfFeature * 2 + 1
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                joone.add(cursor, allReal, startFrom, allTraining, false, 1, scanned - count)
+                joone.add(cursor, allReal, startFrom, allTraining, false, 1, scanned - count, last)
 
                 startFrom += joone.numberOfFeature * 2 + 1
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                joone.add(cursor, allReal, startFrom, allTraining, false, 1, scanned - count)
+                joone.add(cursor, allReal, startFrom, allTraining, false, 1, scanned - count, last)
 
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                joone.add(cursor, allReal, 0, allTraining, true, 1, scanned - count)
+                joone.add(cursor, allReal, 0, allTraining, true, 1, scanned - count, last)
 
                 idx++
                 if (idx % 100 == 0)
                     println idx
             }
             scanned++
-
         }
         FileOutputStream stream = new FileOutputStream("test");
         ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(allTraining);
@@ -56,8 +60,6 @@ class SaveTest {
         stream = new FileOutputStream("testreal");
         out = new ObjectOutputStream(stream); out.writeObject(allReal);
         out.close()
-
-
 
 //
     }
