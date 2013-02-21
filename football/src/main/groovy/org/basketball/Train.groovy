@@ -1,7 +1,4 @@
 package org.basketball
-
-import org.joone.util.DynamicAnnealing
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -20,6 +17,7 @@ class Train {
         joone.mon = args[4] as double
         joone.useRProp = args[5] as boolean
         String outputName = args[6]
+        joone.hiddenLayerClass = args[7]
         joone.initNeuralNet();
 
         FileInputStream stream = new FileInputStream("train");

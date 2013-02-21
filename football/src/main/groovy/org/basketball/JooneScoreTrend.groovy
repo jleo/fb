@@ -31,10 +31,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     BigDecimal mon = 0.3
     boolean useRProp = false
 
+    String hiddenLayerClass
+
     protected void initNeuralNet() {
         // First create the three layers
         LinearLayer input = new LinearLayer();
-        SigmoidLayer hidden = new SigmoidLayer();
+        LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
         SigmoidLayer output = new SigmoidLayer();
         input.setLayerName("input");
         hidden.setLayerName("hidden");
@@ -118,11 +120,12 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
         DynamicAnnealing dynamicAnnealing = new DynamicAnnealing()
         dynamicAnnealing.setRate(5)
-        dynamicAnnealing.setStep(0.15);
+        dynamicAnnealing.setStep(15);
         dynamicAnnealing.setNeuralNet(nnet);
 
         nnet.addNeuralNetListener(dynamicAnnealing);
         if (useRProp) {
+
             monitor.getLearners().add(0, "org.joone.engine.RpropLearner");
             monitor.setLearningMode(1);
             monitor.setLearningRate(1.0)
