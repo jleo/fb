@@ -319,8 +319,13 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 stats[index] = sum - last["score"]
                 last["score"] = sum
             }
-            if (addReal)
-                allReal[number][sum-100] = 1
+            if (addReal) {
+                if (sum - 100 < 0)
+                    throw new RuntimeException()
+
+                allReal[number][sum - 100] = 1
+
+            }
         }
         cursor.close()
         return last

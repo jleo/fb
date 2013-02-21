@@ -7,5 +7,5 @@ package org.basketball
  * To change this template use File | Settings | File Templates.
  */
 
-FileOutputStream stream = new FileOutputStream("aa");
-ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(new double[10][4]);
+int[] a = new int[5]
+a[-3] = 1
