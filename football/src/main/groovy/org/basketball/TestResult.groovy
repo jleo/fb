@@ -89,7 +89,7 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-            println "actual:" + (maxIndex+100)  + ", expected:" + (expected+100)
+            println "actual:" + (maxIndex+20)  + ", expected:" + (expected+20)
             j++
         }
 
