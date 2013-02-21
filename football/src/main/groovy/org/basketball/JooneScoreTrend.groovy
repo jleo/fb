@@ -320,7 +320,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 last["score"] = sum
             }
             if (addReal)
-                allReal[number][sum - last["be"]["score"]-100] = 1
+                allReal[number][sum-100] = 1
         }
         cursor.close()
         return last
