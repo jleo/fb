@@ -165,7 +165,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     static final int numberOfFeature = 11
     static final int inputSize = numberOfFeature * 2 * 3 + 3
-    static final int outputSize = 110
+    static final int outputSize = 36
 
     public void saveNeuralNet(String fileName) {
         try {
@@ -326,8 +326,13 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 if (sum - 100 < 0)
                     throw new RuntimeException()
 
-                allReal[number][sum - last["score"] - 20] = 1
-
+                def lastQuarter = sum - last["score"]
+                if (lastQuarter <= 30)
+                    allReal[number][0] = 1
+                else if (lastQuarter > 65)
+                    allReal[number][1] = 1
+                else
+                    allReal[number][lastQuarter - 29] = 1
             }
         }
         cursor.close()
