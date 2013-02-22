@@ -304,26 +304,28 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
             if (!addReal) {
 
 //                Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
-//                    def countA = it.get("ae").get(abbr)
-//                    if (countA) {
-//                        countA = countA as int
-//                        stats[index] = countA - last["ae"][abbr]
-//                        last["ae"][abbr] = countA as int
-//                    } else {
-//                        stats[index] = 0
-//                    }
-//                    index += 1
-//                    def countB = it.get("be").get(abbr)
-//                    if (countB) {
-//                        countB = countB as int
-//                        stats[index] = countB - last["be"][abbr]
-//                        last["be"][abbr] = countB as int
-//                    } else {
-//                        stats[index] = 0
-//                    }
-//                    index += 1
+
+//                def countA = it.get("ae").get("ms2s")
+//                if (countA) {
+//                    countA = countA as int
+//                    stats[index] = countA - last["ae"][abbr]
+//                    last["ae"][abbr] = countA as int
+//                } else {
+//                    stats[index] = 0
 //                }
-//                stats[index] = sum - last["score"]
+//                index += 1
+//                def countB = it.get("be").get(abbr)
+//                if (countB) {
+//                    countB = countB as int
+//                    stats[index] = countB - last["be"][abbr]
+//                    last["be"][abbr] = countB as int
+//                } else {
+//                    stats[index] = 0
+//                }
+//                index += 1
+//                }
+                stats[index] = sum - last["score"]
+
                 stats[index] = (scoreA - scoreB)
                 index++
                 stats[index] = (scoreA + scoreB)
