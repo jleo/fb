@@ -100,16 +100,15 @@ class TestResult {
             } else if (maxIndex == 1) {
                 actual = "more than 65"
             } else {
-                actual = maxIndex + 20
+                actual = maxIndex + 29
             }
             def expect = null;
-
             if (expected == 0) {
                 expect = "less than 20"
             } else if (expected == 1) {
                 expect = "more than 65"
             } else {
-                expect = maxIndex + 20
+                expect = maxIndex + 29
             }
 
             println "actual:" + actual + ", expected:" + expect
