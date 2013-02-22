@@ -164,7 +164,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 0
-    static final int inputSize = numberOfFeature * 2 * 3 + 3
+    static final int inputSize = numberOfFeature * 2 * 3 + 3 * 2
     static final int outputSize = 36
 
     public void saveNeuralNet(String fileName) {
@@ -324,7 +324,9 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                    index += 1
 //                }
 //                stats[index] = sum - last["score"]
-                stats[index] = (scoreA - scoreB) / (scoreA + scoreB)
+                stats[index] = (scoreA - scoreB)
+                index++
+                stats[index] = (scoreA + scoreB)
                 last["score"] = sum
             }
             if (addReal) {
