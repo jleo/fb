@@ -93,7 +93,26 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-            println "actual:" + (maxIndex + 20) + ", expected:" + (expected + 20)
+
+            def actual = null;
+            if (maxIndex == 0) {
+                actual = "less than 20"
+            } else if (maxIndex == 1) {
+                actual = "more than 65"
+            } else {
+                actual = maxIndex + 20
+            }
+            def expect = null;
+
+            if (expected == 0) {
+                expect = "less than 20"
+            } else if (expected == 1) {
+                expect = "more than 65"
+            } else {
+                expect = maxIndex + 20
+            }
+
+            println "actual:" + actual + ", expected:" + expect
             j++
         }
 
