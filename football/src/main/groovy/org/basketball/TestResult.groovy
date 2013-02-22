@@ -108,7 +108,7 @@ class TestResult {
             } else if (expected == 1) {
                 expect = "more than 65"
             } else {
-                expect = maxIndex + 29
+                expect = expected + 29
             }
 
             println "actual:" + actual + ", expected:" + expect
