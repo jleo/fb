@@ -163,7 +163,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public void netStoppedError(NeuralNetEvent e, String error) {
     }
 
-    static final int numberOfFeature = 11
+    static final int numberOfFeature = 0
     static final int inputSize = numberOfFeature * 2 * 3 + 3
     static final int outputSize = 36
 
@@ -290,36 +290,41 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     public static def add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, discount, number, last) {
         int sum = 0
+        int scoreA = 0
+        int scoreB = 0
         cursor.each {
-            sum = (it.get("score") as String).split("-").sum {
-                it as int
-            }
+            def scoreAandB = (it.get("score") as String).split("-")
+            scoreA = scoreAandB[0] as int
+            scoreB = scoreAandB[1] as int
+
+            sum = scoreA + scoreB
 
             int index = startFrom
             double[] stats = allTraining[number];
             if (!addReal) {
 
-                Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
-                    def countA = it.get("ae").get(abbr)
-                    if (countA) {
-                        countA = countA as int
-                        stats[index] = countA - last["ae"][abbr]
-                        last["ae"][abbr] = countA as int
-                    } else {
-                        stats[index] = 0
-                    }
-                    index += 1
-                    def countB = it.get("be").get(abbr)
-                    if (countB) {
-                        countB = countB as int
-                        stats[index] = countB - last["be"][abbr]
-                        last["be"][abbr] = countB as int
-                    } else {
-                        stats[index] = 0
-                    }
-                    index += 1
-                }
-                stats[index] = sum - last["score"]
+//                Sharding.keyEventAbbr.values().asList()[0..numberOfFeature - 1].each { abbr ->
+//                    def countA = it.get("ae").get(abbr)
+//                    if (countA) {
+//                        countA = countA as int
+//                        stats[index] = countA - last["ae"][abbr]
+//                        last["ae"][abbr] = countA as int
+//                    } else {
+//                        stats[index] = 0
+//                    }
+//                    index += 1
+//                    def countB = it.get("be").get(abbr)
+//                    if (countB) {
+//                        countB = countB as int
+//                        stats[index] = countB - last["be"][abbr]
+//                        last["be"][abbr] = countB as int
+//                    } else {
+//                        stats[index] = 0
+//                    }
+//                    index += 1
+//                }
+//                stats[index] = sum - last["score"]
+                stats[index] = (scoreA - scoreB) / (scoreA + scoreB)
                 last["score"] = sum
             }
             if (addReal) {
@@ -329,8 +334,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 def lastQuarter = sum - last["score"]
                 if (lastQuarter <= 30)
                     allReal[number][0] = 1
-                else if (lastQuarter > 65)
+                else if (lastQuarter >= 65)
                     allReal[number][1] = 1
+//                else if (lastQuarter > 30 && lastQuarter <= 35)
+//                    allReal[number][2] = 1
                 else
                     allReal[number][lastQuarter - 29] = 1
             }
