@@ -10,6 +10,8 @@ class Train {
     public static void main(String[] args) {
 
         JooneScoreTrend joone = new JooneScoreTrend();
+
+
         joone.cycle = args[0] as int
         joone.layer = args[1] as int
         joone.row = args[2] as int
@@ -18,7 +20,12 @@ class Train {
         joone.useRProp = args[5] as boolean
         String outputName = args[6]
         joone.hiddenLayerClass = args[7]
-        joone.initNeuralNet();
+        if (new File(args[6]).exists()) {
+            def nn = joone.restoreNeuralNet(args[6])
+            joone.initNeuralNet(nn)
+        } else {
+            joone.initNeuralNet();
+        }
 
         FileInputStream stream = new FileInputStream("train");
         ObjectInputStream out = new ObjectInputStream(stream);

@@ -83,6 +83,58 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //      File
     }
 
+    protected void initNeuralNet(NeuralNet nnet) {
+        // First create the three layers
+        LinearLayer input = new LinearLayer();
+        LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
+        SigmoidLayer output = new SigmoidLayer();
+        input.setLayerName("input");
+        hidden.setLayerName("hidden");
+        output.setLayerName("output");
+        // set the dimensions of the layers
+
+        input.setRows(inputSize);
+        hidden.setRows(row);
+        output.setRows(outputSize);
+
+        // Now create the two Synapses
+        FullSynapse synapse_IH = new FullSynapse(); /* input -> hidden conn. */
+        FullSynapse synapse_HO = new FullSynapse(); /* hidden -> output conn. */
+        // Connect the input layer whit the hidden layer
+        input.addOutputSynapse(synapse_IH);
+        hidden.addInputSynapse(synapse_IH);
+        // Connect the hidden layer whit the output layer
+        hidden.addOutputSynapse(synapse_HO);
+        output.addInputSynapse(synapse_HO);
+        // the input to the neural net
+        inputSynapse = new MemoryInputSynapse();
+        input.addInputSynapse(inputSynapse);
+
+        // the output of the neural net
+        outputSynapse = new MemoryOutputSynapse();
+        output.addOutputSynapse(outputSynapse);
+        // The Trainer and its desired output
+        desiredOutputSynapse = new MemoryInputSynapse();
+
+        nnet.getInputLayer().removeAllInputs()
+        nnet.getOutputLayer().removeAllOutputs()
+
+        nnet.addLayer(input, NeuralNet.INPUT_LAYER);
+        layer.times {
+            nnet.addLayer(hidden, NeuralNet.HIDDEN_LAYER);
+        }
+        nnet.addLayer(output, NeuralNet.OUTPUT_LAYER);
+
+
+        TeachingSynapse trainer = new TeachingSynapse();
+        trainer.setDesired(desiredOutputSynapse);
+
+
+        nnet.setTeacher(trainer);
+        output.addOutputSynapse(trainer);
+//      File
+    }
+
 
     public void train(double[][] inputArray, double[][] desiredOutputArray) {
         // set the inputs

@@ -29,7 +29,7 @@ class Feature {
             def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
             last = cursor.next()
 
-            def featureName = "mk2s"
+            def featureName = "mk3s"
 //
             def fa = last.get("ae").get(featureName)
             def assistA = fa == null ? 0 : fa as int
@@ -37,13 +37,13 @@ class Feature {
             def fb = last.get("be").get(featureName)
             def assistB = fb == null ? 0 : fb as int
 
-            def featureName2 = "mkcs"
+            def featureName2 = "mkls"
 
             def fa2 = last.get("ae").get(featureName2)
-            def assistA2 = fa == null ? 0 : fa as int
+            def assistA2 = fa2 == null ? 0 : fa2 as int
 
             def fb2 = last.get("be").get(featureName2)
-            def assistB2 = fb == null ? 0 : fb as int
+            def assistB2 = fb2 == null ? 0 : fb2 as int
 
             if (last.get("total") == null) {
                 println "break"
@@ -57,7 +57,10 @@ class Feature {
             def y = assistA2 + assistB2
 
 //            def x = score
-            x /= y
+            if (y != 0)
+                x /= y
+            else
+                return
 
             map.put(x, map.get(x) + last.get("total"))
             countMap.put(x, countMap.get(x) + 1)
