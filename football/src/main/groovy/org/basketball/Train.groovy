@@ -20,12 +20,12 @@ class Train {
         joone.useRProp = args[5] as boolean
         String outputName = args[6]
         joone.hiddenLayerClass = args[7]
-        if (new File(args[6]).exists()) {
-            def nn = joone.restoreNeuralNet(args[6])
-            joone.initNeuralNet(nn)
-        } else {
-            joone.initNeuralNet();
-        }
+//        if (new File(args[6]).exists()) {
+//            def nn = joone.restoreNeuralNet(args[6])
+//            joone.initNeuralNet(nn)
+//        } else {
+        joone.initNeuralNet();
+//        }
 
         FileInputStream stream = new FileInputStream("train");
         ObjectInputStream out = new ObjectInputStream(stream);
