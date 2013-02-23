@@ -164,7 +164,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 0
-    static final int inputSize = numberOfFeature * 2 * 3 + 3 * 2
+    static final int inputSize = 7
     static final int outputSize = 36
 
     public void saveNeuralNet(String fileName) {
@@ -325,11 +325,11 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                index += 1
 //                }
                 def feature = 0
-                ['ast', 'dr', 'mft', 'mkft', 'to ', 'of'].each { abr ->
-                    def fa = last.get("ae").get(abr)
+                ['ast', 'dr', 'mft', 'mkft', 'to', 'of'].each { abr ->
+                    def fa = it.get("ae").get(abr)
                     def assistA = fa == null ? 0 : fa as int
 
-                    def fb = last.get("be").get(abr)
+                    def fb = it.get("be").get(abr)
                     def assistB = fb == null ? 0 : fb as int
 
                     feature = assistA + assistB
