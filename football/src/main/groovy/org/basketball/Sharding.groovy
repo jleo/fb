@@ -16,8 +16,8 @@ import java.util.concurrent.*
 class Sharding {
     private MongoDBUtil mongoDBUtil
 
-    static def keyEvent = ['misses 2-pt shot', 'Defensive rebound', 'misses 3-pt shot', 'Turnover', 'makes 2-pt shot', 'Offensive foul', 'Personal foul', 'enters the game for', 'makes 3-pt shot', 'full timeout', 'makes free throw', 'Offensive rebound', 'misses free throw', 'Shooting foul', 'Violation by', 'Loose ball foul', 'Violation by', 'Technical foul', 'makes no shot', '20 second timeout', 'def tech foul', 'Clear path foul', 'Official timeout', 'Non unsport tech foul', 'Double technical foul', 'Away from play foul', 'Flagrant foul type 1', 'ejected from game', 'Double personal foul', 'Hanging tech foul', 'Team ejected from game', 'Delay tech foul', 'misses no shot', 'Taunting technical foul', 'Elbow foul by', 'Inbound foul', 'Flagrant foul type 2', 'makes technical free throw', 'Defensive three seconds', 'misses technical free throw', 'makes flagrant free throw', 'no timeout', 'misses flagrant free throw', 'Punching foul by', 'Def 3 sec tech foul', 'misses clear path free throw', 'makes clear path free throw', 'Shooting block foul', 'Offensive charge foul', 'Personal take foul']
-    static Map keyEventAbbr = ["assist by":"ast",'makes 2-pt shot': 'mk2s', 'misses 2-pt shot': 'ms2s', 'makes 2-pt shot': 'mkcs', 'misses 2-pt shot': 'mkcs', 'Defensive rebound': 'dr', 'misses 3-pt shot': 'm3s', 'misses 3-pt shot': 'mkls', 'Turnover': 'to', 'Offensive foul': 'of', 'Personal foul': 'pf', 'enters the game for': 'egf', 'makes 3-pt shot': 'mk3s', 'makes 3-pt shot': 'mkls', 'full timeout': 'ft', 'Offensive rebound': 'or', 'makes free throw': 'mkft', 'misses free throw': 'msft', 'makes free throw': 'mft', 'misses free throw': 'mft', 'Violation by': 'vb', 'Shooting foul': 'sf', 'Loose ball foul': 'lbf', 'Technical foul': 'tf', 'makes no shot': 'mns', '20 second timeout': '2st', 'def tech foul': 'dtf', 'Clear path foul': 'cpf', 'Official timeout': 'ot', 'Non unsport tech foul': 'nutf', 'Double technical foul': 'dtf', 'Away from play foul': 'afpf', 'Flagrant foul type 1': 'fft1', 'ejected from game': 'efg', 'Double personal foul': 'dpf', 'Hanging tech foul': 'htf', 'Team ejected from game': 'tefg', 'Delay tech foul': 'dlytf', 'misses no shot': 'msns', 'Taunting technical foul': 'ttf', 'Elbow foul by': 'efb', 'Inbound foul': 'if', 'Flagrant foul type 2': 'fft2', 'makes technical free throw': 'mktft', 'Defensive three seconds': 'dts', 'misses technical free throw': 'mstft', 'makes flagrant free throw': 'mkfft', 'no timeout': 'nt', 'misses flagrant free throw': 'msfft', 'Punching foul by': 'pfb', 'Def 3 sec tech foul': 'd3stf', 'misses clear path free throw': 'mscpft', 'makes clear path free throw': 'mkcpft', 'Shooting block foul': 'sbf', 'Offensive charge foul': 'ocf', 'Personal take foul': 'ptf']
+    static def keyEvent = ["assist by", 'misses 2-pt shot', 'Defensive rebound', 'misses 3-pt shot', 'Turnover', 'makes 2-pt shot', 'Offensive foul', 'Personal foul', 'enters the game for', 'makes 3-pt shot', 'full timeout', 'makes free throw', 'Offensive rebound', 'misses free throw', 'Shooting foul', 'Violation by', 'Loose ball foul', 'Violation by', 'Technical foul', 'makes no shot', '20 second timeout', 'def tech foul', 'Clear path foul', 'Official timeout', 'Non unsport tech foul', 'Double technical foul', 'Away from play foul', 'Flagrant foul type 1', 'ejected from game', 'Double personal foul', 'Hanging tech foul', 'Team ejected from game', 'Delay tech foul', 'misses no shot', 'Taunting technical foul', 'Elbow foul by', 'Inbound foul', 'Flagrant foul type 2', 'makes technical free throw', 'Defensive three seconds', 'misses technical free throw', 'makes flagrant free throw', 'no timeout', 'misses flagrant free throw', 'Punching foul by', 'Def 3 sec tech foul', 'misses clear path free throw', 'makes clear path free throw', 'Shooting block foul', 'Offensive charge foul', 'Personal take foul']
+    static Map keyEventAbbr = ["assist by": "ast", 'makes 2-pt shot': ['mk2s', 'mkcs'], 'misses 2-pt shot': ['mk2s', 'mkcs'], 'Defensive rebound': 'dr', 'misses 3-pt shot': ['m3s', 'mkls'], 'Turnover': 'to', 'Offensive foul': 'of', 'Personal foul': 'pf', 'enters the game for': 'egf', 'makes 3-pt shot': ['m3s', 'mkls'], 'full timeout': 'ft', 'Offensive rebound': 'or', 'makes free throw': ['mkft', 'mft'], 'misses free throw': ['mft', 'msft'], 'Violation by': 'vb', 'Shooting foul': 'sf', 'Loose ball foul': 'lbf', 'Technical foul': 'tf', 'makes no shot': 'mns', '20 second timeout': '2st', 'def tech foul': 'dtf', 'Clear path foul': 'cpf', 'Official timeout': 'ot', 'Non unsport tech foul': 'nutf', 'Double technical foul': 'dtf', 'Away from play foul': 'afpf', 'Flagrant foul type 1': 'fft1', 'ejected from game': 'efg', 'Double personal foul': 'dpf', 'Hanging tech foul': 'htf', 'Team ejected from game': 'tefg', 'Delay tech foul': 'dlytf', 'misses no shot': 'msns', 'Taunting technical foul': 'ttf', 'Elbow foul by': 'efb', 'Inbound foul': 'if', 'Flagrant foul type 2': 'fft2', 'makes technical free throw': 'mktft', 'Defensive three seconds': 'dts', 'misses technical free throw': 'mstft', 'makes flagrant free throw': 'mkfft', 'no timeout': 'nt', 'misses flagrant free throw': 'msfft', 'Punching foul by': 'pfb', 'Def 3 sec tech foul': 'd3stf', 'misses clear path free throw': 'mscpft', 'makes clear path free throw': 'mkcpft', 'Shooting block foul': 'sbf', 'Offensive charge foul': 'ocf', 'Personal take foul': 'ptf']
     static Map divide = ["ms2s": 28, dr: 26, m3s: 7, to: 11, mk2s: 24, of: 2, pf: 7, egf: 15, mk3s: 4, ft: 3, or: 16, mkft: 17, msft: 0]
 //    static Map divide = ["ms2s":24,dr:22,m3s:3,to:19,mk2s:22,of:2,pf:3,egf:11,mk3s:4,ft:3,or:10,mkft:10,msft:0]
     final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
@@ -122,10 +122,23 @@ class Sharding {
 //                    f.team = found.team
 //                    events << f
 
-                if (found.team == "A")
-                    statA.put(found.ke, statA.get(found.ke) + 1)
-                else
-                    statB.put(found.ke, statB.get(found.ke) + 1)
+                if (found.team == "A") {
+                    if (found.ke instanceof String) {
+                        statA.put(found.ke, statA.get(found.ke) + 1)
+                    } else {
+                        found.ke.each { ke ->
+                            statA.put(ke, statA.get(ke) + 1)
+                        }
+                    }
+                } else {
+                    if (found.ke instanceof String) {
+                        statB.put(found.ke, statB.get(found.ke) + 1)
+                    } else {
+                        found.ke.each { ke ->
+                            statB.put(ke, statB.get(ke) + 1)
+                        }
+                    }
+                }
             }
 
             if (event) {
