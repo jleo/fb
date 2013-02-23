@@ -21,6 +21,8 @@ class Feature {
         def map = [:].withDefault { return 0 }
         def countMap = [:].withDefault { return 0 }
         def count = 0
+        def featureName = "dr"
+
         output.eachLine { line ->
             if (count == 5000)
                 return
@@ -29,40 +31,51 @@ class Feature {
             def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
             last = cursor.next()
 
-            def featureName = "mk3s"
+            def cursor2 = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+            def first = cursor2.next()
+
+            int firstQuarter = first.get("score").split("-").sum {
+                it as int
+            }
+//            def scoreAandB = (last.get("score") as String).split("-")
+//            def scoreA = scoreAandB[0] as int
+//            def scoreB = scoreAandB[1] as int
 //
+//            def sum = scoreA + scoreB
+
             def fa = last.get("ae").get(featureName)
             def assistA = fa == null ? 0 : fa as int
 
             def fb = last.get("be").get(featureName)
             def assistB = fb == null ? 0 : fb as int
 
-            def featureName2 = "mkls"
-
-            def fa2 = last.get("ae").get(featureName2)
-            def assistA2 = fa2 == null ? 0 : fa2 as int
-
-            def fb2 = last.get("be").get(featureName2)
-            def assistB2 = fb2 == null ? 0 : fb2 as int
+//            def featureName2 = "mkls"
+//
+//            def fa2 = last.get("ae").get(featureName2)
+//            def assistA2 = fa2 == null ? 0 : fa2 as int
+//
+//            def fb2 = last.get("be").get(featureName2)
+//            def assistB2 = fb2 == null ? 0 : fb2 as int
 
             if (last.get("total") == null) {
                 println "break"
                 return
             }
-//            int score = last.get("score").split("-").sum {
-//                it as int
-//            }
 
-            def x = assistA + assistB
-            def y = assistA2 + assistB2
+            int score = last.get("score").split("-").sum {
+                it as int
+            }
+
+            def x = firstQuarter
+//            def y = assistA2 + assistB2
 
 //            def x = score
-            if (y != 0)
-                x /= y
-            else
-                return
+//            if (y != 0)
+//                x /= y
+//            else
+//                return
 
-            map.put(x, map.get(x) + last.get("total"))
+            map.put(x, map.get(x) + last.get("total") - score)
             countMap.put(x, countMap.get(x) + 1)
 
             if (count++ % 100 == 0) {
@@ -71,7 +84,7 @@ class Feature {
         }
 
         def visual = new Visual()
-        visual.test() { def collection, XYSeries dataSeries ->
+        visual.test(featureName) { def collection, XYSeries dataSeries ->
             map.each { k, v ->
                 dataSeries.add(k, v / countMap.get(k))
             }

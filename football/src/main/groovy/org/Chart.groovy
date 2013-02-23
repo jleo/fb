@@ -44,11 +44,11 @@ public class Visual extends ApplicationFrame {
 //
 //    }
 
-    public def test(Closure clouser) {
+    public def test(name,Closure clouser) {
         def summaryDate = getDb().getCollection("summaryDate")
         println summaryDate.count()
         def options = [true, true, true]
-        XYSeries dataSeries = new XYSeries("胜率");
+        XYSeries dataSeries = new XYSeries(name);
         clouser.call(summaryDate, dataSeries)
 //        summaryDate.find().each {
 //            

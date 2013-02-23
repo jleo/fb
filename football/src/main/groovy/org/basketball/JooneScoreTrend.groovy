@@ -259,19 +259,19 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 int startFrom = 0
                 def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-//                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-//                add(cursor, allReal, 0, allTraining, false, 1, idx, last)
-//
-//                startFrom += numberOfFeature * 2 + 1
-//                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-//                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
-//
-//                startFrom += numberOfFeature * 2 + 1
-                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
+                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, 0, allTraining, false, true, idx, last)
+
+                startFrom += numberOfFeature * 2 + 1
+                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, startFrom, allTraining, false, true, idx, last)
+
+                startFrom += numberOfFeature * 2 + 1
+                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                add(cursor, allReal, startFrom, allTraining, false, false, idx, last)
 
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, 0, allTraining, true, 1, idx, last)
+                add(cursor, allReal, 0, allTraining, true, true, idx, last)
 
                 idx++
             }
@@ -341,7 +341,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //        println hit / count * 100 + "%"
     }
 
-    public static def add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, discount, number, last) {
+    public static def add(DBCursor cursor, allReal, int startFrom, allTraining, addReal = false, scoreOnly, number, last) {
         int sum = 0
         int scoreA = 0
         int scoreB = 0
@@ -378,20 +378,21 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                index += 1
 //                }
                 def feature = 0
-                ['ast', 'dr', 'mft', 'mkft', 'to', 'of'].each { abr ->
-                    def fa = it.get("ae").get(abr)
-                    def assistA = fa == null ? 0 : fa as int
+                if (!scoreOnly) {
+                    ['ast', 'mft', 'mkft', 'to'].each { abr ->
+                        def fa = it.get("ae").get(abr)
+                        def assistA = fa == null ? 0 : fa as int
 
-                    def fb = it.get("be").get(abr)
-                    def assistB = fb == null ? 0 : fb as int
+                        def fb = it.get("be").get(abr)
+                        def assistB = fb == null ? 0 : fb as int
 
-                    feature = assistA + assistB
+                        feature = assistA + assistB
 
-                    stats[index] = feature
-                    index++
+                        stats[index] = feature
+                        index++
+                    }
                 }
-
-                stats[index] = sum// - last["score"]
+                stats[index] = sum - last["score"]
 
 //                stats[index] = (scoreA - scoreB)
 //                index++
