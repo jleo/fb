@@ -132,6 +132,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
         nnet.setTeacher(trainer);
         output.addOutputSynapse(trainer);
+        this.nnet = nnet
 //      File
     }
 
