@@ -1,3 +1,5 @@
+package org
+
 import com.mongodb.DB
 import com.mongodb.Mongo
 import groovy.swing.SwingBuilder
@@ -18,7 +20,7 @@ import java.awt.*
  * Time: 上午12:21
  * To change this template use File | Settings | File Templates.
  */
-class Visual extends ApplicationFrame {
+public class Visual extends ApplicationFrame {
 
     static DB db
 
@@ -42,7 +44,7 @@ class Visual extends ApplicationFrame {
 //
 //    }
 
-    def test(Closure clouser) {
+    public def test(Closure clouser) {
         def summaryDate = getDb().getCollection("summaryDate")
         println summaryDate.count()
         def options = [true, true, true]
