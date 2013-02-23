@@ -84,9 +84,6 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     protected void initNeuralNet(NeuralNet nnet) {
-        nnet.getInputLayer().removeAllInputs()
-        nnet.getOutputLayer().removeAllOutputs()
-
         // First create the three layers
         LinearLayer input = new LinearLayer();
         LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
