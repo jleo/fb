@@ -93,7 +93,6 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-
             def actual = null;
             if (maxIndex == 0) {
                 actual = "less than 20"

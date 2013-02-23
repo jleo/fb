@@ -26,29 +26,39 @@ class Feature {
                 return
 
             line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
             last = cursor.next()
 
-//            def featureName = "2st"
+            def featureName = "mk2s"
 //
-//            def fa = last.get("ae").get(featureName)
-//            def assistA = fa == null ? 0 : fa as int
-//
-//            def fb = last.get("be").get(featureName)
-//            def assistB = fb == null ? 0 : fb as int
+            def fa = last.get("ae").get(featureName)
+            def assistA = fa == null ? 0 : fa as int
+
+            def fb = last.get("be").get(featureName)
+            def assistB = fb == null ? 0 : fb as int
+
+            def featureName2 = "mkcs"
+
+            def fa2 = last.get("ae").get(featureName2)
+            def assistA2 = fa == null ? 0 : fa as int
+
+            def fb2 = last.get("be").get(featureName2)
+            def assistB2 = fb == null ? 0 : fb as int
 
             if (last.get("total") == null) {
                 println "break"
                 return
             }
-            def scoreAandB = last.get("score").split("-")
-            int scoreA = scoreAandB[0] as int
-            int scoreB = scoreAandB[1] as int
+//            int score = last.get("score").split("-").sum {
+//                it as int
+//            }
 
-            int score = scoreA - scoreB
+            def x = assistA + assistB
+            def y = assistA2 + assistB2
 
-//            def x = assistA + assistB
-            def x = score
+//            def x = score
+            x /= y
+
             map.put(x, map.get(x) + last.get("total"))
             countMap.put(x, countMap.get(x) + 1)
 
