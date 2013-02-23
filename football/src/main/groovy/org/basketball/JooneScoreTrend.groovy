@@ -206,15 +206,15 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 int startFrom = 0
                 def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, 0, allTraining, false, 1, idx, last)
-
-                startFrom += numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
-
-                startFrom += numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+//                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+//                add(cursor, allReal, 0, allTraining, false, 1, idx, last)
+//
+//                startFrom += numberOfFeature * 2 + 1
+//                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+//                add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
+//
+//                startFrom += numberOfFeature * 2 + 1
+                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, startFrom, allTraining, false, 1, idx, last)
 
                 cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
@@ -324,11 +324,25 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                }
 //                index += 1
 //                }
-                stats[index] = sum - last["score"]
+                def feature = 0
+                ['ast', 'dr', 'mft', 'mkft', 'to ', 'of'].each { abr ->
+                    def fa = last.get("ae").get(abr)
+                    def assistA = fa == null ? 0 : fa as int
 
-                stats[index] = (scoreA - scoreB)
-                index++
-                stats[index] = (scoreA + scoreB)
+                    def fb = last.get("be").get(abr)
+                    def assistB = fb == null ? 0 : fb as int
+
+                    feature = assistA + assistB
+
+                    stats[index] = feature
+                    index++
+                }
+
+                stats[index] = sum// - last["score"]
+
+//                stats[index] = (scoreA - scoreB)
+//                index++
+//                stats[index] = (scoreA + scoreB)
                 last["score"] = sum
             }
             if (addReal) {
