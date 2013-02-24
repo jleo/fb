@@ -29,8 +29,8 @@ class Sharding {
             def output = new File("/Users/jleo/list.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
-                if (url.indexOf("200104220MIL") != -1)
-                    tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
+//                if (url.indexOf("200104220MIL") != -1)
+                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
             }
         }
 
@@ -88,8 +88,6 @@ class Sharding {
 //                    scoreB = splitted[1] as int
 //                    lastScoreTotal = scoreA + scoreB
 //                }
-            println eventA
-            println eventB
 
             def found = keyEvent.findResult { ke ->
                 def found = null
