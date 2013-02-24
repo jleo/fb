@@ -22,6 +22,11 @@ class TestResult {
         int hit10 = 0;
         int hit15 = 0;
 
+        int hit0_55 = 0;
+        int hit5_55 = 0;
+        int hit10_55 = 0;
+        int hit15_55 = 0;
+
         FileInputStream stream = new FileInputStream("test");
         ObjectInputStream out = new ObjectInputStream(stream);
         def allTraining = out.readObject()
@@ -59,7 +64,7 @@ class TestResult {
         nn.start();
         nn.getMonitor().Go();
 
-
+        int count = 0;
         int j = 0;
         for (Object o : outputSynapse.getAllPatterns()) {
 
@@ -81,6 +86,7 @@ class TestResult {
             int expected = allReal[j].findIndexOf {
                 it == 1
             }
+
             if (Math.abs(expected - maxIndex) == 0)
                 hit0++
 
@@ -93,6 +99,22 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
+            if (expected >= 55 || expected <= 45) {
+
+                if (Math.abs(expected - maxIndex) == 0)
+                    hit0_55++
+
+                if (Math.abs(expected - maxIndex) <= 5)
+                    hit5_55++
+
+                if (Math.abs(expected - maxIndex) <= 10)
+                    hit10_55++
+
+                if (Math.abs(expected - maxIndex) <= 15)
+                    hit15_55++
+
+                count++
+            }
             def actual = null;
             if (maxIndex == 0) {
                 actual = "less than 20"
@@ -114,9 +136,17 @@ class TestResult {
             j++
         }
 
+        println "overview:"
         println hit0 / allTraining.length * 100 + "%"
         println hit5 / allTraining.length * 100 + "%"
         println hit10 / allTraining.length * 100 + "%"
         println hit15 / allTraining.length * 100 + "%"
+
+        println "special:"
+        println hit0_55 / count * 100 + "%"
+        println hit5_55 / count * 100 + "%"
+        println hit10_55 / count * 100 + "%"
+        println hit15_55 / count * 100 + "%"
+
     }
 }
