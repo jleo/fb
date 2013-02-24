@@ -16,27 +16,15 @@ class Feature {
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
         def output = new File("/Users/jleo/list.txt")
-        def last
 
         def map = [:].withDefault { return 0 }
         def countMap = [:].withDefault { return 0 }
         def count = 0
-        def featureName = "dr"
+        def featureName = "mk3s"
 
-        output.eachLine { line ->
-            if (count == 5000)
-                return
+        def cursor = mongoDBUtil.findAllCursor(new BasicDBObject(), null, "end3").sort([order: 1] as BasicDBObject)
 
-            line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-            last = cursor.next()
-
-//            def cursor2 = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-//            def first = cursor2.next()
-//
-//            int firstQuarter = first.get("score").split("-").sum {
-//                it as int
-//            }
+        cursor.each { last ->
             def scoreAandB = (last.get("score") as String).split("-")
             def scoreA = scoreAandB[0] as int
             def scoreB = scoreAandB[1] as int
@@ -62,11 +50,10 @@ class Feature {
                 return
             }
 
-            int score = last.get("score").split("-").sum {
-                it as int
-            }
+            int score = scoreA + scoreB
 
-            def x = Math.abs(scoreA - scoreB)
+//            def x = Math.abs(scoreA - scoreB)*3
+            def x = assistA + assistB
 //            def y = assistA2 + assistB2
 
 //            def x = score
