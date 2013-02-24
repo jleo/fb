@@ -31,15 +31,15 @@ class Feature {
             def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
             last = cursor.next()
 
-            def cursor2 = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
-            def first = cursor2.next()
-
-            int firstQuarter = first.get("score").split("-").sum {
-                it as int
-            }
-//            def scoreAandB = (last.get("score") as String).split("-")
-//            def scoreA = scoreAandB[0] as int
-//            def scoreB = scoreAandB[1] as int
+//            def cursor2 = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+//            def first = cursor2.next()
+//
+//            int firstQuarter = first.get("score").split("-").sum {
+//                it as int
+//            }
+            def scoreAandB = (last.get("score") as String).split("-")
+            def scoreA = scoreAandB[0] as int
+            def scoreB = scoreAandB[1] as int
 //
 //            def sum = scoreA + scoreB
 
@@ -66,7 +66,7 @@ class Feature {
                 it as int
             }
 
-            def x = firstQuarter
+            def x = Math.abs(scoreA - scoreB)
 //            def y = assistA2 + assistB2
 
 //            def x = score
