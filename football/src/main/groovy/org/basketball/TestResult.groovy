@@ -15,7 +15,7 @@ import org.joone.util.NormalizerPlugIn
  */
 class TestResult {
     public static void main(String[] args) {
-        boolean detail = args[0] as boolean
+        boolean detail = args[1] as boolean
         JooneScoreTrend joone = new JooneScoreTrend();
 
         int hit0 = 0;
@@ -133,8 +133,8 @@ class TestResult {
                 expect = expected + 29
             }
             if (detail)
-                println "actual:" + actual + ", expected:" + expect + ", url" +
-                        j++
+                println "actual:" + actual + ", expected:" + expect
+            j++
         }
 
         println "overview:"
