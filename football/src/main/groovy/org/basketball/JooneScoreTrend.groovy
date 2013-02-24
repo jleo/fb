@@ -246,7 +246,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         def output = new File("/Users/jleo/list.txt")
 
         int count = output.readLines().findIndexOf {
-            it == "/boxscores/pbp/200201120CHI.html"
+            it == "/boxscores/pbp/201211040OKC.html"
         }
 
         def allTraining = new double[count][inputSize]
