@@ -20,7 +20,7 @@ class SaveTest {
         def output = new File("/Users/jleo/list.txt")
         int total = output.readLines().size()
         def count = output.readLines().findIndexOf {
-            it == "/boxscores/pbp/201203240LAC.html"
+            it == "/boxscores/pbp/201211040OKC.html"
         }
         def idx = count
         def allTraining = new double[total - count][JooneScoreTrend.inputSize]
