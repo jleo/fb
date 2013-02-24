@@ -15,6 +15,7 @@ import org.joone.util.NormalizerPlugIn
  */
 class TestResult {
     public static void main(String[] args) {
+        boolean detail = args[0] as boolean
         JooneScoreTrend joone = new JooneScoreTrend();
 
         int hit0 = 0;
@@ -99,7 +100,7 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-            if (expected >= 55-29 || expected <= 45-29) {
+            if (expected >= 55 - 29 || expected <= 45 - 29) {
 
                 if (Math.abs(expected - maxIndex) == 0)
                     hit0_55++
@@ -131,9 +132,9 @@ class TestResult {
             } else {
                 expect = expected + 29
             }
-
-            println "actual:" + actual + ", expected:" + expect
-            j++
+            if (detail)
+                println "actual:" + actual + ", expected:" + expect + ", url" +
+                        j++
         }
 
         println "overview:"
