@@ -65,6 +65,8 @@ class TestResult {
         nn.start();
         nn.getMonitor().Go();
 
+        int diff = 0
+
         int count = 0;
         int j = 0;
         for (Object o : outputSynapse.getAllPatterns()) {
@@ -134,6 +136,8 @@ class TestResult {
             }
             if (detail)
                 println "actual:" + actual + ", expected:" + expect
+
+            diff += Math.abs(expect - actual)
             j++
         }
 
@@ -148,6 +152,8 @@ class TestResult {
         println hit5_55 / count * 100 + "%"
         println hit10_55 / count * 100 + "%"
         println hit15_55 / count * 100 + "%"
+
+        println diff
 
     }
 }
