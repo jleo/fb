@@ -118,6 +118,9 @@ class TestResult {
 
                 count++
             }
+
+            diff += Math.abs(expected - maxIndex)
+
             def actual = null;
             if (maxIndex == 0) {
                 actual = "less than 20"
@@ -137,7 +140,7 @@ class TestResult {
             if (detail)
                 println "actual:" + actual + ", expected:" + expect
 
-            diff += Math.abs(expect - actual)
+
             j++
         }
 
