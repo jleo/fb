@@ -102,7 +102,7 @@ class TestResult {
             if (Math.abs(expected - maxIndex) <= 15)
                 hit15++
 
-            if (expected >= (55 - 29) || expected <= (45 - 29)) {
+            if (expected >= (50 - 29) || expected <= (40 - 29)) {
 
                 if (Math.abs(expected - maxIndex) == 0)
                     hit0_55++
