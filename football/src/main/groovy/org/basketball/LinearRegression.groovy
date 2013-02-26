@@ -11,6 +11,16 @@ import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
  */
 class LinearRegression {
     public static void main(String[] args) {
+        int hit0 = 0;
+        int hit5 = 0;
+        int hit10 = 0;
+        int hit15 = 0;
+
+        int hit0_55 = 0;
+        int hit5_55 = 0;
+        int hit10_55 = 0;
+        int hit15_55 = 0;
+
         OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
 
         FileInputStream stream = new FileInputStream("train");
@@ -24,12 +34,33 @@ class LinearRegression {
         out.close()
 
         def size = allReal.length
-        double[] real = new double[size]
 
+        def id = []
         allReal.eachWithIndex { it, idx ->
-            real[idx] = it[0]
+            if (it[0] <= 159 && it[0] >= 3.5)
+                id << idx
         }
-        olsMultipleLinearRegression.newSampleData(real, allTraining)
+
+        double[] real = new double[id.size()]
+        def filtered = new double[id.size()][]
+
+        def index = 0;
+        allReal.eachWithIndex { it, idx ->
+            if (it[0] <= 159 && it[0] >= 3.5) {
+                real[index] = it[0]
+                filtered[index] = allTraining[idx]
+
+                index++
+            }
+
+        }
+
+        def allRealProcessed = new double[allReal.length]
+        allReal.eachWithIndex { it, idx ->
+            allRealProcessed[idx] = allReal[idx][0]
+        }
+
+        olsMultipleLinearRegression.newSampleData(allRealProcessed, allTraining)
 
         double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
         System.out.println("Estimates the regression parameters b:");
@@ -55,6 +86,8 @@ class LinearRegression {
 
         def all = 0
         def all2 = 0
+
+        def special = 0
         allTraining2.eachWithIndex { it, idx ->
             def prediction = 0;
             for (int i = 0; i < beta.length; i++) {
@@ -63,8 +96,55 @@ class LinearRegression {
             println "predict:" + prediction + ", actual:" + allReal2[idx];
             all += Math.abs(prediction - allReal2[idx][0])
             all2 += prediction - allReal2[idx][0]
+
+            def expected = allReal2[idx][0]
+
+            prediction = Math.round(prediction)
+
+
+            if (expected >= (60) || expected <= (35)) {
+                special++
+                if (Math.abs(expected - prediction) == 0)
+                    hit0_55++
+
+                if (Math.abs(expected - prediction) <= 5)
+                    hit5_55++
+
+                if (Math.abs(expected - prediction) <= 10)
+                    hit10_55++
+
+                if (Math.abs(expected - prediction) <= 15)
+                    hit15_55++
+
+            } else {
+                if (Math.abs(expected - prediction) == 0)
+                    hit0++
+
+                if (Math.abs(expected - prediction) <= 5)
+                    hit5++
+
+                if (Math.abs(expected - prediction) <= 10)
+                    hit10++
+
+                if (Math.abs(expected - prediction) <= 15)
+                    hit15++
+            }
         }
-        println all
-        println all2
+        def count = allReal2.length - special
+        println "overview:"
+        println hit0 / count * 100 + "%"
+        println hit5 / count * 100 + "%"
+        println hit10 / count * 100 + "%"
+//        println hit15 / count * 100 + "%"
+
+        println "special:"
+        println hit0_55 / special * 100 + "%"
+        println hit5_55 / special * 100 + "%"
+        println hit10_55 / special * 100 + "%"
+//        println hit15_55 / special * 100 + "%"
+
+        println ""
+        println ""
+        println special / count * 100
     }
 }

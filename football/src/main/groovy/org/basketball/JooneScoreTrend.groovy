@@ -218,7 +218,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 0
-    static final int inputSize = 7
+    static final int inputSize = 9
     static final int outputSize = 1
 
     public void saveNeuralNet(String fileName) {
@@ -248,7 +248,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         def output = new File("/Users/jleo/list.txt")
 
         int count = output.readLines().findIndexOf {
-            it >= "/boxscores/pbp/200111040OKC.html"
+            it == "/boxscores/pbp/201211040OKC.html"
         }
 
         def allTraining = new double[count][inputSize]
@@ -260,18 +260,18 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 int startFrom = 0
                 def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
                 line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                def cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end1").sort([order: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, 0, allTraining, false, true, idx, last)
 
                 startFrom += numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end2").sort([order: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, startFrom, allTraining, false, true, idx, last)
 
                 startFrom += numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end3").sort([order: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, startFrom, allTraining, false, false, idx, last)
 
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end4").sort([order: 1] as BasicDBObject).limit(1)
                 add(cursor, allReal, 0, allTraining, true, true, idx, last)
 
                 idx++
@@ -380,7 +380,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                }
                 def feature = 0
                 if (!scoreOnly) {
-                    ['ast', 'mft', 'mkft', 'to'].each { abr ->
+                    ['ast', 'mft', 'mkft', 'to','dr','or'].each { abr ->
                         def fa = it.get("ae").get(abr)
                         def assistA = fa == null ? 0 : fa as int
 
