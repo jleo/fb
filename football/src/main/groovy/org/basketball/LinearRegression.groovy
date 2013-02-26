@@ -41,6 +41,7 @@ class LinearRegression {
 //        println olsMultipleLinearRegression.estimateRegressionParametersStandardErrors()
 
         double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
+        println beta
 
         FileInputStream stream2 = new FileInputStream("test");
         ObjectInputStream out2 = new ObjectInputStream(stream2);
