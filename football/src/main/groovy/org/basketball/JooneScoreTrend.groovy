@@ -1,5 +1,4 @@
 package org.basketball
-
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
@@ -9,7 +8,6 @@ import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
 import org.joone.util.DynamicAnnealing
-import org.joone.util.NormalizerPlugIn
 
 public class JooneScoreTrend implements NeuralNetListener, Serializable {
     /**
@@ -32,12 +30,13 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     boolean useRProp = false
 
     String hiddenLayerClass
+    String outputLayerClass
 
     protected void initNeuralNet() {
         // First create the three layers
         LinearLayer input = new LinearLayer();
         LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
-        SigmoidLayer output = new SigmoidLayer();
+        LearnableLayer output = Class.forName(outputLayerClass).newInstance() as LearnableLayer;
         input.setLayerName("input");
         hidden.setLayerName("hidden");
         output.setLayerName("output");
@@ -141,11 +140,11 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         inputSynapse.setInputArray(inputArray);
         inputSynapse.setAdvancedColumnSelector((1..inputSize).join(","));
 
-        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
-        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
-        normalizerPlugIn.setMax(1);//setting the max value as 1
-        normalizerPlugIn.setMin(0);//setting the min value as 0
-        normalizerPlugIn.setName("InputPlugin");
+//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+//        normalizerPlugIn.setAdvancedSerieSelector((1..inputSize).join(","))
+//        normalizerPlugIn.setMax(1);//setting the max value as 1
+//        normalizerPlugIn.setMin(0);//setting the min value as 0
+//        normalizerPlugIn.setName("InputPlugin");
 ////
 //
 //        MaxM averagePlugIn = new MovingAveragePlugIn();
@@ -154,7 +153,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //        averagePlugIn.setName("Average Plugin");
 //
 //        normalizerPlugIn.addPlugIn(averagePlugIn);
-        inputSynapse.addPlugIn(normalizerPlugIn);
+//        inputSynapse.addPlugIn(normalizerPlugIn);
 
         // set the desired outputs
         desiredOutputSynapse.setInputArray(desiredOutputArray);

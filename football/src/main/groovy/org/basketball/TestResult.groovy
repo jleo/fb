@@ -1,11 +1,8 @@
 package org.basketball
-
 import org.joone.engine.Pattern
 import org.joone.io.MemoryInputSynapse
 import org.joone.io.MemoryOutputSynapse
 import org.joone.net.NeuralNet
-import org.joone.util.NormalizerPlugIn
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -45,12 +42,12 @@ class TestResult {
         inputSynapse.setInputArray(allTraining);
         inputSynapse.setAdvancedColumnSelector((1..JooneScoreTrend.inputSize).join(","));
 
-        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
-        normalizerPlugIn.setAdvancedSerieSelector((1..JooneScoreTrend.inputSize).join(","))
-        normalizerPlugIn.setMax(1);//setting the max value as 1
-        normalizerPlugIn.setMin(0);//setting the min value as 0
-        normalizerPlugIn.setName("InputPlugin");
-        inputSynapse.addPlugIn(normalizerPlugIn);
+//        NormalizerPlugIn normalizerPlugIn = new NormalizerPlugIn();
+//        normalizerPlugIn.setAdvancedSerieSelector((1..JooneScoreTrend.inputSize).join(","))
+//        normalizerPlugIn.setMax(1);//setting the max value as 1
+//        normalizerPlugIn.setMin(0);//setting the min value as 0
+//        normalizerPlugIn.setName("InputPlugin");
+//        inputSynapse.addPlugIn(normalizerPlugIn);
 
         nn.getInputLayer().addInputSynapse(inputSynapse)
 
