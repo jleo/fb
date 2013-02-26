@@ -54,6 +54,7 @@ class LinearRegression {
         out.close()
 
         def all = 0
+        def all2 = 0
         allTraining2.eachWithIndex { it, idx ->
             def prediction = beta[0];
             for (int i = 1; i < beta.length; i++) {
@@ -61,7 +62,9 @@ class LinearRegression {
             }
             println "predict:" + prediction + ", actual:" + allReal2[idx];
             all += Math.abs(prediction - allReal2[idx][0])
+            all2 += prediction - allReal2[idx][0]
         }
         println all
+        println all2
     }
 }
