@@ -53,7 +53,7 @@ class Feature {
             int score = scoreA + scoreB
 
 //            def x = Math.abs(scoreA - scoreB)*3
-            def x = assistA + assistB
+            def x = score
 //            def y = assistA2 + assistB2
 //            x = (x-30)*(x-30)
 //            def x = score

@@ -13,6 +13,12 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>nz.ac.waikato.cms.weka</groupId>
+            <artifactId>weka-dev</artifactId>
+            <version>3.7.8</version>
+        </dependency>
+
+        <dependency>
             <groupId>joone</groupId>
             <artifactId>joone</artifactId>
             <version>1.0</version>
@@ -207,11 +213,6 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.enigmastation.ml</groupId>
-            <artifactId>bayes</artifactId>
-            <version>4.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

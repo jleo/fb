@@ -36,8 +36,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     protected void initNeuralNet() {
         // First create the three layers
         LinearLayer input = new LinearLayer();
-        LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
-        LearnableLayer output = Class.forName(outputLayerClass).newInstance() as LearnableLayer;
+        LinearLayer hidden = new LinearLayer();
+        LinearLayer output = new LinearLayer();
+//        LearnableLayer hidden = Class.forName(hiddenLayerClass).newInstance() as LearnableLayer;
+//        LearnableLayer output = Class.forName(outputLayerClass).newInstance() as LearnableLayer;
         input.setLayerName("input");
         hidden.setLayerName("hidden");
         output.setLayerName("output");
@@ -246,7 +248,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
         def output = new File("/Users/jleo/list.txt")
 
         int count = output.readLines().findIndexOf {
-            it == "/boxscores/pbp/201211040OKC.html"
+            it >= "/boxscores/pbp/200111040OKC.html"
         }
 
         def allTraining = new double[count][inputSize]
