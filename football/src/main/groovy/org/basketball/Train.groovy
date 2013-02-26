@@ -20,7 +20,7 @@ class Train {
         joone.useRProp = args[5] as boolean
         String outputName = args[6]
         joone.hiddenLayerClass = args[7]
-        joone.hiddenLayerClass = args[8]
+        joone.outputLayerClass = args[8]
 //        if (new File(args[6]).exists()) {
 //            def nn = joone.restoreNeuralNet(args[6])
 //            joone.initNeuralNet(nn)
