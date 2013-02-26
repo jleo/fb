@@ -37,7 +37,7 @@ class LinearRegression {
 
         def id = []
         allReal.eachWithIndex { it, idx ->
-            if (it[0] <= 159 && it[0] >= 3.5)
+            if (it[0] <= 59 && it[0] >= 35)
                 id << idx
         }
 
@@ -46,7 +46,7 @@ class LinearRegression {
 
         def index = 0;
         allReal.eachWithIndex { it, idx ->
-            if (it[0] <= 159 && it[0] >= 3.5) {
+            if (it[0] <= 59 && it[0] >= 35) {
                 real[index] = it[0]
                 filtered[index] = allTraining[idx]
 
@@ -116,21 +116,20 @@ class LinearRegression {
                 if (Math.abs(expected - prediction) <= 15)
                     hit15_55++
 
-            } else {
-                if (Math.abs(expected - prediction) == 0)
-                    hit0++
-
-                if (Math.abs(expected - prediction) <= 5)
-                    hit5++
-
-                if (Math.abs(expected - prediction) <= 10)
-                    hit10++
-
-                if (Math.abs(expected - prediction) <= 15)
-                    hit15++
             }
+            if (Math.abs(expected - prediction) == 0)
+                hit0++
+
+            if (Math.abs(expected - prediction) <= 5)
+                hit5++
+
+            if (Math.abs(expected - prediction) <= 10)
+                hit10++
+
+            if (Math.abs(expected - prediction) <= 15)
+                hit15++
         }
-        def count = allReal2.length - special
+        def count = allReal2.length
         println "overview:"
         println hit0 / count * 100 + "%"
         println hit5 / count * 100 + "%"
