@@ -1,4 +1,5 @@
 package org.basketball
+
 import Util.MongoDBUtil
 import com.mongodb.BasicDBObject
 import com.mongodb.DBCursor
@@ -216,7 +217,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     static final int numberOfFeature = 0
     static final int inputSize = 7
-    static final int outputSize = 36
+    static final int outputSize = 1
 
     public void saveNeuralNet(String fileName) {
         try {
@@ -402,14 +403,15 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                     throw new RuntimeException()
 
                 def lastQuarter = sum - last["score"]
-                if (lastQuarter <= 30)
-                    allReal[number][0] = 1
-                else if (lastQuarter >= 65)
-                    allReal[number][1] = 1
-//                else if (lastQuarter > 30 && lastQuarter <= 35)
-//                    allReal[number][2] = 1
-                else
-                    allReal[number][lastQuarter - 29] = 1
+                allReal[number][0] = lastQuarter
+//                if (lastQuarter <= 30)
+//                    allReal[number][0] = 1
+//                else if (lastQuarter >= 65)
+//                    allReal[number][1] = 1
+////                else if (lastQuarter > 30 && lastQuarter <= 35)
+////                    allReal[number][2] = 1
+//                else
+//                    allReal[number][lastQuarter - 29] = 1
             }
         }
         cursor.close()
