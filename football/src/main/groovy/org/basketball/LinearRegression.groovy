@@ -2,6 +2,12 @@ package org.basketball
 
 import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
 
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -10,16 +16,36 @@ import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
  * Let's RocknRoll
  */
 class LinearRegression {
+    final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
+
     public static void main(String[] args) {
 
-        [*(1..(args[0] as int))].subsequences().each {
-            println it
-            run(it)
+        Thread.start {
+            [* (0..(args[0] as int))].subsequences().each {
+                tasks << it
+            }
         }
+
+        ExecutorService executorService = Executors.newFixedThreadPool(9);
+        8.times {
+            executorService.submit(new Runnable() {
+
+                @Override
+                void run() {
+                    def file = new File(Thread.currentThread().name + ".log").createNewFile()
+
+                    while (true) {
+                        def task = tasks.poll(30, TimeUnit.SECONDS)
+                        run(task, file)
+                    }
+                }
+            })
+        }
+        executorService.shutdown()
 
     }
 
-    private static void run(columns) {
+    private static void run(columns, file) {
         int hit0 = 0;
         int hit5 = 0;
         int hit10 = 0;
@@ -118,10 +144,8 @@ class LinearRegression {
                 hit15++
         }
         def count = allReal2.length
-        println "overview:"
-        println hit0 / count * 100 + "%"
-        println hit5 / count * 100 + "%"
-        println hit10 / count * 100 + "%"
+        String result = "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
+        file.append(result + "\n")
 //        println hit15 / count * 100 + "%"
 
 //        println "special:"
@@ -153,7 +177,7 @@ class LinearRegression {
 
                 filtered[index] = new double[columns.size()]
 
-                int i=0
+                int i = 0
                 columns.each { c ->
                     filtered[index][i++] = allTraining[idx][c]
 
