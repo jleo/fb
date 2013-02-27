@@ -59,7 +59,9 @@ class LinearRegression {
 
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
-                        run(task, file, allTraining, allReal,allTraining2,allReal2)
+                        if (task == null)
+                            break
+                        run(task, file, allTraining, allReal, allTraining2, allReal2)
                     }
                 }
             })
@@ -68,7 +70,7 @@ class LinearRegression {
 
     }
 
-    private static void run(columns, file, allTraining, allReal,allTraining2,allReal2) {
+    private static void run(columns, file, allTraining, allReal, allTraining2, allReal2) {
         try {
             int hit0 = 0;
             int hit5 = 0;
@@ -111,7 +113,7 @@ class LinearRegression {
                 for (int i = 0; i < beta.length; i++) {
                     prediction += beta[i] * it[i];
                 }
-    //            println "predict:" + prediction + ", actual:" + allReal2[idx];
+                //            println "predict:" + prediction + ", actual:" + allReal2[idx];
                 all += Math.abs(prediction - allReal2[idx])
                 all2 += prediction - allReal2[idx]
 
