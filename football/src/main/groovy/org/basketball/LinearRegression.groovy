@@ -34,9 +34,32 @@ class LinearRegression {
                 void run() {
                     def file = new File(Thread.currentThread().name + ".log")
                     file.createNewFile()
+
+
+
+                    FileInputStream stream = new FileInputStream("train");
+                    ObjectInputStream out = new ObjectInputStream(stream);
+                    double[][] allTraining = out.readObject() as double[][]
+                    out.close()
+
+                    stream = new FileInputStream("real");
+                    out = new ObjectInputStream(stream);
+                    def allReal = out.readObject()
+                    out.close()
+
+                    FileInputStream stream2 = new FileInputStream("test");
+                    ObjectInputStream out2 = new ObjectInputStream(stream2);
+                    def allTraining2 = out2.readObject()
+                    out2.close()
+
+                    stream = new FileInputStream("testreal");
+                    out = new ObjectInputStream(stream);
+                    def allReal2 = out.readObject()
+                    out.close()
+
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
-                        run(task, file)
+                        run(task, file, allTraining, allReal,allTraining2,allReal2)
                     }
                 }
             })
@@ -45,7 +68,7 @@ class LinearRegression {
 
     }
 
-    private static void run(columns, file) {
+    private static void run(columns, file, allTraining, allReal,allTraining2,allReal2) {
         int hit0 = 0;
         int hit5 = 0;
         int hit10 = 0;
@@ -56,24 +79,12 @@ class LinearRegression {
         int hit10_55 = 0;
         int hit15_55 = 0;
 
-        OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
-
-        FileInputStream stream = new FileInputStream("train");
-        ObjectInputStream out = new ObjectInputStream(stream);
-        double[][] allTraining = out.readObject() as double[][]
-        out.close()
-
-        stream = new FileInputStream("real");
-        out = new ObjectInputStream(stream);
-        def allReal = out.readObject()
-        out.close()
-
         def size = allReal.length
 
         double[] real
         def filtered
 
-
+        OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
 
         (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
 
@@ -84,15 +95,7 @@ class LinearRegression {
 
         double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
 
-        FileInputStream stream2 = new FileInputStream("test");
-        ObjectInputStream out2 = new ObjectInputStream(stream2);
-        def allTraining2 = out2.readObject()
-        out2.close()
 
-        stream = new FileInputStream("testreal");
-        out = new ObjectInputStream(stream);
-        def allReal2 = out.readObject()
-        out.close()
 
         def all = 0
         def all2 = 0
