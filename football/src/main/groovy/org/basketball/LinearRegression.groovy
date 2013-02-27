@@ -35,32 +35,11 @@ class LinearRegression {
 
         def size = allReal.length
 
-        def id = []
-        allReal.eachWithIndex { it, idx ->
-            if (it[0] <= 59 && it[0] >= 35)
-                id << idx
-        }
+        double[] real
+        def filtered
+        (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, [0, 1, 2])
 
-        double[] real = new double[id.size()]
-        def filtered = new double[id.size()][]
-
-        def index = 0;
-        allReal.eachWithIndex { it, idx ->
-            if (it[0] <= 59 && it[0] >= 35) {
-                real[index] = it[0]
-                filtered[index] = allTraining[idx]
-
-                index++
-            }
-
-        }
-
-        def allRealProcessed = new double[allReal.length]
-        allReal.eachWithIndex { it, idx ->
-            allRealProcessed[idx] = allReal[idx][0]
-        }
-
-        olsMultipleLinearRegression.newSampleData(allRealProcessed, allTraining)
+        olsMultipleLinearRegression.newSampleData(allReal, allTraining)
 
         double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
         System.out.println("Estimates the regression parameters b:");
@@ -88,6 +67,9 @@ class LinearRegression {
         def all2 = 0
 
         def special = 0
+
+        (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, [0, 1, 2])
+
         allTraining2.eachWithIndex { it, idx ->
             def prediction = 0;
             for (int i = 0; i < beta.length; i++) {
@@ -145,5 +127,35 @@ class LinearRegression {
         println ""
         println ""
         println special / count * 100
+    }
+
+    public static List filter(allReal, double[][] allTraining, lte, gte, columns) {
+        def id = []
+        allReal.eachWithIndex { it, idx ->
+            if (it[0] <= lte && it[0] >= gte)
+                id << idx
+        }
+
+        def size = id.size()
+        double[] real = new double[size]
+
+        def filtered = new double[size][]
+
+        new double[id.size()][]
+        def index = 0;
+        allReal.eachWithIndex { it, idx ->
+            if (it[0] <= lte && it[0] >= gte) {
+                real[index] = it[0]
+
+                filtered[index] = new double[columns.size()]
+
+                columns.each { c ->
+                    filtered[index][c] = allTraining[idx][c]
+
+                }
+                index++
+            }
+        }
+        [real, filtered]
     }
 }
