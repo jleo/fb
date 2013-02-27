@@ -69,86 +69,90 @@ class LinearRegression {
     }
 
     private static void run(columns, file, allTraining, allReal,allTraining2,allReal2) {
-        int hit0 = 0;
-        int hit5 = 0;
-        int hit10 = 0;
-        int hit15 = 0;
+        try {
+            int hit0 = 0;
+            int hit5 = 0;
+            int hit10 = 0;
+            int hit15 = 0;
 
-        int hit0_55 = 0;
-        int hit5_55 = 0;
-        int hit10_55 = 0;
-        int hit15_55 = 0;
+            int hit0_55 = 0;
+            int hit5_55 = 0;
+            int hit10_55 = 0;
+            int hit15_55 = 0;
 
-        def size = allReal.length
+            def size = allReal.length
 
-        double[] real
-        def filtered
+            double[] real
+            def filtered
 
-        OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
+            OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
 
-        (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
+            (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
 
-        olsMultipleLinearRegression.newSampleData(allReal, allTraining)
+            olsMultipleLinearRegression.newSampleData(allReal, allTraining)
 
-        double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
-        System.out.println("Estimates the regression parameters b:");
+            double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
+            System.out.println("Estimates the regression parameters b:");
 
-        double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
-
-
-
-        def all = 0
-        def all2 = 0
-
-        def special = 0
+            double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
 
 
-        (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, columns)
 
-        allTraining2.eachWithIndex { it, idx ->
-            def prediction = 0;
-            for (int i = 0; i < beta.length; i++) {
-                prediction += beta[i] * it[i];
-            }
-//            println "predict:" + prediction + ", actual:" + allReal2[idx];
-            all += Math.abs(prediction - allReal2[idx])
-            all2 += prediction - allReal2[idx]
+            def all = 0
+            def all2 = 0
 
-            def expected = allReal2[idx]
-
-            prediction = Math.round(prediction)
+            def special = 0
 
 
-            if (expected >= (60) || expected <= (35)) {
-                special++
+            (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, columns)
+
+            allTraining2.eachWithIndex { it, idx ->
+                def prediction = 0;
+                for (int i = 0; i < beta.length; i++) {
+                    prediction += beta[i] * it[i];
+                }
+    //            println "predict:" + prediction + ", actual:" + allReal2[idx];
+                all += Math.abs(prediction - allReal2[idx])
+                all2 += prediction - allReal2[idx]
+
+                def expected = allReal2[idx]
+
+                prediction = Math.round(prediction)
+
+
+                if (expected >= (60) || expected <= (35)) {
+                    special++
+                    if (Math.abs(expected - prediction) == 0)
+                        hit0_55++
+
+                    if (Math.abs(expected - prediction) <= 5)
+                        hit5_55++
+
+                    if (Math.abs(expected - prediction) <= 10)
+                        hit10_55++
+
+                    if (Math.abs(expected - prediction) <= 15)
+                        hit15_55++
+
+                }
                 if (Math.abs(expected - prediction) == 0)
-                    hit0_55++
+                    hit0++
 
                 if (Math.abs(expected - prediction) <= 5)
-                    hit5_55++
+                    hit5++
 
                 if (Math.abs(expected - prediction) <= 10)
-                    hit10_55++
+                    hit10++
 
                 if (Math.abs(expected - prediction) <= 15)
-                    hit15_55++
-
+                    hit15++
             }
-            if (Math.abs(expected - prediction) == 0)
-                hit0++
-
-            if (Math.abs(expected - prediction) <= 5)
-                hit5++
-
-            if (Math.abs(expected - prediction) <= 10)
-                hit10++
-
-            if (Math.abs(expected - prediction) <= 15)
-                hit15++
+            def count = allReal2.length
+            String result = "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
+            file.append(result + "\n")
+        } catch (e) {
+            e.printStackTrace()
         }
-        def count = allReal2.length
-        String result = "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
-        file.append(result + "\n")
 //        println hit15 / count * 100 + "%"
 
 //        println "special:"
