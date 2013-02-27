@@ -379,8 +379,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                index += 1
 //                }
                 def feature = 0
+                stats[index] = sum - last["score"]
+                index++
                 if (!scoreOnly) {
-                    ['mft','blkb','mk3s','ms2s','ast', 'mft', 'mkft', 'to','dr','or','mk2s','mkcs','ms3s','mkls','of','pf','egf','ft','vb','2st','tf'].each { abr ->
+                    ['ast', 'mft', 'mkft', 'to', 'dr', 'or', 'of','mkls', 'mkcs','mft', 'ms2s', 'ms3s', 'mk3s',  'mk2s',  'blkb', 'pf', 'egf', 'ft', 'vb', '2st', 'tf'].each { abr ->
                         def fa = it.get("ae").get(abr)
                         def assistA = fa == null ? 0 : fa as int
 
@@ -393,8 +395,6 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                         index++
                     }
                 }
-                stats[index] = sum - last["score"]
-
 //                stats[index] = (scoreA - scoreB)
 //                index++
 //                stats[index] = (scoreA + scoreB)
