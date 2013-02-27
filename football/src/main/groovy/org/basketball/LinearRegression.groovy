@@ -25,9 +25,9 @@ class LinearRegression {
                 tasks << it
             }
         }
-
+        int cpu = Runtime.getRuntime().availableProcessors()
         ExecutorService executorService = Executors.newFixedThreadPool(9);
-        8.times {
+        cpu.times {
             executorService.submit(new Runnable() {
 
                 @Override
