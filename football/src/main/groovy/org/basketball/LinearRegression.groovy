@@ -32,8 +32,8 @@ class LinearRegression {
 
                 @Override
                 void run() {
-                    def file = new File(Thread.currentThread().name + ".log").createNewFile()
-
+                    def file = new File(Thread.currentThread().name + ".log")
+                    file.createNewFile()
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         run(task, file)
