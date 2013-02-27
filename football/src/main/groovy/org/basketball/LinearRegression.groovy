@@ -37,7 +37,10 @@ class LinearRegression {
 
         double[] real
         def filtered
-        (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, [0, 1, 2])
+
+        def columns = [0, 1, 2, 4]
+
+        (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
 
         olsMultipleLinearRegression.newSampleData(allReal, allTraining)
 
@@ -68,7 +71,8 @@ class LinearRegression {
 
         def special = 0
 
-        (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, [0, 1, 2])
+
+        (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, columns)
 
         allTraining2.eachWithIndex { it, idx ->
             def prediction = 0;
@@ -76,10 +80,10 @@ class LinearRegression {
                 prediction += beta[i] * it[i];
             }
             println "predict:" + prediction + ", actual:" + allReal2[idx];
-            all += Math.abs(prediction - allReal2[idx][0])
-            all2 += prediction - allReal2[idx][0]
+            all += Math.abs(prediction - allReal2[idx])
+            all2 += prediction - allReal2[idx]
 
-            def expected = allReal2[idx][0]
+            def expected = allReal2[idx]
 
             prediction = Math.round(prediction)
 
@@ -149,8 +153,9 @@ class LinearRegression {
 
                 filtered[index] = new double[columns.size()]
 
+                int i=0
                 columns.each { c ->
-                    filtered[index][c] = allTraining[idx][c]
+                    filtered[index][i++] = allTraining[idx][c]
 
                 }
                 index++
