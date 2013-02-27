@@ -26,7 +26,7 @@ class LinearRegression {
             }
         }
         int cpu = Runtime.getRuntime().availableProcessors()
-        println cpu +" cpu"
+        println cpu + " cpu"
         ExecutorService executorService = Executors.newFixedThreadPool(9);
         cpu.times {
             executorService.submit(new Runnable() {
@@ -151,7 +151,8 @@ class LinearRegression {
                     hit15++
             }
             def count = allReal2.length
-            String result = "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
+
+            String result = columns + "\n" + "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
             file.append(result + "\n")
         } catch (e) {
             e.printStackTrace()
