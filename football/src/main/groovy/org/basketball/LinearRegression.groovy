@@ -26,6 +26,7 @@ class LinearRegression {
             }
         }
         int cpu = Runtime.getRuntime().availableProcessors()
+        println cpu +" cpu"
         ExecutorService executorService = Executors.newFixedThreadPool(9);
         cpu.times {
             executorService.submit(new Runnable() {
