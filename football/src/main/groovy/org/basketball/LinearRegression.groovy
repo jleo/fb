@@ -153,9 +153,6 @@ class LinearRegression {
             String result = "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
             file.append(result + "\n")
         } catch (e) {
-            print allTraining
-
-            print allReal
             e.printStackTrace()
         }
 //        println hit15 / count * 100 + "%"
