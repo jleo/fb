@@ -380,7 +380,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 //                }
                 def feature = 0
                 if (!scoreOnly) {
-                    ['ast', 'mft', 'mkft', 'to','dr','or'].each { abr ->
+                    ['mft','blkb','mk3s','ms2s','ast', 'mft', 'mkft', 'to','dr','or','mk2s','mkcs','ms3s','mkls','of','pf','egf','ft','vb','2st','tf'].each { abr ->
                         def fa = it.get("ae").get(abr)
                         def assistA = fa == null ? 0 : fa as int
 

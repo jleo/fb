@@ -11,6 +11,15 @@ import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
  */
 class LinearRegression {
     public static void main(String[] args) {
+
+        [*(1..(args[0] as int))].subsequences().each {
+            println it
+            run(it)
+        }
+
+    }
+
+    private static void run(columns) {
         int hit0 = 0;
         int hit5 = 0;
         int hit10 = 0;
@@ -38,7 +47,7 @@ class LinearRegression {
         double[] real
         def filtered
 
-        def columns = [0, 1, 2, 4]
+
 
         (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
 
@@ -46,15 +55,8 @@ class LinearRegression {
 
         double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
         System.out.println("Estimates the regression parameters b:");
-        println betaHat
-
-        double[] residuals = olsMultipleLinearRegression.estimateResiduals();
-        println residuals
-
-//        println olsMultipleLinearRegression.estimateRegressionParametersStandardErrors()
 
         double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
-        println beta
 
         FileInputStream stream2 = new FileInputStream("test");
         ObjectInputStream out2 = new ObjectInputStream(stream2);
@@ -79,7 +81,7 @@ class LinearRegression {
             for (int i = 0; i < beta.length; i++) {
                 prediction += beta[i] * it[i];
             }
-            println "predict:" + prediction + ", actual:" + allReal2[idx];
+//            println "predict:" + prediction + ", actual:" + allReal2[idx];
             all += Math.abs(prediction - allReal2[idx])
             all2 += prediction - allReal2[idx]
 
@@ -122,15 +124,13 @@ class LinearRegression {
         println hit10 / count * 100 + "%"
 //        println hit15 / count * 100 + "%"
 
-        println "special:"
-        println hit0_55 / special * 100 + "%"
-        println hit5_55 / special * 100 + "%"
-        println hit10_55 / special * 100 + "%"
+//        println "special:"
+//        println hit0_55 / special * 100 + "%"
+//        println hit5_55 / special * 100 + "%"
+//        println hit10_55 / special * 100 + "%"
 //        println hit15_55 / special * 100 + "%"
 
-        println ""
-        println ""
-        println special / count * 100
+//        println special / count * 100
     }
 
     public static List filter(allReal, double[][] allTraining, lte, gte, columns) {
