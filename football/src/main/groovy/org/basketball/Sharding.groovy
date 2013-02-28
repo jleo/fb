@@ -75,7 +75,7 @@ class Sharding {
         def c = mongoDBUtil.findAllCursor(new BasicDBObject("url", urlShorten), null, "log2").sort(new BasicDBObject("sec": -1))
         int scoreA, scoreB
 //            int lastScoreTotal = 0
-
+        println c.count()
         c.each { it ->
             String event = it.get("eventBoth")
             String eventA = it.get("eventA")
@@ -194,6 +194,7 @@ class Sharding {
             if (event) {
 
             } else {
+                println "updating" + id.toString()
                 mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))).append("total", lastScoreTotal), "log2", true)
 //                    mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("sec", sec)), "log", true)
             }

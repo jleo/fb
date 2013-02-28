@@ -17,7 +17,6 @@ class Fix {
 
         c.each { it ->
             String url = it.get("column").join("-")
-            println url
             def id = it.get("_id")
 //            url = url.replaceAll("http://www.basketball-reference.com/boxscores/pbp/", "").replaceAll(".html", "")
             mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("s", url)), "regression",true)
