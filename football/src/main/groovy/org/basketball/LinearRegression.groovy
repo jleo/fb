@@ -152,9 +152,9 @@ class LinearRegression {
 
             BasicDBObject basicDBObject = new BasicDBObject()
             basicDBObject.append("column", columns)
-            basicDBObject.append("hit0", hit0 / count * 100)
-            basicDBObject.append("hit5", hit5 / count * 100)
-            basicDBObject.append("hit10", hit10 / count * 100)
+            basicDBObject.append("hit0", (hit0 / count * 100) as double)
+            basicDBObject.append("hit5", (hit5 / count * 100) as double)
+            basicDBObject.append("hit10", (hit10 / count * 100) as double)
 
             db.getCollection("regression").insert(basicDBObject)
         } catch (e) {
