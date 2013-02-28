@@ -45,7 +45,11 @@ class Sharding {
                         def url = task.url
                         def date = task.date
 
-                        gameLogParser.parse(url, date)
+                        try {
+                            gameLogParser.parse(url, date)
+                        } catch (e) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             })

@@ -13,24 +13,14 @@ import com.mongodb.BasicDBObject
 class Fix {
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
-        def c = mongoDBUtil.findAllCursor(new BasicDBObject(), new BasicDBObject().append("_id", 1).append("quarter", 1).append("time", 1).append("_id", 1), "log2")
+        def c = mongoDBUtil.findAllCursor(new BasicDBObject(), new BasicDBObject().append("column", 1).append("_id", 1), "regression")
 
         c.each { it ->
-            String time = it.get("time")
-
-            if (time.indexOf("Overtime") != -1)
-                return
-
-            int quarter = it.get("quarter") as int
-            def split = time.split(":")
-
-            int minute = split[0] as int
-            int second = (split[1] as double) as int
-
-
-            int sec = (4 - quarter) * 12 * 60 + minute * 60 + second
+            String url = it.get("column").join("-")
+            println url
             def id = it.get("_id")
-            mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("sec", sec)), "log2",false)
+//            url = url.replaceAll("http://www.basketball-reference.com/boxscores/pbp/", "").replaceAll(".html", "")
+            mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("s", url)), "regression",true)
         }
     }
 }

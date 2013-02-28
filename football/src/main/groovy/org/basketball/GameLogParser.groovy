@@ -134,7 +134,7 @@ class GameLogParser {
 
             doc.append("time", timeLeft)
             doc.append("quarter", currentQuarter)
-                    .append("date", date).append("url", url)
+                    .append("date", date).append("url", url.replaceAll("http://www.basketball-reference.com/boxscores/pbp/", "").replaceAll(".html", ""))
                     .append("teamA", teamA)
                     .append("teamB", teamB)
                     .append("sec", sec)
