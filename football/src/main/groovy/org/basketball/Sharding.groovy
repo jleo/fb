@@ -195,7 +195,7 @@ class Sharding {
 
             } else {
                 println "updating" + id.toString()
-                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))).append("total", lastScoreTotal), "log2", true)
+                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("total", lastScoreTotal).append("be", new BasicDBObject(statB))), "log2", true)
 //                    mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("sec", sec)), "log", true)
             }
         }
