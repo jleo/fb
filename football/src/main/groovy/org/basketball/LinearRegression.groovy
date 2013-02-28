@@ -59,7 +59,7 @@ class LinearRegression {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         if (task == null)
                             break
-                        if(!db.getCollection("regression").findOne([s:task.join("-")] as BasicDBObject))
+                        if (!db.getCollection("regression").findOne([s: task.join("-")] as BasicDBObject))
                             run(task, allTraining, allReal, allTraining2, allReal2, db)
                     }
                 }
@@ -152,6 +152,7 @@ class LinearRegression {
 
             BasicDBObject basicDBObject = new BasicDBObject()
             basicDBObject.append("column", columns)
+            basicDBObject.append("s", columns.join("-"))
             basicDBObject.append("hit0", (hit0 / count * 100) as double)
             basicDBObject.append("hit5", (hit5 / count * 100) as double)
             basicDBObject.append("hit10", (hit10 / count * 100) as double)
