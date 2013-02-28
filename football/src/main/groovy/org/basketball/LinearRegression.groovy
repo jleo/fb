@@ -1,12 +1,11 @@
 package org.basketball
 
+import com.mongodb.BasicDBObject
+import com.mongodb.DB
+import com.mongodb.Mongo
 import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
 
-import java.util.concurrent.ArrayBlockingQueue
-import java.util.concurrent.BlockingQueue
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,6 +18,9 @@ class LinearRegression {
     final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
 
     public static void main(String[] args) {
+        Mongo mongo = new Mongo("rm4", 15000)
+        DB db = mongo.getDB("bb")
+
 
         Thread.start {
             [* (0..(args[0] as int))].subsequences().each {
@@ -33,11 +35,6 @@ class LinearRegression {
 
                 @Override
                 void run() {
-                    def file = new File(Thread.currentThread().name + ".log")
-                    file.createNewFile()
-
-
-
                     FileInputStream stream = new FileInputStream("train");
                     ObjectInputStream out = new ObjectInputStream(stream);
                     double[][] allTraining = out.readObject() as double[][]
@@ -62,7 +59,7 @@ class LinearRegression {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         if (task == null)
                             break
-                        run(task, file, allTraining, allReal, allTraining2, allReal2)
+                        run(task, allTraining, allReal, allTraining2, allReal2, db)
                     }
                 }
             })
@@ -71,7 +68,7 @@ class LinearRegression {
 
     }
 
-    private static void run(columns, file, allTraining, allReal, allTraining2, allReal2) {
+    private static void run(columns, allTraining, allReal, allTraining2, allReal2, db) {
         try {
             int hit0 = 0;
             int hit5 = 0;
@@ -152,8 +149,13 @@ class LinearRegression {
             }
             def count = allReal2.length
 
-            String result = columns + "\n" + "overview:" + "\n" + hit0 / count * 100 + "%" + "\n" + hit5 / count * 100 + "%" + "\n" + hit10 / count * 100 + "%"
-            file.append(result + "\n")
+            BasicDBObject basicDBObject = new BasicDBObject()
+            basicDBObject.append("column", columns)
+            basicDBObject.append("hit0", hit0 / count * 100)
+            basicDBObject.append("hit5", hit5 / count * 100)
+            basicDBObject.append("hit10", hit10 / count * 100)
+
+            db.getCollection("regression").insert(basicDBObject)
         } catch (e) {
             e.printStackTrace()
         }
