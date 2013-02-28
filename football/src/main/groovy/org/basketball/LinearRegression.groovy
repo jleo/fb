@@ -59,7 +59,8 @@ class LinearRegression {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         if (task == null)
                             break
-                        run(task, allTraining, allReal, allTraining2, allReal2, db)
+                        if(!db.getCollection("regression").findOne([columns:task] as BasicDBObject))
+                            run(task, allTraining, allReal, allTraining2, allReal2, db)
                     }
                 }
             })
