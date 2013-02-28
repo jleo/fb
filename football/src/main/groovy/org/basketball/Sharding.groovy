@@ -26,7 +26,7 @@ class Sharding {
         Sharding gameLogParser = new Sharding()
 
         Thread.start {
-            def output = new File("/Users/jleo/list.txt")
+            def output = new File("/Users/jleo/list2.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
 //                if (url.indexOf("200104220MIL") != -1)
@@ -68,7 +68,7 @@ class Sharding {
         def urlShorten = url.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "").replaceAll("http://www.basketball-reference.com", "")
         def events = []
 
-        def c = mongoDBUtil.findAllCursor(new BasicDBObject("url", urlShorten), null, "log").sort(new BasicDBObject("sec": -1))
+        def c = mongoDBUtil.findAllCursor(new BasicDBObject("url", urlShorten), null, "log2").sort(new BasicDBObject("sec": -1))
         int scoreA, scoreB
 //            int lastScoreTotal = 0
 
@@ -189,7 +189,7 @@ class Sharding {
             if (event) {
 
             } else {
-                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))), "log", true)
+                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))), "log2", true)
 //                    mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("sec", sec)), "log", true)
             }
         }

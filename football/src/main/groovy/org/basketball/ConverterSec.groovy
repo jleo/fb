@@ -18,7 +18,7 @@ class ConverterSec {
     final static MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
 
     public static void main(String[] args) {
-        def output = new File("/Users/jleo/list.txt")
+        def output = new File("/Users/jleo/list2.txt")
 
         Thread.start {
             output.eachLine { line ->

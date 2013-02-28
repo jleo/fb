@@ -37,7 +37,7 @@ class GameLogParser {
         GameLogParser gameLogParser = new GameLogParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/list.txt")
+            def output = new File("/Users/jleo/list2.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
                 tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
@@ -64,7 +64,7 @@ class GameLogParser {
     }
 
     GameLogParser() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "27017", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
     }
 
     public void parse(String url, date) {
@@ -130,7 +130,7 @@ class GameLogParser {
                     .append("teamA", teamA)
                     .append("teamB", teamB)
 
-            mongoDBUtil.insert(doc, "log")
+            mongoDBUtil.insert(doc, "log2")
         }
     }
 }
