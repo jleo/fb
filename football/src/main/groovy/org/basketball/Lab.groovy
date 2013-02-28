@@ -8,8 +8,24 @@ package org.basketball
  * Let's RocknRoll
  */
 
-import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
+def pptv = new File("/Users/jleo/Downloads/Aegis PPTV0228.csv")
+def sdk = new File("/Users/jleo/Downloads/sdk_11003_12334.csv")
 
-println "11-8+2W".find("[0-9]*[0-9]*[0-9]-[0-9]*[0-9]*[0-9]")
+def sdkMap = [:]
+sdk.eachLine { sdkLine ->
+    def split = sdkLine.split(",")
+    if (split.size() >= 7)
+        sdkMap.put(split[0], split[6..-1].join(";"))
+}
 
+def file = new File("/Users/jleo/Downloads/output.csv")
+file.createNewFile()
+pptv.eachLine { line ->
+    if (line) {
+        def cookie = line.split(";")[2]
 
+        String toAppend = sdkMap.get(cookie.substring(1,cookie.length()-1))
+        if (toAppend)
+            file.append(cookie + ";" + toAppend+"\n")
+    }
+}
