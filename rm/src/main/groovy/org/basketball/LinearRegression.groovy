@@ -97,7 +97,7 @@ class LinearRegression {
             double[] beta = null;
 
             try {
-                olsMultipleLinearRegression.estimateRegressionParameters();
+                beta = olsMultipleLinearRegression.estimateRegressionParameters();
             } catch (e) {
                 BasicDBObject basicDBObject = new BasicDBObject()
                 basicDBObject.append("column", columns)
