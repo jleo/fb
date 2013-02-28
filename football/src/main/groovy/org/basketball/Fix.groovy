@@ -13,7 +13,7 @@ import com.mongodb.BasicDBObject
 class Fix {
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
-        def c = mongoDBUtil.findAllCursor(new BasicDBObject(), new BasicDBObject().append("_id", 1).append("quarter", 1).append("time", 1).append("_id", 1), "log")
+        def c = mongoDBUtil.findAllCursor(new BasicDBObject(), new BasicDBObject().append("_id", 1).append("quarter", 1).append("time", 1).append("_id", 1), "log2")
 
         c.each { it ->
             String time = it.get("time")
