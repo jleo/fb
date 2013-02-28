@@ -13,13 +13,13 @@ import com.mongodb.BasicDBObject
 class Fix {
     public static void main(String[] args) {
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
-        def c = mongoDBUtil.findAllCursor(new BasicDBObject(), new BasicDBObject().append("column", 1).append("_id", 1), "regression")
+        def c = mongoDBUtil.findAllCursor(new BasicDBObject("s", ['\$exists', false] as BasicDBObject), new BasicDBObject().append("column", 1).append("_id", 1), "regression")
 
         c.each { it ->
             String url = it.get("column").join("-")
             def id = it.get("_id")
 //            url = url.replaceAll("http://www.basketball-reference.com/boxscores/pbp/", "").replaceAll(".html", "")
-            mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("s", url)), "regression",true)
+            mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("s", url)), "regression", true)
         }
     }
 }
