@@ -92,10 +92,20 @@ class LinearRegression {
 
             olsMultipleLinearRegression.newSampleData(allReal, allTraining)
 
-            double[] betaHat = olsMultipleLinearRegression.estimateRegressionParameters();
             System.out.println("Estimates the regression parameters b:");
 
-            double[] beta = olsMultipleLinearRegression.estimateRegressionParameters();
+            double[] beta = null;
+
+            try {
+                olsMultipleLinearRegression.estimateRegressionParameters();
+            } catch (e) {
+                BasicDBObject basicDBObject = new BasicDBObject()
+                basicDBObject.append("column", columns)
+                basicDBObject.append("s", columns.join("-"))
+
+                db.getCollection("regression").insert(basicDBObject)
+                return
+            }
 
 
 
