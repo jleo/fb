@@ -122,6 +122,14 @@ class GameLogParser {
                         .append("score", score)
             }
 
+            int quarter = currentQuarter as int
+            def split = timeLeft.split(":")
+
+            int minute = split[0] as int
+            int second = (split[1] as double) as int
+
+
+            int sec = (4 - quarter) * 12 * 60 + minute * 60 + second
 
 
             doc.append("time", timeLeft)
@@ -129,6 +137,7 @@ class GameLogParser {
                     .append("date", date).append("url", url)
                     .append("teamA", teamA)
                     .append("teamB", teamB)
+                    .append("sec", sec)
 
             mongoDBUtil.insert(doc, "log2")
         }

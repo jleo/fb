@@ -80,14 +80,15 @@ class Sharding {
             String time = it.get("time")
 
             ObjectId id = it.get("_id")
+            int lastScoreTotal
 
-//                String score = it.get("score")
-//                if (score) {
-//                    def splitted = score.split("-")
-//                    scoreA = splitted[0] as int
-//                    scoreB = splitted[1] as int
-//                    lastScoreTotal = scoreA + scoreB
-//                }
+            String score = it.get("score")
+            if (score) {
+                def splitted = score.split("-")
+                scoreA = splitted[0] as int
+                scoreB = splitted[1] as int
+                lastScoreTotal = scoreA + scoreB
+            }
 
             def found = keyEvent.findResult { ke ->
                 def found = null
@@ -189,7 +190,7 @@ class Sharding {
             if (event) {
 
             } else {
-                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))), "log2", true)
+                mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("ae": new BasicDBObject(statA)).append("be", new BasicDBObject(statB))).append("total", lastScoreTotal), "log2", true)
 //                    mongoDBUtil.update(new BasicDBObject("_id", id), new BasicDBObject("\$set", new BasicDBObject("sec", sec)), "log", true)
             }
         }
