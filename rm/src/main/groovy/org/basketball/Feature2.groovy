@@ -23,7 +23,7 @@ class Feature2 {
         output.eachLine { line ->
 
             line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': second] as BasicDBObject)).append("url", line), null, "log2").sort([sec: 1] as BasicDBObject).limit(1)
+            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject(['score': ['\$exists': true] as BasicDBObject]).append("sec", ['\$gte': second] as BasicDBObject)).append("url", line), null, "log2").sort([sec: 1] as BasicDBObject).limit(1)
             last = cursor.next()
             last.put("order", count)
 
