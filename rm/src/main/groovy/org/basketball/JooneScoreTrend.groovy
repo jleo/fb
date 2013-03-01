@@ -241,11 +241,19 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     public static void main(String[] args) {
+        boolean cross = false
+        if (args[2].equals("cross")) {
+            cross = true
+        }
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
 
 
 
-        def output = new File("/Users/jleo/list.txt")
+        def path = "/Users/jleo/list.txt"
+        if (cross)
+            path = "/Users/jleo/list.txt"
+
+        def output = new File(path)
 
         int count = output.readLines().findIndexOf {
             it == "/boxscores/pbp/201211040OKC.html"
@@ -382,7 +390,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 stats[index] = sum - last["score"]
                 index++
                 if (!scoreOnly) {
-                    ['ast', 'mft', 'mkft', 'to', 'dr', 'or', 'of','mkls', 'mkcs','mft', 'ms2s', 'ms3s', 'mk3s',  'mk2s',  'blkb', 'pf', 'egf', 'ft', 'vb', '2st', 'tf'].each { abr ->
+                    ['ast', 'mft', 'mkft', 'to', 'dr', 'or', 'of', 'mkls', 'mkcs', 'mft', 'ms2s', 'ms3s', 'mk3s', 'mk2s', 'blkb', 'pf', 'egf', 'ft', 'vb', '2st', 'tf'].each { abr ->
                         def fa = it.get("ae").get(abr)
                         def assistA = fa == null ? 0 : fa as int
 
