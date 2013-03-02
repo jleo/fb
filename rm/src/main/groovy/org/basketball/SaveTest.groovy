@@ -33,18 +33,18 @@ class SaveTest {
 
                 def last = ["ae": [:].withDefault { 0 }, "be": [:].withDefault { 0 }, "score": 0]
 
-                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 2160] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                def cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end1").sort([order: 1] as BasicDBObject).limit(1)
                 joone.add(cursor, allReal, 0, allTraining, false, true, scanned - count, last)
 
                 startFrom += joone.numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 1440] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end2").sort([order: 1] as BasicDBObject).limit(1)
                 joone.add(cursor, allReal, startFrom, allTraining, false, true, scanned - count, last)
 
                 startFrom += joone.numberOfFeature * 2 + 1
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 720] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end3").sort([order: 1] as BasicDBObject).limit(1)
                 joone.add(cursor, allReal, startFrom, allTraining, false, false, scanned - count, last)
 
-                cursor = mongoDBUtil.findAllCursor((new BasicDBObject([:]).append("sec", ['\$gte': 0] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                cursor = mongoDBUtil.findAllCursor(new BasicDBObject("url", line), null, "end4").sort([order: 1] as BasicDBObject).limit(1)
                 joone.add(cursor, allReal, 0, allTraining, true, true, scanned - count, last)
 
                 idx++
