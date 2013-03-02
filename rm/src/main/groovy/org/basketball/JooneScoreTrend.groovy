@@ -218,7 +218,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 0
-    static final int inputSize = 26
+    static final int inputSize = 32
     static final int outputSize = 1
 
     public void saveNeuralNet(String fileName) {
@@ -241,9 +241,17 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     public static void main(String[] args) {
+        boolean cross = false
+        if (args[2].equals("cross")) {
+            cross = true
+        }
         MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
 
+
+
         def path = "/Users/jleo/list.txt"
+        if (cross)
+            path = "/Users/jleo/list.txt"
 
         def output = new File(path)
 
@@ -381,9 +389,20 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                 def feature = 0
                 stats[index] = sum - last["score"]
                 index++
-
-
                 if (!scoreOnly) {
+                    ['ast', 'mft', 'mkft', 'to', 'dr', 'or', 'of', 'mkls', 'mkcs', 'mft', 'ms2s', 'ms3s', 'mk3s', 'mk2s', 'blkb', 'pf', 'egf', 'ft', 'vb', '2st', 'tf'].each { abr ->
+                        def fa = it.get("ae").get(abr)
+                        def assistA = fa == null ? 0 : fa as int
+
+                        def fb = it.get("be").get(abr)
+                        def assistB = fb == null ? 0 : fb as int
+
+                        feature = assistA + assistB
+
+                        stats[index] = feature
+                        index++
+                    }
+
                     stats[index] = (scoreA - scoreB)
                     index++
 
@@ -399,21 +418,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                         stats[index] = feature
                         index++
                     }
-
-                    ['mft', 'mkft', 'to', 'or', 'of', 'mkcs', 'mft', 'ms2s', 'mk2s', 'blkb', 'pf', 'ft', 'vb', '2st', 'ast'].each { abr ->
-                        def fa = it.get("ae").get(abr)
-                        def assistA = fa == null ? 0 : fa as int
-
-                        def fb = it.get("be").get(abr)
-                        def assistB = fb == null ? 0 : fb as int
-
-                        feature = assistA + assistB
-
-                        stats[index] = feature
-                        index++
-                    }
                 }
-
+//                stats[index] = (scoreA - scoreB)
 //                index++
 //                stats[index] = (scoreA + scoreB)
                 last["score"] = sum
