@@ -418,6 +418,22 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                         stats[index] = feature
                         index++
                     }
+
+                    ['efg', 'ts', 'poss', 'ppp', 'ortg', 'drtg'].each { abr ->
+                        def fa = it.get("ae").get(abr)
+                        def assistA = fa == null ? 0 : fa as int
+
+                        def fb = it.get("be").get(abr)
+                        def assistB = fb == null ? 0 : fb as int
+
+                        feature = assistA + assistB
+                        if (abr in ["efg", 'ts', 'ppp', 'ortg', 'drtg']) {
+                            feature = (assistA + assistB) / 2
+                        }
+
+                        stats[index] = feature
+                        index++
+                    }
                 }
 //                stats[index] = (scoreA - scoreB)
 //                index++
