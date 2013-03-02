@@ -65,6 +65,8 @@ class LinearRegression {
                     out2.close()
 
                     println allTraining2[100]
+                    println allTraining2[101]
+                    println allTraining2[102]
 
                     stream = new FileInputStream("testreal");
                     out = new ObjectInputStream(stream);
