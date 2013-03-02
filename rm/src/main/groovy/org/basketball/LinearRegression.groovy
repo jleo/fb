@@ -21,13 +21,22 @@ class LinearRegression {
         Mongo mongo = new Mongo("rm4", 15000)
         DB db = mongo.getDB("bb")
 
-
+        boolean baseOn = (args[0] == "1")
+        def columns = args[1].split(",").collect {
+            it as int
+        }
         Thread.start {
-            db.getCollection("regression").find().sort([hit5: -1] as BasicDBObject).skip(args[0] as int).limit(args[1] as int).each { c ->
-                [* (32..37)].subsequences().each { s ->
-                    def column = c.get('column') as ArrayList
-                    column.addAll(s)
-                    tasks << column
+            if (baseOn) {
+                db.getCollection("regression").find().sort([hit5: -1] as BasicDBObject).skip(args[0] as int).limit(args[1] as int).each { c ->
+                    [* (32..37)].subsequences().each { s ->
+                        def column = c.get('column') as ArrayList
+                        column.addAll(s)
+                        tasks << column
+                    }
+                }
+            } else {
+                columns.subsequences().each {
+                    tasks << it
                 }
             }
         }
