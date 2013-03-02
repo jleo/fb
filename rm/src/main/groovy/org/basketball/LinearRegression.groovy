@@ -23,13 +23,17 @@ class LinearRegression {
 
 
         Thread.start {
-            [* (0..(args[0] as int))].subsequences().each {
-                tasks << it
+            db.getCollection("regression").find().sort([hit5: -1] as BasicDBObject).skip(args[0] as int).limit(args[1] as int).each { c ->
+                [* (24..31)].subsequences().each { s ->
+                    def column = c.get('column')
+                    column.addAll(s)
+                    tasks << column
+                }
             }
         }
         int cpu = Runtime.getRuntime().availableProcessors()
         println cpu + " cpu"
-        ExecutorService executorService = Executors.newFixedThreadPool(9);
+        ExecutorService executorService = Executors.newFixedThreadPool(cpu);
         cpu.times {
             executorService.submit(new Runnable() {
 
@@ -59,6 +63,8 @@ class LinearRegression {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         if (task == null)
                             break
+
+                        task = task as List
                         if (!db.getCollection("regression2").findOne([s: task.join("-")] as BasicDBObject))
                             run(task, allTraining, allReal, allTraining2, allReal2, db)
                     }
