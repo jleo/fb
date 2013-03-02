@@ -53,6 +53,7 @@ class LinearRegression {
                     double[][] allTraining = out.readObject() as double[][]
                     out.close()
 
+                    println allTraining[100]
                     stream = new FileInputStream("real");
                     out = new ObjectInputStream(stream);
                     def allReal = out.readObject()
@@ -62,6 +63,8 @@ class LinearRegression {
                     ObjectInputStream out2 = new ObjectInputStream(stream2);
                     def allTraining2 = out2.readObject()
                     out2.close()
+
+                    println allTraining2[100]
 
                     stream = new FileInputStream("testreal");
                     out = new ObjectInputStream(stream);
