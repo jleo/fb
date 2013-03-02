@@ -28,7 +28,7 @@ class LinearRegression {
         Thread.start {
             if (baseOn) {
                 db.getCollection("regression").find().sort([hit5: -1] as BasicDBObject).skip(args[2] as int).limit(args[3] as int).each { c ->
-                    [columns].subsequences().each { s ->
+                    columns.subsequences().each { s ->
                         def column = c.get('column') as ArrayList
                         column.addAll(s)
                         tasks << column
