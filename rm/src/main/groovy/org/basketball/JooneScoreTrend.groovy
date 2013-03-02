@@ -218,7 +218,7 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     }
 
     static final int numberOfFeature = 0
-    static final int inputSize = 32
+    static final int inputSize = 38
     static final int outputSize = 1
 
     public void saveNeuralNet(String fileName) {
