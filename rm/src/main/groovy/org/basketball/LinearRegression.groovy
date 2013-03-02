@@ -77,6 +77,8 @@ class LinearRegression {
 
     private static void run(columns, allTraining, allReal, allTraining2, allReal2, db) {
         try {
+            println columns
+
             int hit0 = 0;
             int hit5 = 0;
             int hit10 = 0;
@@ -97,8 +99,6 @@ class LinearRegression {
             (allReal, allTraining) = filter(allReal, allTraining, 158, 3.5, columns)
 
             olsMultipleLinearRegression.newSampleData(allReal, allTraining)
-
-            System.out.println("Estimates the regression parameters b:");
 
             double[] beta = null;
 
