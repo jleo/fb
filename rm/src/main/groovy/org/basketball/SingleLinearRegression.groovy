@@ -15,7 +15,7 @@ class SingleLinearRegression {
 
     public static void main(String[] args) {
         Thread.start {
-            [[1, 2, 8, 9, 13, 16, 17, 20, 21, 22]].each {
+            [[1, 2, 8, 9, 13, 16, 17, 20, 22]].each {
                 tasks << it
             }
         }
@@ -37,12 +37,12 @@ class SingleLinearRegression {
                     def allReal = out.readObject()
                     out.close()
 
-                    FileInputStream stream2 = new FileInputStream("test");
+                    FileInputStream stream2 = new FileInputStream("crosstrain");
                     ObjectInputStream out2 = new ObjectInputStream(stream2);
                     def allTraining2 = out2.readObject()
                     out2.close()
 
-                    stream = new FileInputStream("testreal");
+                    stream = new FileInputStream("crossreal");
                     out = new ObjectInputStream(stream);
                     def allReal2 = out.readObject()
                     out.close()
@@ -104,13 +104,13 @@ class SingleLinearRegression {
                 for (int i = 0; i < beta.length; i++) {
                     prediction += beta[i] * it[i];
                 }
-                //            println "predict:" + prediction + ", actual:" + allReal2[idx];
                 all += Math.abs(prediction - allReal2[idx])
                 all2 += prediction - allReal2[idx]
 
                 def expected = allReal2[idx]
 
                 prediction = Math.round(prediction)
+                            println "predict:" + prediction + ", actual:" + allReal2[idx];
 
 
                 if (expected >= (60) || expected <= (35)) {
