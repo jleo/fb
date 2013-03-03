@@ -15,7 +15,7 @@ class SingleLinearRegression {
 
     public static void main(String[] args) {
         Thread.start {
-            [[1, 2, 8, 9, 13, 16, 17, 20, 22]].each {
+            [[1, 2, 5, 6, 8, 9, 11, 13, 17, 21, 24, 27, 30, 35, 36]].each {
                 tasks << it
             }
         }

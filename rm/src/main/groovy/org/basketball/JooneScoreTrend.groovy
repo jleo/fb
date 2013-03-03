@@ -427,9 +427,9 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
                         def assistB = fb == null ? 0 : fb as int
 
                         feature = assistA + assistB
-                        if (abr in ["efg", 'ts', 'ppp', 'ortg', 'drtg']) {
-                            feature = (assistA + assistB) / 2
-                        }
+//                        if (abr in ["efg", 'ts', 'ppp', 'ortg', 'drtg']) {
+//                            feature = (assistA + assistB) / 2
+//                        }
 
                         stats[index] = feature
                         index++

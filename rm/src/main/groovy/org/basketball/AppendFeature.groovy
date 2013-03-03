@@ -63,7 +63,7 @@ class AppendFeature {
             def pppa = possa / a
             def pppb = possb / b
 
-            db.getCollection("end3").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.ppp": pppa as double, "be.ppp": pppb as double]] as BasicDBObject, true, false)
+//            db.getCollection("end32").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.ppp": pppa as double, "be.ppp": pppb as double]] as BasicDBObject, true, false)
 
             def ORTGA = a / possa * 100
             def ORTGB = b / possb * 100
@@ -71,7 +71,7 @@ class AppendFeature {
             def DRTGA = b / possa * 100
             def DRTGB = a / possa * 100
 
-            db.getCollection("end3").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.ortg": ORTGA as double, "ae.drtg": DRTGA as double, "be.drtg": DRTGB as double, "be.ortg": ORTGA as double]] as BasicDBObject, true, false)
+            db.getCollection("end3").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.efg": efg as double, "be.efg": efgb as double, "ae.ts": tsa as double, "be.ts": tsb as double, "ae.ppp": pppa as double, "be.ppp": pppb as double, "ae.ortg": ORTGA as double, "ae.drtg": DRTGA as double, "be.drtg": DRTGB as double, "be.ortg": ORTGB as double]] as BasicDBObject, true, false)
 //            db.getCollection("end300").insert([ae: [poss: possa as double] as BasicDBObject, be: [poss: possb as double] as BasicDBObject] as BasicDBObject)
         }
     }
