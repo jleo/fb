@@ -30,7 +30,7 @@ class BoxScoreParser {
     final static BlockingQueue tasks = new ArrayBlockingQueue<>(30);
 
     public static void main(String[] args) {
-        GameLogParser gameLogParser = new GameLogParser()
+        BoxScoreParser gameLogParser = new BoxScoreParser()
 
         Thread.start {
             def output = new File("/Users/jleo/list.txt")
@@ -41,14 +41,14 @@ class BoxScoreParser {
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(11);
-        10.times {
+        15.times {
             executorService.submit(new Runnable() {
 
                 @Override
                 void run() {
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
-                        def url = task.url
+                        def url = task.url.replaceAll("pbp/","")
                         def date = task.date
 
                         gameLogParser.parse(url, date)
@@ -60,7 +60,7 @@ class BoxScoreParser {
     }
 
     BoxScoreParser() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "27017", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
     }
 
     public void parse(String url, date) {
@@ -129,6 +129,7 @@ class BoxScoreParser {
 
         map.each { player, stats ->
             mongoDBUtil.insert((stats as BasicDBObject).append("name", player).append("match", url), "stat")
+            println "saved " + url
         }
     }
 }
