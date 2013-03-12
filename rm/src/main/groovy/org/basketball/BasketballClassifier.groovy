@@ -20,27 +20,49 @@ def map = [:].withDefault {
     [:]
 }
 t.each { abbr, node ->
-    node.tbody.each {
-        if (it.@"data-row" != 5) {
-            def name = it.tr[0].td[0].toString()
+    int count = 0
+    node.tbody.tr.each { c ->
+        count++
+        if (count != 6) {
+            def name = c[0].children()[0].children()[0].children()[0].toString()
+
             if (node.@id.toString().contains("basic")) {
                 ['MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', '+/-'].eachWithIndex { stat, idx ->
-                        def s = null
-                    if (stat == "MP")
-                        s = it.tr[0].td[idx + 1] as String
-                    else
-                        s = it.tr[0].td[idx + 1] as float
+                    def s = c[0].children()[idx + 1].children()[0]?.toString()
+                    if (stat == "MP") {
+                        def time = s.split(":")
+                        s = (time[0] as int) * 60 + (time[1] as int)
+                    } else {
+                        if (s)
+                            s = s as float
+                        else
+                            s = 0
+                    }
+
                     map.get(name).put(stat, s)
 
                 }
             } else {//advanced
-                ['MP', 'TSp', 'eFGp', 'ORBp', 'DRBp', 'TRBp', 'ASTp', 'STLp', 'BLKp', 'TOVp', 'USGp', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
-                    map.get(name).put(stat, it.tr[0].td[idx + 1])
+                ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
+                    def s = c[0].children()[idx + 1].children()[0]?.toString()
+                    if (stat == "MP") {
+                        def time = s.split(":")
+                        s = (time[0] as int) * 60 + (time[1] as int)
+                    } else {
+                        if (s)
+                            s = s as float
+                        else
+                            s = 0
+                    }
+
+                    map.get(name).put(stat, s)
                 }
             }
         }
     }
 }
 
-println map
+map.each {player, stats->
+
+}
 println t.size()
