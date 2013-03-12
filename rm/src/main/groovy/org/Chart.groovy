@@ -31,7 +31,7 @@ public class Visual extends ApplicationFrame {
     static DB getDb() {
 
         if (!db)
-            db = new Mongo("58.215.168.166", 15000).getDB("fb")
+            db = new Mongo("58.215.141.166", 15000).getDB("fb")
         return db
     }
 
