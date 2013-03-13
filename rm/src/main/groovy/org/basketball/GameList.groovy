@@ -11,9 +11,9 @@ class GameList {
     public static void main(String[] args) {
         //
 
-        def date = Date.parse("yyyy-MM-dd","2013-02-07")
+        def date = Date.parse("yyyy-MM-dd","2013-02-25")
 
-        def output = new File("/Users/jleo/list2.txt")
+        def output = new File("/Users/jleo/list3.txt")
         if (output.exists()){
             output.delete()
         }

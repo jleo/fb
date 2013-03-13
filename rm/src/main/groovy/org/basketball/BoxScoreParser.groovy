@@ -33,7 +33,7 @@ class BoxScoreParser {
         BoxScoreParser gameLogParser = new BoxScoreParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/list.txt")
+            def output = new File("/Users/jleo/list2.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
                 tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
@@ -129,7 +129,7 @@ class BoxScoreParser {
         }
 
         map.each { player, stats ->
-            mongoDBUtil.insert((stats as BasicDBObject).append("name", player).append("match", url), "stat")
+            mongoDBUtil.upsert([match: url, name: player] as BasicDBObject, new BasicDBObject("\$set", (stats as BasicDBObject).append("name", player).append("match", url)), true, "stat")
             println "saved " + url
         }
     }
