@@ -48,7 +48,7 @@ class BoxScoreParser {
                 void run() {
                     while (true) {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
-                        def url = task.url.replaceAll("pbp/","")
+                        def url = task.url.replaceAll("pbp/", "")
                         def date = task.date
 
                         gameLogParser.parse(url, date)
@@ -123,6 +123,7 @@ class BoxScoreParser {
                             map.get(name).put(stat, s)
                         }
                     }
+                    map.get(name).put("team", abbr.toString().split("_")[0])
                 }
             }
         }
