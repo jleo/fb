@@ -30,7 +30,10 @@ new File("/Users/jleo/games.txt").eachLine { line ->
         println match
         def teamA = []
         def teamB = []
-        stat.find([match: match] as BasicDBObject, [team:1, name:1] as BasicDBObject).each { s ->
+        def find = stat.find([match: match] as BasicDBObject, [team: 1, name: 1] as BasicDBObject)
+        if (find.count() == 0)
+            println "not found........"
+        find.each { s ->
             if (s.get("team").toString() != team) {
                 teamA << s.get("name")
             } else {

@@ -1,5 +1,7 @@
 package org.basketball
 
+import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -8,31 +10,13 @@ package org.basketball
  * Let's RocknRoll
  */
 
-//def pptv = new File("/Users/jleo/Downloads/Aegis PPTV0228.csv")
-//def sdk = new File("/Users/jleo/Downloads/sdk_11003_12334.csv")
-//
-//def sdkMap = [:]
-//sdk.eachLine { sdkLine ->
-//    def split = sdkLine.split(",")
-//    if (split.size() >= 7)
-//        sdkMap.put(split[0], split[6..-1].join(";"))
-//}
-//
-//def file = new File("/Users/jleo/Downloads/output.csv")
-//file.createNewFile()
-//pptv.eachLine { line ->
-//    if (line) {
-//        def cookie = line.split(";")[2]
-//
-//        String toAppend = sdkMap.get(cookie.substring(1,cookie.length()-1))
-//        if (toAppend)
-//            file.append(cookie + ";" + toAppend+"\n")
-//    }
-//}
+def a = [[1],[2],[3],[4]] as double[][]
+def b = [10,24,32,49] as double[]
+OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
+olsMultipleLinearRegression.newSampleData(b,a)
 
-FileInputStream stream2 = new FileInputStream("/Users/jleo/train");
-ObjectInputStream out2 = new ObjectInputStream(stream2);
-def allTraining2 = out2.readObject()
-out2.close()
-
-println allTraining2[100]
+println olsMultipleLinearRegression.estimateRegressionParameters()
+println olsMultipleLinearRegression.estimateResiduals()
+println olsMultipleLinearRegression.estimateRegressionParametersStandardErrors()
+println olsMultipleLinearRegression.estimateRegressandVariance()
+//println olsMultipleLinearRegression.

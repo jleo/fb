@@ -33,7 +33,7 @@ class BoxScoreParser {
         BoxScoreParser gameLogParser = new BoxScoreParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/list2.txt")
+            def output = new File("/Users/jleo/list.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
                 tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
