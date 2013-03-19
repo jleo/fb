@@ -3,6 +3,7 @@ package org.basketball
 import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
 
 import java.util.concurrent.*
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -15,7 +16,7 @@ class SingleLinearRegression {
 
     public static void main(String[] args) {
         Thread.start {
-            [[1, 2, 5, 6, 8, 9, 11, 13, 17, 21, 24, 27, 30, 35, 36]].each {
+            [[1, 2, 8, 9, 13, 16, 17, 20, 21, 22, 26, 27, 30, 31]].each {
                 tasks << it
             }
         }
@@ -37,12 +38,12 @@ class SingleLinearRegression {
                     def allReal = out.readObject()
                     out.close()
 
-                    FileInputStream stream2 = new FileInputStream("crosstrain");
+                    FileInputStream stream2 = new FileInputStream("test");
                     ObjectInputStream out2 = new ObjectInputStream(stream2);
                     def allTraining2 = out2.readObject()
                     out2.close()
 
-                    stream = new FileInputStream("crossreal");
+                    stream = new FileInputStream("testreal");
                     out = new ObjectInputStream(stream);
                     def allReal2 = out.readObject()
                     out.close()
@@ -96,10 +97,10 @@ class SingleLinearRegression {
 
             def special = 0
 
+            def all3
+            (allReal2, all3) = filter(allReal2, allTraining2, 158, 3.5, columns)
 
-            (allReal2, allTraining2) = filter(allReal2, allTraining2, 158, 3.5, columns)
-
-            allTraining2.eachWithIndex { it, idx ->
+            all3.eachWithIndex { it, idx ->
                 def prediction = 0;
                 for (int i = 0; i < beta.length; i++) {
                     prediction += beta[i] * it[i];
@@ -110,15 +111,16 @@ class SingleLinearRegression {
                 def expected = allReal2[idx]
 
                 prediction = Math.round(prediction)
-                            println "predict:" + prediction + ", actual:" + allReal2[idx];
+//                prediction = 47
+                println "predict:" + prediction + ", actual:" + allReal2[idx] + ", " + allTraining2[idx][37] + ", " + allTraining2[idx][36];
 
 
-                if (expected >= (60) || expected <= (35)) {
+                if (prediction >= (55) || prediction <= (45)) {
                     special++
                     if (Math.abs(expected - prediction) == 0)
                         hit0_55++
 
-                    if (Math.abs(expected - prediction) <= 5)
+                    if (Math.abs(expected - prediction) <= 2)
                         hit5_55++
 
                     if (Math.abs(expected - prediction) <= 10)
@@ -131,7 +133,7 @@ class SingleLinearRegression {
                 if (Math.abs(expected - prediction) == 0)
                     hit0++
 
-                if (Math.abs(expected - prediction) <= 5)
+                if (Math.abs(expected - prediction) <= 2)
                     hit5++
 
                 if (Math.abs(expected - prediction) <= 10)
@@ -143,8 +145,12 @@ class SingleLinearRegression {
             def count = allReal2.length
 
             println("hit0:" + ((hit0 / count * 100) as double))
-            println("hit5:" + ((hit5 / count * 100) as double))
+            println("hit3:" + ((hit5 / count * 100) as double))
             println("hit10:" + ((hit10 / count * 100) as double))
+
+//            println("hit0_s:" + ((hit0_55 / count * 100) as double))
+//            println("hit5_s:" + ((hit5_55 / count * 100) as double))
+//            println("hit10_s:" + ((hit10_55 / count * 100) as double))
 
         } catch (e) {
             e.printStackTrace()

@@ -1,8 +1,6 @@
 package org.basketball;
 
 
-import org.apache.commons.math.stat.clustering.Cluster;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,9 +27,6 @@ public class KMeans {
         }
 
         MyKMeansPlusPlusClusterer kppc = new MyKMeansPlusPlusClusterer(new Random(System.currentTimeMillis()), MyKMeansPlusPlusClusterer.EmptyClusterStrategy.IGNORE);
-        List<Cluster> result = kppc.cluster(points, numberOfCategory, 1000);
-
-        System.out.println(result);
-        return null;
+        return kppc.cluster(points, numberOfCategory, 1000);
     }
 }

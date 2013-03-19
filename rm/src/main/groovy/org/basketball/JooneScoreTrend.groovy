@@ -25,6 +25,10 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
 
     int cycle = 500
 
+    static final int numberOfFeature = 0
+    static final int inputSize = 38
+    static final int outputSize = 1
+
     BigDecimal learnRate = 0.8
 
     BigDecimal mon = 0.3
@@ -217,9 +221,8 @@ public class JooneScoreTrend implements NeuralNetListener, Serializable {
     public void netStoppedError(NeuralNetEvent e, String error) {
     }
 
-    static final int numberOfFeature = 0
-    static final int inputSize = 38
-    static final int outputSize = 1
+
+
 
     public void saveNeuralNet(String fileName) {
         try {

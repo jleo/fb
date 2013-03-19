@@ -16,7 +16,7 @@ class AppendFeature {
         Mongo mongo = new Mongo("rm4", 15000)
         DB db = mongo.getDB("bb")
 
-        db.getCollection("end3").find().each {
+        db.getCollection("end32").find().each {
             def mk2s = it.get("ae").get("mk2s") ?: 0
             def mk3s = it.get("ae").get("mk3s") ?: 0
             def mkcs = it.get("ae").get("mkcs") ?: 0
@@ -71,7 +71,7 @@ class AppendFeature {
             def DRTGA = b / possa * 100
             def DRTGB = a / possa * 100
 
-            db.getCollection("end3").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.efg": efg as double, "be.efg": efgb as double, "ae.ts": tsa as double, "be.ts": tsb as double, "ae.ppp": pppa as double, "be.ppp": pppb as double, "ae.ortg": ORTGA as double, "ae.drtg": DRTGA as double, "be.drtg": DRTGB as double, "be.ortg": ORTGB as double]] as BasicDBObject, true, false)
+            db.getCollection("end32").update(["_id": it.get("_id")] as BasicDBObject, ["\$set": ["ae.efg": efg as double, "be.efg": efgb as double, "ae.ts": tsa as double, "be.ts": tsb as double, "ae.ppp": pppa as double, "be.ppp": pppb as double, "ae.ortg": ORTGA as double, "ae.drtg": DRTGA as double, "be.drtg": DRTGB as double, "be.ortg": ORTGB as double]] as BasicDBObject, true, false)
 //            db.getCollection("end300").insert([ae: [poss: possa as double] as BasicDBObject, be: [poss: possb as double] as BasicDBObject] as BasicDBObject)
         }
     }
