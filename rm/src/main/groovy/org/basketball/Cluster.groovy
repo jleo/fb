@@ -1,5 +1,4 @@
 package org.basketball
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -31,7 +30,8 @@ class Cluster {
             }
             println "---------------------------------------------"
         }
-        println index(results, "Tracy McGrady", playerNameYear)
+
+
     }
 
     static int index(results, name, playerNameYear) {
