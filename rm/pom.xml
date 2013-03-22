@@ -35,13 +35,6 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/joone-engine.jar</systemPath>
         </dependency>
-        <dependency>
-            <groupId>org.clojars.smallrivers</groupId>
-            <artifactId>kafka</artifactId>
-            <version>0.7.1-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/kafka-0.7.1-SNAPSHOT.jar</systemPath>
-        </dependency>
 
         <dependency>
             <groupId>org.vert-x</groupId>
