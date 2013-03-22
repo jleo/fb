@@ -12,10 +12,11 @@ class Cluster {
         def playerRow = new double[7547 - 256][]
         def playerNameYear = new String[7547 - 256]
         def playerName = new HashSet()
-
+        def raw = new String[7547 - 256]
         int i = 0
         new File("/Users/jleo/Desktop/players2").eachLine {
             def splitted = it.split(split)
+            raw[i] = it
             playerRow[i] = (splitted[8..17] as double[])
             playerNameYear[i] = splitted[3] + " " + splitted[1]
             playerName << splitted[3]
@@ -29,6 +30,11 @@ class Cluster {
             def file = new File("/Users/jleo/c${index}.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
                 file.append(playerNameYear[point.index] + "\n")
+            }
+
+            def file2 = new File("/Users/jleo/splitted/all${index}.txt")
+            result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
+                file2.append(raw[point.index] + "\n")
             }
         }
     }
