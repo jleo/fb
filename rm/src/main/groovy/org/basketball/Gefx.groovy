@@ -25,12 +25,12 @@ import it.uniroma1.dis.wiserver.gexf4j.core.impl.data.AttributeListImpl
  */
 class Gefx {
     public static void main(String[] args) {
-        FileInputStream stream = new FileInputStream("test2");
+        FileInputStream stream = new FileInputStream("test3");
         ObjectInputStream inp = new ObjectInputStream(stream);
         Dendrogram dendrogram = inp.readObject();
 
         PlayerAbilityExperiment experiment = new PlayerAbilityExperiment();
-        experiment.load(2011);
+        experiment.load(2007);
 
         Test.dump(experiment, dendrogram)
 
@@ -53,7 +53,7 @@ class Gefx {
         dump(experiment, dendrogram, graph)
 
         StaxGraphWriter graphWriter = new StaxGraphWriter();
-        File f = new File("/Users/jleo/player2.gexf");
+        File f = new File("/Users/jleo/player3.gexf");
         Writer out;
         try {
             out = new FileWriter(f, false);
@@ -94,7 +94,7 @@ class Gefx {
 
             def mergeNode = graph.createNode(count++ + "");
             mergeNode.connectTo(center)
-
+            mergeNode.getAttributeValues().addValue(attASPM, 1 as String)
             dumpNode(indent + "  ", ((MergeNode) node).getLeft(), playerAbilityExperiment, graph, mergeNode);
             dumpNode(indent + "  ", ((MergeNode) node).getRight(), playerAbilityExperiment, graph, mergeNode);
         }

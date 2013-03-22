@@ -20,7 +20,7 @@ import java.io.ObjectOutputStream;
 public class Test {
     public static void main(String[] args) throws IOException {
         PlayerAbilityExperiment experiment = new PlayerAbilityExperiment();
-        experiment.load(2011);
+        experiment.load(2007);
 
         DissimilarityMeasure dissimilarityMeasure = new EuclideanDissimilarityMeasure();
         AgglomerationMethod agglomerationMethod = new AverageLinkage();
@@ -30,7 +30,7 @@ public class Test {
         Dendrogram dendrogram = dendrogramBuilder.getDendrogram();
         dump(experiment, dendrogram);
 
-        FileOutputStream stream = new FileOutputStream("test2");
+        FileOutputStream stream = new FileOutputStream("test3");
         ObjectOutputStream out = new ObjectOutputStream(stream); out.writeObject(dendrogram);
         out.close();
     }

@@ -23,7 +23,7 @@ class PlayerAbilityExperiment implements Experiment {
         int i = 0
         new File("/Users/jleo/Desktop/players2").eachLine {
             def splitted = it.split(split)
-            if ((splitted[1] as int) >year) {
+            if ((splitted[1] as int) ==year) {
                 playerRows << (splitted[8..23, 25..77] as double[])
                 playerNameYear << splitted[3] + " " + splitted[1]
                 playerName << splitted[3]
