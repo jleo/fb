@@ -14,24 +14,23 @@ class Cluster {
         def playerName = new HashSet()
 
         int i = 0
-        new File("/Users/jleo/Desktop/players").eachLine {
+        new File("/Users/jleo/Desktop/players2").eachLine {
             def splitted = it.split(split)
-            playerRow[i] = (splitted[8..-1] as double[])
+            playerRow[i] = (splitted[8..17] as double[])
             playerNameYear[i] = splitted[3] + " " + splitted[1]
             playerName << splitted[3]
             i++
         }
 
-        def results = new KMeans(150).start(playerRow)
+
+        def results = new KMeans(7).start(playerRow)
         results.eachWithIndex { result, index ->
             println "classify $index"
+            def file = new File("/Users/jleo/c${index}.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
-                println playerNameYear[point.index]
+                file.append(playerNameYear[point.index] + "\n")
             }
-            println "---------------------------------------------"
         }
-
-
     }
 
     static int index(results, name, playerNameYear) {

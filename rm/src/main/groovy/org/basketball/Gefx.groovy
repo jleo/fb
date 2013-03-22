@@ -25,12 +25,12 @@ import it.uniroma1.dis.wiserver.gexf4j.core.impl.data.AttributeListImpl
  */
 class Gefx {
     public static void main(String[] args) {
-        FileInputStream stream = new FileInputStream("test2");
+        FileInputStream stream = new FileInputStream("test3");
         ObjectInputStream inp = new ObjectInputStream(stream);
         Dendrogram dendrogram = inp.readObject();
 
         PlayerAbilityExperiment experiment = new PlayerAbilityExperiment();
-        experiment.load(2011);
+        experiment.load(1990);
 
         Test.dump(experiment, dendrogram)
 
