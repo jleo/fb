@@ -1,4 +1,7 @@
 package org.basketball
+
+import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -7,5 +10,8 @@ package org.basketball
  * To change this template use File | Settings | File Templates.
  */
 
-int[] a = new int[5]
-a[-3] = 1
+OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
+olsMultipleLinearRegression.newSampleData([10,11,12,13] as double[], [[4],[7],[7],[8]] as double[][])
+
+println olsMultipleLinearRegression.estimateRegressionParameters()
+println olsMultipleLinearRegression.calculateRSquared()

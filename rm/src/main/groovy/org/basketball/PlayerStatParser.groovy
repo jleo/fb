@@ -1,6 +1,7 @@
 package org.basketball
 
 import Util.MongoDBUtil
+import com.mongodb.BasicDBObject
 import org.ccil.cowan.tagsoup.AutoDetector
 
 import java.util.concurrent.*
@@ -48,7 +49,11 @@ class PlayerStatParser {
                         def task = tasks.poll(30, TimeUnit.SECONDS)
                         def url = task.url
 
-                        gameLogParser.parse(url)
+                        try {
+                            gameLogParser.parse(url)
+                        } catch (e) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             })
@@ -65,7 +70,11 @@ class PlayerStatParser {
         def text = new URL(url).text
         def html = asHTML(text)
 
+
         def t = [:]
+        def fName = ""
+        text.eachMatch("<h1>.*?</h1>") { fName = it[4..-6] }
+
         html.breadthFirst().each { node ->
             if (node.@id in ["totals", "advanced"])
                 t.put(node.@id, node)
@@ -79,11 +88,22 @@ class PlayerStatParser {
             node.tbody.tr.each { c ->
                 count++
                 if (node.@id.toString().contains("totals")) {
-                    ['Season','Age','Tm','Lg','Pos','G','GS','MP','FG','FGA','FG%','3P','3PA','3P%','FT','FTA','FT%','ORB','DRB','TRB','AST','STL','BLK','TOV','PF','PTS'].eachWithIndex { stat, idx ->
-                        def s = c[0].children()[idx + 1].children()[0]?.toString()
-                        if (stat == "MP") {
-                            def time = s.split(":")
-                            s = (time[0] as int) * 60 + (time[1] as int)
+                    def season = ""
+                    ['Season', 'Age', 'Tm', 'Lg', 'Pos', 'G', 'GS', 'MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS'].eachWithIndex { stat, idx ->
+                        if (stat == 'Lg')
+                            return
+
+                        def s = c[0].children()[idx].children()[0]
+                        if (stat == "Tm") {
+                            if (!(s instanceof String))
+                                s = s.text()
+                        } else {
+                            s = s?.toString()
+                        }
+                        if (stat == "Season") {
+                            season = s.toString()
+                        } else if (stat in ["Tm", 'Pos']) {
+                            s = s as String
                         } else {
                             if (s)
                                 s = s as float
@@ -91,15 +111,28 @@ class PlayerStatParser {
                                 s = 0
                         }
 
-                        map.get(name).put(stat, s)
+                        map.get(season).put(stat, s)
 
                     }
                 } else {//advanced
-                    ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
-                        def s = c[0].children()[idx + 1].children()[0]?.toString()
-                        if (stat == "MP") {
-                            def time = s.split(":")
-                            s = (time[0] as int) * 60 + (time[1] as int)
+                    def season = ""
+                    ['Season', 'Age', 'Tm', 'Lg', 'Pos', 'G', 'MP', 'PER', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg', 'OWS', 'DWS', 'WS', 'WS/48'].eachWithIndex { stat, idx ->
+                        if (stat == 'Lg')
+                            return
+
+                        def s = c[0].children()[idx].children()[0]
+
+                        if (stat == "Tm") {
+                            if (!(s instanceof String))
+                                s = s.text()
+                        } else {
+                            s = s?.toString()
+                        }
+
+                        if (stat == "Season") {
+                            season = s.toString()
+                        } else if (stat in ["Tm", 'Pos']) {
+                            s = s as String
                         } else {
                             if (s)
                                 s = s as float
@@ -107,10 +140,12 @@ class PlayerStatParser {
                                 s = 0
                         }
 
-                        map.get(name).put(stat, s)
+                        map.get(season).put(stat, s)
                     }
                 }
-                map.get(name).put("team", abbr.toString().split("_")[0])
+                map.each { season, stats ->
+                    mongoDBUtil.insert((stats as BasicDBObject).append("name", name).append("fname", fName), "player")
+                }
             }
         }
     }

@@ -17,24 +17,30 @@ class Cluster {
         new File("/Users/jleo/Desktop/players2").eachLine {
             def splitted = it.split(split)
             raw[i] = it
-            playerRow[i] = (splitted[8..17] as double[])
+            playerRow[i] = (splitted[8..12] as double[])
             playerNameYear[i] = splitted[3] + " " + splitted[1]
             playerName << splitted[3]
             i++
         }
 
-
         def results = new KMeans(7).start(playerRow)
         results.eachWithIndex { result, index ->
             println "classify $index"
-            def file = new File("/Users/jleo/c${index}.txt")
+            def file = new File("/Users/jleo/cluster/c${index}.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
                 file.append(playerNameYear[point.index] + "\n")
             }
 
-            def file2 = new File("/Users/jleo/splitted/all${index}.txt")
+            def file2 = new File("/Users/jleo/splitted/all.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
-                file2.append(raw[point.index] + "\n")
+                file2.append(raw[point.index])
+                7.times { time ->
+                    if (time == index)
+                        file2.append("\t" + 1)
+                    else
+                        file2.append("\t" + 0)
+                }
+                file2.append("\n")
             }
         }
     }

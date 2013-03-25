@@ -12,6 +12,7 @@ package org.basketball
 def file = new File("/Users/jleo/players.txt")
 ('a'..'z').each { letter ->
     def url = new URL("http://www.basketball-reference.com/players/" + letter + "/")
+    println letter
     url.text.eachMatch("href=\"/players/.*?.html") {
         file.append("http://www.basketball-reference.com" + it[6..-1] + "\n")
     }
