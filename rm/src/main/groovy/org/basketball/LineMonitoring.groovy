@@ -20,12 +20,11 @@ import org.apache.http.protocol.HttpContext
  */
 class LineMonitoring {
     HttpClient httpClient
-    Mongo m = new Mongo("rm4", 15000)
+    Mongo m = new Mongo("localhost", 27017)
 
     LineMonitoring() {
         httpClient = new DefaultHttpClient()
         httpClient.addRequestInterceptor(new HttpRequestInterceptor() {
-
             public void process(
                     final HttpRequest request,
                     final HttpContext context) throws HttpException, IOException {
@@ -33,7 +32,6 @@ class LineMonitoring {
                     request.addHeader("Accept-Encoding", "gzip");
                 }
             }
-
         });
         httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
 
@@ -118,11 +116,16 @@ class LineMonitoring {
         }
     }
 
-    static receiver = [pinnacle: "miaoyanfei@admaster.cn,ggyyleo@gmail.com", bookmaker: "williamyguo@gmail.com,ggyyleo@gmail.com"]
+    static receiver = []
 //    static receiver = [pinnacle: "ggyyleo@gmail.com,ggyyleo@gmail.com", bookmaker: "ggyyleo@gmail.com,ggyyleo@gmail.com"]
 
     def onUpdate(o, old) {
+        println "email..."
         def receiver = receiver[o.c]
+        if (!receiver){
+            println "no need..."
+            return
+        }
 
         SimpleEmail email = new SimpleEmail();
         email.setCharset("utf-8");
@@ -146,9 +149,13 @@ class LineMonitoring {
 
     public static void main(String[] args) {
         while (true) {
-            sleep 30000
-            LineMonitoring lm = new LineMonitoring()
-            lm.run()
+            try {
+                LineMonitoring lm = new LineMonitoring()
+                lm.run()
+                sleep 180000
+            } catch (e) {
+                e.printStackTrace()
+            }
         }
     }
 }
