@@ -84,24 +84,25 @@ class PlayerStatParser {
         }
         def name = url[url.lastIndexOf("/") + 1..-1]
         t.each { abbr, node ->
-            int count = 0
+            int countBasic = 0
+            int countAdvanced = 0
             node.tbody.tr.each { c ->
-                count++
                 if (node.@id.toString().contains("totals")) {
+                    countBasic++
                     def season = ""
                     ['Season', 'Age', 'Tm', 'Lg', 'Pos', 'G', 'GS', 'MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS'].eachWithIndex { stat, idx ->
                         if (stat == 'Lg')
                             return
 
                         def s = c[0].children()[idx].children()[0]
-                        if (stat == "Tm") {
+                        if (stat in ["Tm", "Season"]) {
                             if (!(s instanceof String))
                                 s = s.text()
                         } else {
                             s = s?.toString()
                         }
                         if (stat == "Season") {
-                            season = s.toString()
+                            season = s
                         } else if (stat in ["Tm", 'Pos']) {
                             s = s as String
                         } else {
@@ -111,10 +112,11 @@ class PlayerStatParser {
                                 s = 0
                         }
 
-                        map.get(season).put(stat, s)
+                        map.get(countBasic).put(stat, s)
 
                     }
                 } else {//advanced
+                    countAdvanced++
                     def season = ""
                     ['Season', 'Age', 'Tm', 'Lg', 'Pos', 'G', 'MP', 'PER', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg', 'OWS', 'DWS', 'WS', 'WS/48'].eachWithIndex { stat, idx ->
                         if (stat == 'Lg')
@@ -122,15 +124,14 @@ class PlayerStatParser {
 
                         def s = c[0].children()[idx].children()[0]
 
-                        if (stat == "Tm") {
+                        if (stat in ["Tm", "Season"]) {
                             if (!(s instanceof String))
                                 s = s.text()
                         } else {
                             s = s?.toString()
                         }
-
                         if (stat == "Season") {
-                            season = s.toString()
+                            season = s
                         } else if (stat in ["Tm", 'Pos']) {
                             s = s as String
                         } else {
@@ -140,13 +141,13 @@ class PlayerStatParser {
                                 s = 0
                         }
 
-                        map.get(season).put(stat, s)
+                        map.get(countAdvanced).put(stat, s)
                     }
                 }
-                map.each { season, stats ->
-                    mongoDBUtil.insert((stats as BasicDBObject).append("name", name).append("fname", fName), "player")
-                }
             }
+        }
+        map.each { season, stats ->
+            mongoDBUtil.insert((stats as BasicDBObject).append("name", name).append("fname", fName), "player")
         }
     }
 }

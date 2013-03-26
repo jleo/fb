@@ -9,32 +9,35 @@ package org.basketball
 class Cluster {
     public static void main(String[] args) {
         def split = "\t"
-        def playerRow = new double[7547 - 256][]
-        def playerNameYear = new String[7547 - 256]
+        int numberOfRow = 6919
+        def playerRow = new double[numberOfRow][]
+        def playerNameYear = new String[numberOfRow]
+        def playerFullName = new String[numberOfRow]
         def playerName = new HashSet()
-        def raw = new String[7547 - 256]
+        def raw = new String[numberOfRow]
         int i = 0
-        new File("/Users/jleo/Desktop/players2").eachLine {
+        new File("/Users/jleo/toClusterNew.txt").eachLine {
             def splitted = it.split(split)
             raw[i] = it
-            playerRow[i] = (splitted[8..12] as double[])
-            playerNameYear[i] = splitted[3] + " " + splitted[1]
-            playerName << splitted[3]
+            playerRow[i] = (splitted[2, 3, 4, 5, 7, 8, 9, 10, 11, 14] as double[])
+            playerNameYear[i] = splitted[0]
+            playerFullName[i] = splitted[1]
+            playerName << splitted[1]
             i++
         }
-
-        def results = new KMeans(7).start(playerRow)
+        def c = 7
+        def results = new KMeans(c).start(playerRow)
         results.eachWithIndex { result, index ->
             println "classify $index"
             def file = new File("/Users/jleo/cluster/c${index}.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
-                file.append(playerNameYear[point.index] + "\n")
+                file.append(playerNameYear[point.index] + "\t" + playerFullName[point.index] + "\n")
             }
 
-            def file2 = new File("/Users/jleo/splitted/all.txt")
+            def file2 = new File("/Users/jleo/cluster/all.txt")
             result.points.eachWithIndex { EuclideanDoublePoint point, pi ->
                 file2.append(raw[point.index])
-                7.times { time ->
+                c.times { time ->
                     if (time == index)
                         file2.append("\t" + 1)
                     else
