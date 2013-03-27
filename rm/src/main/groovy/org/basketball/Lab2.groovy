@@ -32,5 +32,5 @@ import groovy.sql.Sql
 
 def sql = Sql.newInstance("jdbc:mysql://58.215.141.163:3306/db_snap?useUnicode=true&characterEncoding=utf8&autoReconnect=true", "root", "000000", "com.mysql.jdbc.Driver")
 new File("/Users/jleo/Downloads/12537.txt").eachLine {
-    sql.executeInsert("insert into ad_url (version,url,ad_location_id,location_id, date_created) values (0,?,80,?,?)",[it.split(",")[1],'200152198',new Date()])
+    sql.executeInsert("insert into ad_url (version,url,ad_location_id,location_id, date_created,project_id,last_updated) values (0,?,80,?,?,5,?)",[it.split(",")[1],'200152198',new Date(),new Date()])
 }
