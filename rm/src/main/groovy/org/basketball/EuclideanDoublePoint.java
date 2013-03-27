@@ -1,7 +1,6 @@
 package org.basketball;
 
 import org.apache.commons.math.stat.clustering.Clusterable;
-import org.apache.commons.math.util.MathUtils;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -15,10 +14,14 @@ import java.util.Collection;
  */
 public class EuclideanDoublePoint implements Clusterable<EuclideanDoublePoint>, Serializable {
 
-    /** Serializable version identifier. */
+    /**
+     * Serializable version identifier.
+     */
     private static final long serialVersionUID = 3946024775784901369L;
 
-    /** Point coordinates. */
+    /**
+     * Point coordinates.
+     */
     private final double[] point;
     private int index;
 
@@ -37,18 +40,38 @@ public class EuclideanDoublePoint implements Clusterable<EuclideanDoublePoint>, 
 
     /**
      * Get the n-dimensional point in integer space.
+     *
      * @return a reference (not a copy!) to the wrapped array
      */
     public double[] getPoint() {
         return point;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public double distanceFrom(final EuclideanDoublePoint p) {
-        return MathUtils.distance(point, p.getPoint());
+        double sumA = 0.0f;
+        for (int i = 0; i < point.length; i++) {
+            sumA += point[i] * point[i];
+        }
+
+        double sumB = 0.0f;
+        for (int i = 0; i < p.point.length; i++) {
+            sumB += p.point[i] * p.point[i];
+        }
+
+        double multiply = 0.0f;
+        for (int i = 0; i < point.length; i++) {
+            multiply += p.point[i] * point[i];
+        }
+        return 1 - multiply / (Math.sqrt(sumA) * Math.sqrt(sumB));
+//        return MathUtils.distanceInf(point, p.getPoint());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public EuclideanDoublePoint centroidOf(final Collection<EuclideanDoublePoint> points) {
         double[] centroid = new double[getPoint().length];
         for (EuclideanDoublePoint p : points) {
@@ -62,7 +85,9 @@ public class EuclideanDoublePoint implements Clusterable<EuclideanDoublePoint>, 
         return new EuclideanDoublePoint(index, centroid);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(final Object other) {
         if (!(other instanceof EuclideanDoublePoint)) {
@@ -80,7 +105,9 @@ public class EuclideanDoublePoint implements Clusterable<EuclideanDoublePoint>, 
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         int hashCode = 0;
@@ -92,6 +119,7 @@ public class EuclideanDoublePoint implements Clusterable<EuclideanDoublePoint>, 
 
     /**
      * {@inheritDoc}
+     *
      * @since 2.1
      */
     @Override
