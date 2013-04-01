@@ -19,7 +19,7 @@ class Cluster {
         new File("/Users/jleo/toClusterNew.txt").eachLine {
             def splitted = it.split(split)
             raw[i] = it
-            playerRow[i] = (splitted[2, 3, 6, 7, 8, 9, 10, 11] as double[])
+            playerRow[i] = (splitted[2, 3, 6, 7, 8, 9, 10, 11, 14] as double[])
             playerNameYear[i] = splitted[0]
             playerFullName[i] = splitted[1]
             playerName << splitted[1]

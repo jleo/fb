@@ -11,15 +11,15 @@ class GameList {
     public static void main(String[] args) {
         //
 
-        def date = Date.parse("yyyy-MM-dd","2013-02-25")
+        def date = Date.parse("yyyy-MM-dd", "1980-02-25")
 
-        def output = new File("/Users/jleo/list3.txt")
-        if (output.exists()){
+        def output = new File("/Users/jleo/list1980-2013.txt")
+        if (output.exists()) {
             output.delete()
         }
         output.createNewFile()
 
-        (date..new Date()).each {d->
+        (date..new Date()).each { d ->
             println d
             def cal = new GregorianCalendar()
             cal.setTime(d)
@@ -29,8 +29,11 @@ class GameList {
 
             def text = new URL("http://www.basketball-reference.com/boxscores/index.cgi?month=$month&day=$day&year=$year").text
 
-            text.eachMatch("/boxscores/pbp/.*?\\.html"){it->
-                output.append(it+"\n")
+            if (text.indexOf("No games played on this date") != -1)
+                return
+
+            text.eachMatch("/boxscores/.*?\\.html") { it ->
+                output.append(it + "\n")
             }
         }
 
