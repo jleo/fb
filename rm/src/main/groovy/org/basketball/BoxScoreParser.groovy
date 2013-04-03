@@ -33,10 +33,10 @@ class BoxScoreParser {
         BoxScoreParser gameLogParser = new BoxScoreParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/list.txt")
+            def output = new File("/Users/jleo/Dropbox/list1990-2000.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
-                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
+                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/", "")[0..7])])
             }
         }
 
@@ -84,48 +84,55 @@ class BoxScoreParser {
             [:]
         }
 
-        t.each { abbr, node ->
-            int count = 0
-            node.tbody.tr.each { c ->
-                count++
-                if (count != 6) {
-                    def name = c[0].children()[0].children()[0].children()[0].toString()
+        try {
+            t.each { abbr, node ->
+                int count = 0
+                node.tbody.tr.each { c ->
+                    count++
+                    if (count != 6) {
+                        def name = c[0].children()[0].children()[0].children()[0].toString()
 
-                    if (node.@id.toString().contains("basic")) {
-                        ['MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', '+/-'].eachWithIndex { stat, idx ->
-                            def s = c[0].children()[idx + 1].children()[0]?.toString()
-                            if (stat == "MP") {
-                                def time = s.split(":")
-                                s = (time[0] as int) * 60 + (time[1] as int)
-                            } else {
-                                if (s)
-                                    s = s as float
-                                else
-                                    s = 0
+                        if (node.@id.toString().contains("basic")) {
+                            ['MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', '+/-'].eachWithIndex { stat, idx ->
+                                if(!c[0].children()[idx + 1])
+                                    return
+
+                                def s = c[0].children()[idx + 1]?.children()[0]?.toString()
+                                if (stat == "MP") {
+                                    def time = s.split(":")
+                                    s = (time[0] as int) * 60 + (time[1] as int)
+                                } else {
+                                    if (s)
+                                        s = s as float
+                                    else
+                                        s = 0
+                                }
+
+                                map.get(name).put(stat, s)
+
                             }
+                        } else {//advanced
+                            ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
+                                def s = c[0].children()[idx + 1].children()[0]?.toString()
+                                if (stat == "MP") {
+                                    def time = s.split(":")
+                                    s = (time[0] as int) * 60 + (time[1] as int)
+                                } else {
+                                    if (s)
+                                        s = s as float
+                                    else
+                                        s = 0
+                                }
 
-                            map.get(name).put(stat, s)
-
-                        }
-                    } else {//advanced
-                        ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
-                            def s = c[0].children()[idx + 1].children()[0]?.toString()
-                            if (stat == "MP") {
-                                def time = s.split(":")
-                                s = (time[0] as int) * 60 + (time[1] as int)
-                            } else {
-                                if (s)
-                                    s = s as float
-                                else
-                                    s = 0
+                                map.get(name).put(stat, s)
                             }
-
-                            map.get(name).put(stat, s)
                         }
+                        map.get(name).put("team", abbr.toString().split("_")[0])
                     }
-                    map.get(name).put("team", abbr.toString().split("_")[0])
                 }
             }
+        } catch (e) {
+            e.printStackTrace()
         }
 
         map.each { player, stats ->

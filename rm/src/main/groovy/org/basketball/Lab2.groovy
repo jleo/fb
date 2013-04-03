@@ -30,7 +30,42 @@ import groovy.sql.Sql
 //
 //println result
 
+//String batchId = //UUID.randomUUID().toString()
+String batchId = "1a5b7085-0717-4aac-bf68-1c39f37f0685"
+int projectId = 12629
+int mediaId = 1428
+int placementId = 200154766
+
 def sql = Sql.newInstance("jdbc:mysql://58.215.141.163:3306/db_snap?useUnicode=true&characterEncoding=utf8&autoReconnect=true", "root", "000000", "com.mysql.jdbc.Driver")
-new File("/Users/jleo/Downloads/12537.txt").eachLine {
-    sql.executeInsert("insert into ad_url (version,url,ad_location_id,location_id, date_created,project_id,last_updated) values (0,?,80,?,?,5,?)",[it.split(",")[1],'200152198',new Date(),new Date()])
+//new File("/Users/jleo/Downloads/12537.txt").eachLine {
+new File("/Users/jleo/Downloads/12629_1428_200154766.txt").eachLine {
+    if (it.contains("t.cn") || it.contains("qzone"))
+        return
+
+    def url = it.split(",")[1]
+    def creativityId = it.split(",")[0]
+    def rows = sql.rows("select id  from ad_url where url = ?", [url])
+    if (rows.size() == 0) {
+        sql.executeInsert("insert into ad_url (version,url, date_created,last_updated) values (0,?,?,?)", [url, new Date(), new Date()])
+        rows = sql.rows("select id  from ad_url where url = ?", [url])
+    }
+    def id = rows[0]['id']
+    def projectIdRow = sql.rows("select id from project where original_project_id = $projectId")
+    if (projectIdRow.size() == 0)
+        throw new RuntimeException("cannot find the project with id $projectId")
+
+    def placementIdRow = sql.rows("select id from placement where original_placement_id = $placementId")
+    if (placementIdRow.size() == 0)
+        throw new RuntimeException("cannot find the placement with id $placementId")
+
+    def mediaIdRow = sql.rows("select id from media where original_media_id = $mediaId")
+    if (mediaIdRow.size() == 0)
+        throw new RuntimeException("cannot find the media with id $mediaId")
+
+    projectJoinId = projectIdRow[0]['id']
+    placementJoinId = placementIdRow[0]['id']
+    mediaJoinId = mediaIdRow[0]['id']
+
+    sql.executeInsert("insert into collected_view(version,ad_url_id,batch_id,creativity_id,date_created,last_updated,media_id,placement_id,project_id,view_url) values(0,?,?,?,?,?,?,?,?,?)", [id, batchId, null, new Date(), new Date(), mediaJoinId, placementJoinId, projectJoinId, url])
 }
+//sql.executeInsert("insert into collected_view_transaction(version,batch_end_time,batch_start_time,batch_id,date_created,last_updated) values(0,null,null,?,?,?)", [batchId, new Date(), new Date()])

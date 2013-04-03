@@ -131,7 +131,6 @@ class GameLogParser {
 
             int sec = (4 - quarter) * 12 * 60 + minute * 60 + second
 
-
             doc.append("time", timeLeft)
             doc.append("quarter", currentQuarter)
                     .append("date", date).append("url", url.replaceAll("http://www.basketball-reference.com/boxscores/pbp/", "").replaceAll(".html", ""))
