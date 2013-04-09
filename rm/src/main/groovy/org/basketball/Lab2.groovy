@@ -30,20 +30,19 @@ import groovy.sql.Sql
 //
 //println result
 
-//String batchId = //UUID.randomUUID().toString()
-String batchId = "1a5b7085-0717-4aac-bf68-1c39f37f0685"
-int projectId = 12629
-int mediaId = 1428
-int placementId = 200154766
+String batchId = UUID.randomUUID().toString()
+//String batchId = "1a5b7085-0717-4aac-bf68-1c39f37f0685"
+final int projectId = 13038
+final int mediaId = 2259
+final int placementId = 200159526
 
 def sql = Sql.newInstance("jdbc:mysql://58.215.141.163:3306/db_snap?useUnicode=true&characterEncoding=utf8&autoReconnect=true", "root", "000000", "com.mysql.jdbc.Driver")
 //new File("/Users/jleo/Downloads/12537.txt").eachLine {
-new File("/Users/jleo/Downloads/12629_1428_200154766.txt").eachLine {
+new File("/Users/jleo/Downloads/13038_20015926.csv").eachLine {
     if (it.contains("t.cn") || it.contains("qzone"))
         return
 
-    def url = it.split(",")[1]
-    def creativityId = it.split(",")[0]
+    def url = it.split(",")[3]
     def rows = sql.rows("select id  from ad_url where url = ?", [url])
     if (rows.size() == 0) {
         sql.executeInsert("insert into ad_url (version,url, date_created,last_updated) values (0,?,?,?)", [url, new Date(), new Date()])
@@ -68,4 +67,4 @@ new File("/Users/jleo/Downloads/12629_1428_200154766.txt").eachLine {
 
     sql.executeInsert("insert into collected_view(version,ad_url_id,batch_id,creativity_id,date_created,last_updated,media_id,placement_id,project_id,view_url) values(0,?,?,?,?,?,?,?,?,?)", [id, batchId, null, new Date(), new Date(), mediaJoinId, placementJoinId, projectJoinId, url])
 }
-//sql.executeInsert("insert into collected_view_transaction(version,batch_end_time,batch_start_time,batch_id,date_created,last_updated) values(0,null,null,?,?,?)", [batchId, new Date(), new Date()])
+sql.executeInsert("insert into collected_view_transaction(version,batch_end_time,batch_start_time,batch_id,date_created,last_updated) values(0,null,null,?,?,?)", [batchId, new Date(), new Date()])
