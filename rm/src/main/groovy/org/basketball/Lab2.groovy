@@ -32,15 +32,17 @@ import groovy.sql.Sql
 
 String batchId = UUID.randomUUID().toString()
 //String batchId = "1a5b7085-0717-4aac-bf68-1c39f37f0685"
-final int projectId = 13038
-final int mediaId = 2259
-final int placementId = 200159526
+
 
 def sql = Sql.newInstance("jdbc:mysql://58.215.141.163:3306/db_snap?useUnicode=true&characterEncoding=utf8&autoReconnect=true", "root", "000000", "com.mysql.jdbc.Driver")
 //new File("/Users/jleo/Downloads/12537.txt").eachLine {
-new File("/Users/jleo/Downloads/13038_20015926.csv").eachLine {
+new File("/Users/jleo/Downloads/13188.csv").eachLine {
     if (it.contains("t.cn") || it.contains("qzone"))
         return
+
+    projectId = it.split(",")[1]
+    mediaId = it.split(",")[2]
+    placementId = it.split(",")[0]
 
     def url = it.split(",")[3]
     def rows = sql.rows("select id  from ad_url where url = ?", [url])
