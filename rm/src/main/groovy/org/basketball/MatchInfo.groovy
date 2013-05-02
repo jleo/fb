@@ -25,11 +25,11 @@ output.eachLine {
     String buffer = ""
     def matchId = "http://www.basketball-reference.com" + it
     c.find(["match": matchId] as BasicDBObject)?.each { cr ->
-        buffer += cr.get("match") - "http://www.basketball-reference.com/boxscores/" - ".html" + ","
-        buffer += cr.get("playerId") + ","
-        buffer += cr.get("name") + ","
-        buffer += (cr.get("startup") as String) + ","
-        buffer += cr.get("team")
+        buffer += "\""+cr.get("match") - "http://www.basketball-reference.com/boxscores/" - ".html" + "\","
+        buffer += "\""+cr.get("playerId") + "\","
+        buffer += "\""+cr.get("name") + "\","
+        buffer += "\""+(cr.get("startup") as String) + "\","
+        buffer += "\""+cr.get("team") + "\""
         gameStats.append(buffer + "\n")
         buffer = ""
     }
