@@ -37,10 +37,10 @@ class GameLogParser {
         GameLogParser gameLogParser = new GameLogParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/list2.txt")
+            def output = new File("/Users/jleo/Dropbox/nba/meta/list1980-2013.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
-                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/pbp/", "")[0..7])])
+                tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/", "")[0..7])])
             }
         }
 

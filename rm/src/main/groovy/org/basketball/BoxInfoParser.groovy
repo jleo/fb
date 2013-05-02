@@ -1,6 +1,7 @@
 package org.basketball
 
 import Util.MongoDBUtil
+import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
 import org.ccil.cowan.tagsoup.AutoDetector
 
@@ -71,83 +72,26 @@ class BoxInfoParser {
         def html = asHTML(text)
 
         def list = []
-        text.eachMatch("div_.*?_basic") {
-            list << it.replaceAll("div_|_basic", "")
-        }
 
-        def t = [:]
+
         def refrees = []
+        def attendee = 0
+        def time = ""
+
         html.breadthFirst().each { node ->
-            list.each { abbr ->
-                if (node.@id in [abbr + "_basic", abbr + "_advanced"])
-                    t.put(node.@id, node)
-            }
-            if (node.name() == "table" && node.@class == "margin_top small_text")
-                int refreeCount = (node[0].children()[0].children()[1].children().size()+1)/2
-                refrees = [1..refreeCount].collect{n->
-                    node[0].children()[0].children()[1].children()[n].attributes.href - "/referees/" - ".html"
+
+            if (node.name() == "table" && node.@class == "margin_top small_text") {
+                int refreeCount = (node[0].children()[0].children()[1].children().size() + 1) / 2
+                refrees = (1..refreeCount).collect { n ->
+                    node[0].children()[0].children()[1].children()[(n-1)*2].attributes.href - "/referees/" - ".html"
                 }
-        }
-        def map = [:].withDefault {
-            [:]
-        }
-
-        try {
-            t.each { abbr, node ->
-                int count = 0
-                node.tbody.tr.each { c ->
-                    count++
-                    if (count != 6) {
-                        def name = c[0].children()[0].children()[0].children()[0].toString()
-                        def playerId = c[0].children()[0].children()[0].attributes.href
-                        playerId = playerId[playerId.lastIndexOf("/") + 1..-1] - ".html"
-
-                        map.get(playerId).put("name", name)
-                        if (node.@id.toString().contains("basic")) {
-                            ['MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', '+/-'].eachWithIndex { stat, idx ->
-                                if (!c[0].children()[idx + 1])
-                                    return
-
-                                def s = c[0].children()[idx + 1]?.children()[0]?.toString()
-                                if (stat == "MP") {
-                                    def time = s.split(":")
-                                    s = (time[0] as int) * 60 + (time[1] as int)
-                                } else {
-                                    if (s)
-                                        s = s as float
-                                    else
-                                        s = 0
-                                }
-
-                                map.get(playerId).put(stat, s)
-                            }
-                        } else {//advanced
-                            ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
-                                def s = c[0].children()[idx + 1].children()[0]?.toString()
-                                if (stat == "MP") {
-                                    def time = s.split(":")
-                                    s = (time[0] as int) * 60 + (time[1] as int)
-                                } else {
-                                    if (s)
-                                        s = s as float
-                                    else
-                                        s = 0
-                                }
-
-                                map.get(playerId).put(stat, s)
-                            }
-                        }
-                        map.get(playerId).put("team", abbr.toString().split("_")[0])
-                    }
-                }
+                attendee = (node[0].children()[1].children()[1].children()[0] - ",") as int
+                if (node[0].children().size() >= 3)
+                    time =  node[0].children()[2].children()[1].children()[0].toString()
             }
-        } catch (e) {
-            e.printStackTrace()
         }
 
-        map.each { playerId, stats ->
-            mongoDBUtil.upsert([match: url, playerId: playerId] as BasicDBObject, new BasicDBObject("\$set", (stats as BasicDBObject).append("playerId", playerId).append("match", url)), true, "stat")
-            println "saved " + url + ", " + playerId
-        }
+
+        mongoDBUtil.upsert([match: url] as BasicDBObject, new BasicDBObject("\$set", ([refrees: refrees as BasicDBList] as BasicDBObject).append("attendee", attendee).append("time", time)), true, "games")
     }
 }

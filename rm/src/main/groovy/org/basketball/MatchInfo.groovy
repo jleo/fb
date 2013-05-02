@@ -13,12 +13,12 @@ import com.mongodb.Mongo
 
 Mongo m = new Mongo("localhost")
 
-def c = m.getDB("bb").getCollection("stat")
+def c = m.getDB("bb").getCollection("games")
 
 HashSet<String> startup = new HashSet()
 HashSet<String> reserve = new HashSet()
 
-def gameStats = new File("/Users/jleo/Dropbox/nba/meta/gamePlayer.txt")
+def gameStats = new File("/Users/jleo/Dropbox/nba/meta/gameInfo.txt")
 
 def output = new File("/Users/jleo/Dropbox/nba/meta/list1980-2013.txt")
 output.eachLine {
@@ -26,10 +26,10 @@ output.eachLine {
     def matchId = "http://www.basketball-reference.com" + it
     c.find(["match": matchId] as BasicDBObject)?.each { cr ->
         buffer += cr.get("match") - "http://www.basketball-reference.com/boxscores/" - ".html" + ","
-        buffer += cr.get("playerId") + ","
-        buffer += cr.get("name") + ","
-        buffer += (cr.get("startup") as String) + ","
-        buffer += cr.get("team")
+        buffer += cr.get("court") + ","
+        buffer += cr.get("attendee") + ","
+        buffer += (cr.get("timeAndDate") as String) + ","
+        buffer += cr.get("time")
         gameStats.append(buffer + "\n")
         buffer = ""
     }

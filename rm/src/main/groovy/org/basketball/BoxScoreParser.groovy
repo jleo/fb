@@ -1,6 +1,7 @@
 package org.basketball
 
 import Util.MongoDBUtil
+import com.mongodb.BasicDBList
 import com.mongodb.BasicDBObject
 import org.ccil.cowan.tagsoup.AutoDetector
 
@@ -33,7 +34,7 @@ class BoxScoreParser {
         BoxScoreParser gameLogParser = new BoxScoreParser()
 
         Thread.start {
-            def output = new File("/Users/jleo/Dropbox/list1990-2000.txt")
+            def output = new File("/Users/jleo/Dropbox/nba/meta/list1980-2013.txt")
             output.eachLine {
                 def url = "http://www.basketball-reference.com" + it
                 tasks.put([url: url, date: Date.parse("yyyyMMdd", it.replaceAll("/boxscores/", "")[0..7])])
@@ -41,7 +42,7 @@ class BoxScoreParser {
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(11);
-        15.times {
+        10.times {
             executorService.submit(new Runnable() {
 
                 @Override
@@ -51,7 +52,12 @@ class BoxScoreParser {
                         def url = task.url.replaceAll("pbp/", "")
                         def date = task.date
 
-                        gameLogParser.parse(url, date)
+                        try {
+                            gameLogParser.parse(url, date)
+                        } catch (e) {
+                            println url
+                            e.printStackTrace()
+                        }
                     }
                 }
             })
@@ -60,11 +66,13 @@ class BoxScoreParser {
     }
 
     BoxScoreParser() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "27017", "bb")
     }
 
     public void parse(String url, date) {
-        println url
+        if (date < Date.parse("yyyyMMdd", "19961010"))
+            return
+
         def text = new URL(url).text
         def html = asHTML(text)
 
@@ -74,10 +82,35 @@ class BoxScoreParser {
         }
 
         def t = [:]
+
+        def refrees = []
+        def attendee = 0
+        def matchTime = ""
+        def timeAndDate = ""
+        def court = ""
         html.breadthFirst().each { node ->
             list.each { abbr ->
                 if (node.@id in [abbr + "_basic", abbr + "_advanced"])
                     t.put(node.@id, node)
+            }
+
+            if (node.name() == "table" && node.@class == "margin_top small_text") {
+                int refreeCount = (node[0].children()[0].children()[1].children().size() + 1) / 2
+                refrees = (1..refreeCount).collect { n ->
+                    node[0].children()[0].children()[1].children()[(n - 1) * 2].attributes.href - "/referees/" - ".html"
+                }
+                if (node[0].children().size() >= 2)
+                    attendee = (node[0].children()[1].children()[1].children()[0] - ",") as int
+
+                if (node[0].children().size() >= 3)
+                    matchTime = node[0].children()[2].children()[1].children()[0].toString()
+            }
+
+            if (node.name() == "td" && node.@class == "align_center padding_bottom small_text") {
+                if (node[0].children().size() == 3) {
+                    timeAndDate = node[0].children()[0]
+                    court = node[0].children()[2]
+                }
             }
         }
         def map = [:].withDefault {
@@ -85,16 +118,25 @@ class BoxScoreParser {
         }
 
         try {
+            mongoDBUtil.upsert([match: url] as BasicDBObject, new BasicDBObject("\$set", ([refrees: refrees as BasicDBList] as BasicDBObject).append("court", court).append("timeAndDate", timeAndDate).append("attendee", attendee).append("time", matchTime)), true, "games")
+
             t.each { abbr, node ->
                 int count = 0
                 node.tbody.tr.each { c ->
                     count++
                     if (count != 6) {
+                        boolean startup = false;
+                        if (count < 6)
+                            startup = true
                         def name = c[0].children()[0].children()[0].children()[0].toString()
+                        def playerId = c[0].children()[0].children()[0].attributes.href
+                        playerId = playerId[playerId.lastIndexOf("/") + 1..-1] - ".html"
 
+                        map.get(playerId).put("name", name)
+                        map.get(playerId).put("startup", startup)
                         if (node.@id.toString().contains("basic")) {
                             ['MP', 'FG', 'FGA', 'FG%', '3P', '3PA', '3P%', 'FT', 'FTA', 'FT%', 'ORB', 'DRB', 'TRB', 'AST', 'STL', 'BLK', 'TOV', 'PF', 'PTS', '+/-'].eachWithIndex { stat, idx ->
-                                if(!c[0].children()[idx + 1])
+                                if (!c[0].children()[idx + 1])
                                     return
 
                                 def s = c[0].children()[idx + 1]?.children()[0]?.toString()
@@ -108,8 +150,7 @@ class BoxScoreParser {
                                         s = 0
                                 }
 
-                                map.get(name).put(stat, s)
-
+                                map.get(playerId).put(stat, s)
                             }
                         } else {//advanced
                             ['MP', 'TS%', 'eFG%', 'ORB%', 'DRB%', 'TRB%', 'AST%', 'STL%', 'BLK%', 'TOV%', 'USG%', 'ORtg', 'DRtg'].eachWithIndex { stat, idx ->
@@ -124,10 +165,10 @@ class BoxScoreParser {
                                         s = 0
                                 }
 
-                                map.get(name).put(stat, s)
+                                map.get(playerId).put(stat, s)
                             }
                         }
-                        map.get(name).put("team", abbr.toString().split("_")[0])
+                        map.get(playerId).put("team", abbr.toString().split("_")[0])
                     }
                 }
             }
@@ -135,9 +176,9 @@ class BoxScoreParser {
             e.printStackTrace()
         }
 
-        map.each { player, stats ->
-            mongoDBUtil.upsert([match: url, name: player] as BasicDBObject, new BasicDBObject("\$set", (stats as BasicDBObject).append("name", player).append("match", url)), true, "stat")
-            println "saved " + url
+        map.each { playerId, stats ->
+            mongoDBUtil.upsert([match: url, playerId: playerId] as BasicDBObject, new BasicDBObject("\$set", (stats as BasicDBObject).append("playerId", playerId).append("match", url)), true, "stat")
+            println "saved " + url + ", " + playerId
         }
     }
 }
