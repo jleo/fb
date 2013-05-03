@@ -42,7 +42,7 @@ class BoxScoreParser {
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(11);
-        1.times {
+        20.times {
             executorService.submit(new Runnable() {
 
                 @Override
