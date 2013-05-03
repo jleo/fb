@@ -8,5 +8,35 @@ Run EnrichGameByPlayer.groovy to update all game with playerIds
 
 generate gamePlayer.txt by running MatchStartupLine.groovy
 
+Get all game list by running GameList.groovy(Incremental, change "startDate" to change date from, not incremental, startDate must be accurate as where gameList.txt stop,say 19961001), you might want to sort line and unique in sublime 2
+
+run BoxScoreParser to update "stat" and "games"{
+change
+
+if (date < Date.parse("yyyyMMdd", "19961001"))
+                   return
+
+to change the date range
+}
+
+run MatchStartupLine.groovy to generate gamePlayer.txt{
+change
+
+if (it[0..7] < '19961010')
+        return
+
+to change the date range
+}
+
+import gamePlayer.txt into attendee(mongoimport -h rm4:15000 -d bb -c attendee --file /Users/jleo/Dropbox/nba/meta/gamePlayer.txt --type csv --headerline)
+
+Enrich collection "games" by running EnrichGame.groovy(add "date","home","matchId")
+
+enrich collection "games" with player by running EnrichGameByPlayers.groovy
+
+run GenerateTrainingSamples to generate samples
+
+
+#Enrich collection "log" bu running ScoreExtractor.groovy(add "score")
 
 
