@@ -1,0 +1,6 @@
+Enrich collection "games" by running EnrichGame.groovy(add "date","home","matchId")
+
+Enrich collection "log" bu running ScoreExtractor.groovy(add "score")
+
+Get all game list by running GameList.groovy(Incremental), you might want to sort line and unique in sublime 2
+

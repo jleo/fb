@@ -11,7 +11,7 @@ import com.mongodb.Mongo
  * To change this template use File | Settings | File Templates.
  */
 
-Mongo m = new Mongo("localhost")
+Mongo m = new Mongo("rm4",15000)
 
 def c = m.getDB("bb").getCollection("stat")
 

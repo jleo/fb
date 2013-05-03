@@ -13,13 +13,9 @@ class GameList {
 
         def date = Date.parse("yyyy-MM-dd", "1980-02-25")
 
-        def output = new File("/Users/jleo/list1980-2013.txt")
-        if (output.exists()) {
-            output.delete()
-        }
-        output.createNewFile()
+        def output = new File("/Users/jleo/Dropbox/nba/meta/list1980-2013.txt")
 
-        (date..new Date()).each { d ->
+        (Date.parse("yyyyMMdd","20130401")..new Date()).each { d ->
             println d
             def cal = new GregorianCalendar()
             cal.setTime(d)
@@ -33,6 +29,9 @@ class GameList {
                 return
 
             text.eachMatch("/boxscores/.*?\\.html") { it ->
+                if(it.indexOf("pbp") || it.indexOf("shot"))
+                    return
+
                 output.append(it + "\n")
             }
         }

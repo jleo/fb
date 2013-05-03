@@ -66,11 +66,11 @@ class BoxScoreParser {
     }
 
     BoxScoreParser() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "27017", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
     }
 
     public void parse(String url, date) {
-        if (date < Date.parse("yyyyMMdd", "19961010"))
+        if (date < Date.parse("yyyyMMdd", "19961001"))
             return
 
         def text = new URL(url).text

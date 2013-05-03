@@ -12,23 +12,25 @@ import com.mongodb.BasicDBObject
  */
 class Feature2 {
     public static void main(String[] args) {
-        int second = args[0] as int
-        int quarter = args[1] as int
-        MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
-        def output = new File("/Users/jleo/list2.txt")
-        def last
+        (1..4).each { quarter ->
+            int second = 2880 - quarter * 720
+            MongoDBUtil mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb");
+            def output = new File("/Users/jleo/Dropbox/nba/meta/gameList-1996.txt")
+            def last
 
-        def count = 0
+            def count = 0
 
-        output.eachLine { line ->
+            output.eachLine { line ->
+                if (mongoDBUtil.findOne([match: line] as BasicDBObject, "end" + quarter))
+                    return
 
-            line = line.replaceAll("/boxscores/pbp/", "").replaceAll(".html", "")
-            def cursor = mongoDBUtil.findAllCursor((new BasicDBObject(['score': ['\$exists': true] as BasicDBObject]).append("sec", ['\$gte': second] as BasicDBObject)).append("url", line), null, "log2").sort([sec: 1] as BasicDBObject).limit(1)
-            last = cursor.next()
-            last.put("order", count)
+                def cursor = mongoDBUtil.findAllCursor((new BasicDBObject(['score': ['\$exists': true] as BasicDBObject]).append("sec", ['\$gte': second] as BasicDBObject)).append("url", line), null, "log").sort([sec: 1] as BasicDBObject).limit(1)
+                last = cursor.next()
+                last.put("order", count)
 
-            mongoDBUtil.insert(last, "end" + quarter + "" + 2)
-            count++
+                mongoDBUtil.update([match: line] as BasicDBObject, last, "end" + quarter + "", true)
+                count++
+            }
         }
     }
 }
