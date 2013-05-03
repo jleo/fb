@@ -10,12 +10,12 @@ package org.basketball
 class GameList {
     public static void main(String[] args) {
         //
-
+        String startDate = "20130401"
         def date = Date.parse("yyyy-MM-dd", "1980-02-25")
 
         def output = new File("/Users/jleo/Dropbox/nba/meta/list1980-2013.txt")
 
-        (Date.parse("yyyyMMdd","20130401")..new Date()).each { d ->
+        (Date.parse("yyyyMMdd",startDate)..new Date()).each { d ->
             println d
             def cal = new GregorianCalendar()
             cal.setTime(d)
