@@ -42,7 +42,7 @@ class BoxScoreParser {
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(11);
-        10.times {
+        1.times {
             executorService.submit(new Runnable() {
 
                 @Override
@@ -88,6 +88,8 @@ class BoxScoreParser {
         def matchTime = ""
         def timeAndDate = ""
         def court = ""
+
+        def q1a, q2a, q3a, q4a, q1b, q2b, q3b, q4b, q5b, q5a, fa, fb, oa, ob
         html.breadthFirst().each { node ->
             list.each { abbr ->
                 if (node.@id in [abbr + "_basic", abbr + "_advanced"])
@@ -112,13 +114,42 @@ class BoxScoreParser {
                     court = node[0].children()[2]
                 }
             }
+
+            if (node.name() == "table" && node.@class == "nav_table stats_table" && node.@id.toString() == "") {
+                q1b = node[0].children()[2].children()[1].children()[0].toString() as int
+                q2b = node[0].children()[2].children()[2].children()[0].toString() as int
+                q3b = node[0].children()[2].children()[3].children()[0].toString() as int
+                q4b = node[0].children()[2].children()[4].children()[0].toString() as int
+                q5b = node[0].children()[2].children()[5].children()[0].toString() as int
+
+                fb = q1b + q2b + q3b + q4b
+
+                q1a = node[0].children()[3].children()[1].children()[0].toString() as int
+                q2a = node[0].children()[3].children()[2].children()[0].toString() as int
+                q3a = node[0].children()[3].children()[3].children()[0].toString() as int
+                q4a = node[0].children()[3].children()[4].children()[0].toString() as int
+                q5a = node[0].children()[3].children()[5].children()[0].toString() as int
+
+                fa = q1a + q2a + q3a + q4a
+            }
         }
         def map = [:].withDefault {
             [:]
         }
 
         try {
-            mongoDBUtil.upsert([match: url] as BasicDBObject, new BasicDBObject("\$set", ([refrees: refrees as BasicDBList] as BasicDBObject).append("court", court).append("timeAndDate", timeAndDate).append("attendee", attendee).append("time", matchTime)), true, "games")
+            mongoDBUtil.upsert([match: url] as BasicDBObject, new BasicDBObject("\$set", ([refrees: refrees as BasicDBList] as BasicDBObject)
+                    .append("q1a", q1a)
+                    .append("q2a", q2a)
+                    .append("q3a", q3a)
+                    .append("q4a", q4a)
+                    .append("q1b", q1b)
+                    .append("q2b", q2b)
+                    .append("q3b", q3b)
+                    .append("q4b", q4b)
+                    .append("fa", fa)
+                    .append("fb", fb)
+                    .append("court", court).append("timeAndDate", timeAndDate).append("attendee", attendee).append("time", matchTime)), true, "games")
 
             t.each { abbr, node ->
                 int count = 0
