@@ -55,7 +55,11 @@ class GameLogParser {
                         def url = task.url
                         def date = task.date
 
-                        gameLogParser.parse(url, date)
+                        try {
+                            gameLogParser.parse(url, date)
+                        } catch (e) {
+                            e.printStackTrace()
+                        }
                     }
                 }
             })
@@ -64,12 +68,15 @@ class GameLogParser {
     }
 
     GameLogParser() {
-        this.mongoDBUtil = MongoDBUtil.getInstance("rm4", "15000", "bb")
+        this.mongoDBUtil = MongoDBUtil.getInstance("localhost", "27017", "bb")
     }
 
     public void parse(String url, date) {
+        if (date < Date.parse("yyyyMMdd", "20001030"))
+            return
+
         println url
-        def text = new URL(url).text
+        def text = new URL(url.replaceAll("boxscores","boxscores/pbp")).text
         def html = asHTML(text)
 
         /////*[@id="q1"]/th
@@ -125,9 +132,11 @@ class GameLogParser {
             int quarter = currentQuarter as int
             def split = timeLeft.split(":")
 
+            if(split[0].contains("Overtime"))
+                return
+
             int minute = split[0] as int
             int second = (split[1] as double) as int
-
 
             int sec = (4 - quarter) * 12 * 60 + minute * 60 + second
 
@@ -138,7 +147,7 @@ class GameLogParser {
                     .append("teamB", teamB)
                     .append("sec", sec)
 
-            mongoDBUtil.insert(doc, "log2")
+            mongoDBUtil.insert(doc, "log")
         }
     }
 }

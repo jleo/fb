@@ -1,6 +1,6 @@
 package org.basketball
 
-import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
+import com.mongodb.Mongo
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,8 +10,13 @@ import org.apache.commons.math.stat.regression.OLSMultipleLinearRegression
  * To change this template use File | Settings | File Templates.
  */
 
-OLSMultipleLinearRegression olsMultipleLinearRegression = new OLSMultipleLinearRegression();
-olsMultipleLinearRegression.newSampleData([10,11,12,13] as double[], [[4],[7],[7],[8]] as double[][])
+Mongo m = new Mongo("localhost")
+def games = m.getDB("bb").getCollection("games")
 
-println olsMultipleLinearRegression.estimateRegressionParameters()
-println olsMultipleLinearRegression.calculateRSquared()
+Mongo m2 = new Mongo("rm4",15000)
+def remote = m2.getDB("bb").getCollection("games")
+
+
+games.find().each {
+    remote.insert(it)
+}

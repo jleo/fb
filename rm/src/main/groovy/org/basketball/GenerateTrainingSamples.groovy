@@ -1,5 +1,7 @@
 package org.basketball
 
+import com.mongodb.Mongo
+
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -8,4 +10,10 @@ package org.basketball
  * To change this template use File | Settings | File Templates.
  */
 class GenerateTrainingSamples {
+    public static void main(String[] args) {
+        Mongo m = new Mongo("localhost")
+        def games = m.getDB("bb").getCollection("games")
+
+
+    }
 }

@@ -16,7 +16,7 @@ class DumpEventsByMatchup {
         def log = m.getDB("bb").getCollection("log")
         def attendee = m.getDB("bb").getCollection("attendee")
 
-        def matchup = [players:[], logs:[]]
+        def matchup = new Matchup()
 
         def gameList = new File("/Users/jleo/Dropbox/nba/meta/gameList-1996.txt")
         gameList.eachLine { game ->
@@ -28,6 +28,7 @@ class DumpEventsByMatchup {
                 def playerId = att.getString("playerId")
                 def team = att.getString("team")
                 def name = att.getString("name")
+//                def startup = att.getString("startup") as boolean
                 def player = new Player(playerId: playerId, shortName: name.split(" ")[0][0] + ". " + name.split(" ")[1])
                 teamPlayer.get(team) << player
             }

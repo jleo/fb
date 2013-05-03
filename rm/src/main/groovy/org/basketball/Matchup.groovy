@@ -8,7 +8,9 @@ package org.basketball
  * Let's RocknRoll
  */
 class Matchup {
-    def players
+    def playersA
+    def playersB
+
     def logs
     def start
     def end

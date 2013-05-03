@@ -1,0 +1,12 @@
+Run PlayerList.groovy to update all player list
+
+Run PlayerStatParser.groovy to update all player stats by year(fill collection "player")
+
+Run BoxScoreParser.groovy to update all player stats by game(fill collection "games" and "stats" )
+
+Run EnrichGameByPlayer.groovy to update all game with playerIds
+
+generate gamePlayer.txt by running MatchStartupLine.groovy
+
+
+
