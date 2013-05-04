@@ -11,7 +11,7 @@ import com.mongodb.Mongo
  * To change this template use File | Settings | File Templates.
  */
 
-Mongo m = new Mongo("localhost")
+Mongo m = new Mongo("rm4",15000)
 def games = m.getDB("bb").getCollection("games")
 def attendee = m.getDB("bb").getCollection("attendee")
 
@@ -24,7 +24,7 @@ games.find().each { BasicDBObject dbObject ->
 
     matchId = dbObject.get("match") - "http://www.basketball-reference.com/boxscores/" - ".html"
     home = matchId[9..11]
-    attendee.find([match: matchId] as BasicDBObject).each { att ->
+    attendee.find([date: matchId] as BasicDBObject).each { att ->
         playerId = att.get("playerId")
         team = att.get("team")
         startup = att.get("startup") == "true"

@@ -2,12 +2,6 @@ Run PlayerList.groovy to update all player list
 
 Run PlayerStatParser.groovy to update all player stats by year(fill collection "player")
 
-Run BoxScoreParser.groovy to update all player stats by game(fill collection "games" and "stats" )
-
-Run EnrichGameByPlayer.groovy to update all game with playerIds
-
-generate gamePlayer.txt by running MatchStartupLine.groovy
-
 Get all game list by running GameList.groovy(Incremental, change "startDate" to change date from, not incremental, startDate must be accurate as where gameList.txt stop,say 19961001), you might want to sort line and unique in sublime 2
 
 run BoxScoreParser to update "stat" and "games"{
