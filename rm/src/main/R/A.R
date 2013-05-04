@@ -8,7 +8,7 @@ setwd("/Users/jleo")
 
 trainingSample <- read.table(file="/Users/jleo/Dropbox/nba/meta/training.txt",sep = ",")
 
-cl <- makeCluster(1, type = "SOCK")
+cluster <- makeCluster(1, type = "SOCK")
 
 trainingSample <- as.matrix(trainingSample)
 
@@ -16,7 +16,7 @@ m <- dim(trainingSample)[1]
 
 grad <- function(x, y, theta) {
 	
-  gradient <- (1/m)* (crossprod(x, parMM(cl, x , t(theta)) - y))
+  gradient <- (1/m)* (crossprod(x, parMM(cluster, x , t(theta)) - y))
   return(t(gradient))
 }
  
@@ -33,7 +33,7 @@ grad.descent <- function(x, y, maxit){
 }
 
 cost <- function(x,y,theta){
-	return(sum((parMM(x , t(theta)) - y)^2))
+	return(sum((parMM(cluster, x , t(theta)) - y)^2))
 }
 
 y <- trainingSample[,1]
