@@ -1,4 +1,4 @@
-library("multicore")
+library(snowfall)
 
 options(max.print=999)
 setwd("/Users/jleo")
@@ -8,15 +8,15 @@ setwd("/Users/jleo")
 
 trainingSample <- read.table(file="/Users/jleo/Dropbox/nba/meta/training.txt",sep = ",")
 
+cl <- makeCluster(1, type = "SOCK")
 
 trainingSample <- as.matrix(trainingSample)
 
 m <- dim(trainingSample)[1]
 
-
 grad <- function(x, y, theta) {
 	
-  gradient <- (1/m)* (t(x) %*% ((x %*% t(theta)) - y))
+  gradient <- (1/m)* (crossprod(x, parMM(cl, x , t(theta)) - y))
   return(t(gradient))
 }
  
@@ -33,7 +33,7 @@ grad.descent <- function(x, y, maxit){
 }
 
 cost <- function(x,y,theta){
-	return(sum((x %*% t(theta) - y)^2))
+	return(sum((parMM(x , t(theta)) - y)^2))
 }
 
 y <- trainingSample[,1]
@@ -41,4 +41,5 @@ x <- cbind(matrix(data=c(1),nrow=m,ncol=1), trainingSample[,2:(dim(trainingSampl
 
 # summary(lm(y ~ x[, 2:dim(trainingSample)[2]]))
 grad.descent(x,y,1000000)
+stopCluster(cl)
 #plot(y~x[,2])
