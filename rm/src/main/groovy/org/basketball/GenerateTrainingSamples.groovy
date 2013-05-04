@@ -79,72 +79,72 @@ class GenerateTrainingSamples {
                 def ofp = players.indexOf(p)
                 record[1 + ofp] = 1
 
-                homePlayerStart.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                homePlayerReserve.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerStart.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerReserve.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
+//                homePlayerStart.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                homePlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerStart.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
             }
 
             homePlayerReserve.each { p ->
                 def ofp = players.indexOf(p)
                 record[1 + size + ofp] = 1
 
-                homePlayerStart.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                homePlayerReserve.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerStart.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerReserve.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
+//                homePlayerStart.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                homePlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerStart.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
             }
 
             awayPlayerStart.each { p ->
                 def ofp = players.indexOf(p)
                 record[1 + size * 2 + ofp] = 1
 
-                homePlayerStart.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                homePlayerReserve.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerStart.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerReserve.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
+//                homePlayerStart.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                homePlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerStart.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
             }
 
             awayPlayerReserve.each { p ->
                 def ofp = players.indexOf(p)
                 record[1 + size * 3 + ofp] = 1
 
-                homePlayerStart.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                homePlayerReserve.each { op ->
-                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerStart.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
-                awayPlayerReserve.each { op ->
-                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
-                }
+//                homePlayerStart.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                homePlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerStart.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
+//                awayPlayerReserve.each { op ->
+//                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+//                }
             }
 
             file.append(record.toString()[1..-2] + "\n")
