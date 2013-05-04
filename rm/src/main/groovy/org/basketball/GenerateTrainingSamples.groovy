@@ -64,7 +64,7 @@ class GenerateTrainingSamples {
     private static void generate(int season, file) {
         mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
             int size = players.size()
-            int[] record = new int[4 * size + 1 + size * size * 2]
+            int[] record = new int[4 * size + 1]
 
             int total = (it.get("fa") as int) + (it.get("fb") as int)
             record[0] = total
