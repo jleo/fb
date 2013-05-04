@@ -24,10 +24,16 @@ grad <- function(x, y, theta) {
 grad.descent <- function(x, y, maxit){
     theta <- matrix(data=c(0),nrow=1,ncol=dim(trainingSample)[2])
  
-    alpha = 0.5
+    alpha = 1
+    lastCost <- 100000000
     for (i in 1:maxit) {
       theta <- theta - alpha  * grad(x, y, theta)   
-      print(cost(x,y,theta))
+      thisCost <- cost(x,y,theta)
+      print(thisCost)
+      if(lastCost < thisCost){
+        alpha <- alpha * 0.8
+        print(paste("slower alpha to",alpha))
+      }
     }
  	return(theta)
 }

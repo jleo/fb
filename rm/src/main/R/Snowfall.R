@@ -9,4 +9,10 @@ library(snowfall)
 # stopCluster(cl)
 a <- "a"
 class(a)
-inherits(a,"character")
+lastCost <- 10
+thisCost <- 20
+alpha <- 10
+if(lastCost < thisCost)
+        alpha <- alpha * 0.8
+
+print(paste("slower alpha to",alpha))        
