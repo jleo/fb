@@ -1,3 +1,5 @@
+library("multicore")
+
 options(max.print=999)
 setwd("/Users/jleo")
 # gamePlayer <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gamePlayer.txt",header = T,sep = ",")
@@ -22,7 +24,7 @@ grad <- function(x, y, theta) {
 grad.descent <- function(x, y, maxit){
     theta <- matrix(data=c(0),nrow=1,ncol=dim(trainingSample)[2])
  
-    alpha = 1
+    alpha = 0.5
     for (i in 1:maxit) {
       theta <- theta - alpha  * grad(x, y, theta)   
       print(cost(x,y,theta))
@@ -38,5 +40,5 @@ y <- trainingSample[,1]
 x <- cbind(matrix(data=c(1),nrow=m,ncol=1), trainingSample[,2:(dim(trainingSample)[2])])
 
 # summary(lm(y ~ x[, 2:dim(trainingSample)[2]]))
-grad.descent(x,y,10000)
+grad.descent(x,y,1000000)
 #plot(y~x[,2])

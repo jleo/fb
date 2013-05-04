@@ -64,7 +64,7 @@ class GenerateTrainingSamples {
     private static void generate(int season, file) {
         mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
             int size = players.size()
-            int[] record = new int[4 * size + 1]
+            int[] record = new int[4 * size + 1 + size * size * 2]
 
             int total = (it.get("fa") as int) + (it.get("fb") as int)
             record[0] = total
@@ -76,19 +76,75 @@ class GenerateTrainingSamples {
             def awayPlayerReserve = it.get("awayPlayerReserve")
 
             homePlayerStart.each { p ->
-                record[1 + players.indexOf(p)] = 1
+                def ofp = players.indexOf(p)
+                record[1 + ofp] = 1
+
+                homePlayerStart.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                homePlayerReserve.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerStart.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerReserve.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
             }
 
             homePlayerReserve.each { p ->
-                record[1 + size + players.indexOf(p)] = 1
+                def ofp = players.indexOf(p)
+                record[1 + size + ofp] = 1
+
+                homePlayerStart.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                homePlayerReserve.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerStart.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerReserve.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
             }
 
             awayPlayerStart.each { p ->
-                record[1 + size * 2 + players.indexOf(p)] = 1
+                def ofp = players.indexOf(p)
+                record[1 + size * 2 + ofp] = 1
+
+                homePlayerStart.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                homePlayerReserve.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerStart.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerReserve.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
             }
 
             awayPlayerReserve.each { p ->
-                record[1 + size * 3 + players.indexOf(p)] = 1
+                def ofp = players.indexOf(p)
+                record[1 + size * 3 + ofp] = 1
+
+                homePlayerStart.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                homePlayerReserve.each { op ->
+                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerStart.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
+                awayPlayerReserve.each { op ->
+                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
+                }
             }
 
             file.append(record.toString()[1..-2] + "\n")
