@@ -38,5 +38,5 @@ y <- trainingSample[,1]
 x <- cbind(matrix(data=c(1),nrow=m,ncol=1), trainingSample[,2:(dim(trainingSample)[2])])
 
 # summary(lm(y ~ x[, 2:dim(trainingSample)[2]]))
-# grad.descent(x,y,10000)
-plot(y~x[,2])
+grad.descent(x,y,10000)
+#plot(y~x[,2])
