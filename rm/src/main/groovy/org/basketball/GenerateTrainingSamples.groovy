@@ -15,15 +15,23 @@ class GenerateTrainingSamples {
 
     static private List players
 
+    static private def allStartupHome
+
+    static private def allReserveHome
+
+    static private def allStartupAway
+
+    static private def allReserveAway
+
     public static void main(String[] args) {
         int seasonFrom = 2000
         int seasonTo = 2007
 
-        def allStartupHome = new TreeSet()
-        def allReserveHome = new TreeSet()
+        allStartupHome = new TreeSet()
+        allReserveHome = new TreeSet()
 
-        def allStartupAway = new TreeSet()
-        def allReserveAway = new TreeSet()
+        allStartupAway = new TreeSet()
+        allReserveAway = new TreeSet()
 
         def allPlayers = new TreeSet()
         (seasonFrom..seasonTo).each { season ->
@@ -41,6 +49,11 @@ class GenerateTrainingSamples {
         allPlayers.addAll(allReserveHome)
         allPlayers.addAll(allStartupAway)
         allPlayers.addAll(allReserveAway)
+
+        allStartupHome = allStartupHome.toList()
+        allReserveHome = allReserveHome.toList()
+        allStartupAway = allStartupAway.toList()
+        allReserveAway = allReserveAway.toList()
 
         players = allPlayers.toList()
 
@@ -64,7 +77,7 @@ class GenerateTrainingSamples {
     private static void generate(int season, file) {
         mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
             int size = players.size()
-            int[] record = new int[4 * size + 1]
+            int[] record = new int[allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + 1]
 
             int total = (it.get("fa") as int) + (it.get("fb") as int)
             record[0] = total
@@ -76,7 +89,7 @@ class GenerateTrainingSamples {
             def awayPlayerReserve = it.get("awayPlayerReserve")
 
             homePlayerStart.each { p ->
-                def ofp = players.indexOf(p)
+                def ofp = allStartupHome.indexOf(p)
                 record[1 + ofp] = 1
 
 //                homePlayerStart.each { op ->
@@ -94,8 +107,8 @@ class GenerateTrainingSamples {
             }
 
             homePlayerReserve.each { p ->
-                def ofp = players.indexOf(p)
-                record[1 + size + ofp] = 1
+                def ofp = allReserveHome.indexOf(p)
+                record[1 + allStartupHome.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
@@ -112,8 +125,8 @@ class GenerateTrainingSamples {
             }
 
             awayPlayerStart.each { p ->
-                def ofp = players.indexOf(p)
-                record[1 + size * 2 + ofp] = 1
+                def ofp = allStartupAway.indexOf(p)
+                record[1 + allStartupHome.size() + allReserveHome.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
@@ -130,8 +143,8 @@ class GenerateTrainingSamples {
             }
 
             awayPlayerReserve.each { p ->
-                def ofp = players.indexOf(p)
-                record[1 + size * 3 + ofp] = 1
+                def ofp = allReserveAway.indexOf(p)
+                record[1 + +allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
