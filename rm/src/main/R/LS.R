@@ -1,6 +1,6 @@
 # library(snowfall)
 
-options(max.print=999)
+
 setwd("/Users/jleo")
 # gamePlayer <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gamePlayer.txt",header = T,sep = ",")
 # gameInfo <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gameInfo.txt",header = T,sep = ",")
@@ -12,6 +12,7 @@ trainingSample <- read.table(file="/Users/jleo/Dropbox/nba/meta/training.txt",se
 
 trainingSample <- as.matrix(trainingSample)
 
+trainingSample <- trainingSample[,trainingSample[,1]>150 & trainingSample[,1]<235]
 m <- dim(trainingSample)[1]
 
 grad <- function(x, y, theta) {
