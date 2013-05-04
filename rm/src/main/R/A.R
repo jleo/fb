@@ -34,6 +34,7 @@ grad.descent <- function(x, y, maxit){
         alpha <- alpha * 0.8
         print(paste("slower alpha to",alpha))
       }
+      lastCost <- thisCost
     }
  	return(theta)
 }
