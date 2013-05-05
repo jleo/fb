@@ -1,4 +1,4 @@
-library(bigmemory)
+
 print("cena")
 options(max.print=999)
 setwd("/Users/jleo")
@@ -7,15 +7,15 @@ setwd("/Users/jleo")
 # gameList <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gameList.txt",header = T,sep = ",")
 
 
-# trainingSample <- matrix(scan("/Users/jleo/Dropbox/nba/meta/training2.txt", n = 8546*120057),8546, 120057, byrow = TRUE)
+trainingSample <- matrix(scan("/Users/jleo/Dropbox/nba/meta/training2.txt", n = 8546*120057),8546, 120057, byrow = TRUE)
 
-trainingSample <- read.big.matrix("/Users/jleo/Dropbox/nba/meta/training2.txt", sep = ' ', header = FALSE,
-                col.names = NULL, row.names = NULL,
-                has.row.names=FALSE, ignore.row.names=FALSE,
-                type = "integer", skip = 0, separated = FALSE,
-                backingfile = 'backingfile', backingpath = "/Users/jleo/Dropbox/nba/meta/",
-                descriptorfile = NULL, extraCols = NULL,
-                shared=TRUE)
+# trainingSample <- read.big.matrix("/Users/jleo/Dropbox/nba/meta/training2.txt", sep = ' ', header = FALSE,
+#                 col.names = NULL, row.names = NULL,
+#                 has.row.names=FALSE, ignore.row.names=FALSE,
+#                 type = "integer", skip = 0, separated = FALSE,
+#                 backingfile = 'backingfile', backingpath = "/Users/jleo/Dropbox/nba/meta/",
+#                 descriptorfile = NULL, extraCols = NULL,
+#                 shared=TRUE)
 
 # read.table(file="/Users/jleo/Dropbox/nba/meta/small.txt",sep = ",")
 print(class(trainingSample))
