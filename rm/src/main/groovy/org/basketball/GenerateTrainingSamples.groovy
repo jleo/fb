@@ -114,10 +114,11 @@ class GenerateTrainingSamples {
     private static void generate(int season, file) {
         mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
             int size = players.size()
-            int[] record = new int[allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() * 2 + allOpponent.size() + 1]
+            int[] record = new int[allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() * 2 + allOpponent.size() + 2]
 
             int total = (it.get("fa") as int) + (it.get("fb") as int)
             record[0] = total
+            record[1] = 1
 //            record[1] = it.get("attendee") as int
 
             def homePlayerStart = it.get("homePlayerStart")
@@ -137,7 +138,7 @@ class GenerateTrainingSamples {
 
             homePlayerStart.each { p ->
                 def ofp = allStartupHome.indexOf(p)
-                record[1 + ofp] = 1
+                record[2 + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
@@ -155,7 +156,7 @@ class GenerateTrainingSamples {
 
             homePlayerReserve.each { p ->
                 def ofp = allReserveHome.indexOf(p)
-                record[1 + allStartupHome.size() + ofp] = 1
+                record[2 + allStartupHome.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * ofp + players.indexOf(op)] = 1
@@ -173,7 +174,7 @@ class GenerateTrainingSamples {
 
             awayPlayerStart.each { p ->
                 def ofp = allStartupAway.indexOf(p)
-                record[1 + allStartupHome.size() + allReserveHome.size() + ofp] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
@@ -191,7 +192,7 @@ class GenerateTrainingSamples {
 
             awayPlayerReserve.each { p ->
                 def ofp = allReserveAway.indexOf(p)
-                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + ofp] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + ofp] = 1
 
 //                homePlayerStart.each { op ->
 //                    record[1 + size * 4 + size * size + size * ofp + players.indexOf(op)] = 1
@@ -209,25 +210,25 @@ class GenerateTrainingSamples {
 
             referees.each { r ->
                 def ofr = allReferee.indexOf(r)
-                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + ofr] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + ofr] = 1
             }
 
             homesub.each { combo ->
                 def homeCombo = allTeamMate.indexOf(combo)
-                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + homeCombo] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + homeCombo] = 1
             }
 
             awaysub.each { combo ->
                 def awayCombo = allTeamMate.indexOf(combo)
-                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() + awayCombo] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() + awayCombo] = 1
             }
 
             opponent.each { combo ->
                 def awayCombo = allOpponent.indexOf(combo)
-                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size()*2 + awayCombo] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size()*2 + awayCombo] = 1
             }
-
-            file.append(record.toString()[1..-2] + "\n")
+            
+            file.append(record.toString()[1..-2].replaceAll(",","") + "\n")
         }
     }
 }
