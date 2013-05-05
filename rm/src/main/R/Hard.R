@@ -33,7 +33,7 @@ grad <- function(x, y, theta) {
  
 # define gradient descent update algorithm
 grad.descent <- function(x, y, maxit){
-    theta <- matrix(data=c(0),nrow=1,ncol=dim(trainingSample)[2])
+    theta <- matrix(data=c(0),nrow=1,ncol=dim(x)[2])
  
     alpha = 1
     lastCost <- 1000000
