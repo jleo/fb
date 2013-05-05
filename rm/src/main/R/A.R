@@ -1,4 +1,4 @@
-# library(snowfall)
+library(ff)
 
 options(max.print=999)
 setwd("/Users/jleo")
@@ -6,7 +6,7 @@ setwd("/Users/jleo")
 # gameInfo <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gameInfo.txt",header = T,sep = ",")
 # gameList <- read.csv(file="/Users/jleo/Dropbox/nba/meta/gameList.txt",header = T,sep = ",")
 
-trainingSample <- read.table(file="/Users/jleo/Dropbox/nba/meta/training.txt",sep = ",")
+trainingSample <- read.table.ffdf(file="/Users/jleo/Dropbox/nba/meta/training.txt",sep = ",")
 
 # cluster <- makeCluster(1, type = "SOCK")
 
