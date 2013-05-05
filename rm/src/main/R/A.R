@@ -34,6 +34,8 @@ grad.descent <- function(x, y, maxit){
         alpha <- alpha * 0.8
         print(paste("slower alpha to",alpha))
       }
+      write.table(theta, "/Users/jleo/Dropbox/nba/meta/theta.txt", quote=F, row.names = F,
+                   col.names = F)
       lastCost <- thisCost
     }
  	return(theta)
