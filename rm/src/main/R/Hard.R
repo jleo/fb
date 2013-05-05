@@ -36,7 +36,7 @@ grad.descent <- function(x, y, maxit){
     theta <- matrix(data=c(0),nrow=1,ncol=dim(trainingSample)[2])
  
     alpha = 1
-    lastCost <- 100000000
+    lastCost <- 1000000
     for (i in 1:maxit) {
       theta <- theta - alpha  * grad(x, y, theta)   
       thisCost <- cost(x,y,theta)
@@ -58,7 +58,7 @@ cost <- function(x,y,theta){
 
 y <- trainingSample[,1]
 x <- cbind(matrix(data=c(1),nrow=m,ncol=1), trainingSample[,2:(dim(trainingSample)[2])])
-
+rm(trainingSample)
 # summary(lm(y ~ x[, 2:dim(trainingSample)[2]]))
 grad.descent(x,y,1000000)
 # stopCluster(cl)
