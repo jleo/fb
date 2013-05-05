@@ -12,7 +12,7 @@ setwd("/Users/jleo")
 trainingSample <- read.big.matrix("/Users/jleo/Dropbox/nba/meta/training2.txt", sep = ' ', header = FALSE,
                 col.names = NULL, row.names = NULL,
                 has.row.names=FALSE, ignore.row.names=FALSE,
-                type = "integer", skip = 0, separated = FALSE,
+                type = "short", skip = 0, separated = FALSE,
                 backingfile = 'backingfile', backingpath = "/Users/jleo/Dropbox/nba/meta/",
                 descriptorfile = NULL, extraCols = NULL,
                 shared=TRUE)
