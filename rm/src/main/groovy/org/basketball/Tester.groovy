@@ -1,7 +1,4 @@
 package org.basketball
-
-import com.mongodb.Mongo
-
 /**
  * Created with IntelliJ IDEA.
  * User: jleo
@@ -10,13 +7,35 @@ import com.mongodb.Mongo
  * To change this template use File | Settings | File Templates.
  */
 
-Mongo m = new Mongo("localhost")
-def games = m.getDB("bb").getCollection("games")
+def allTeamMate = new HashSet()
+Combination comb = new Combination();
 
-Mongo m2 = new Mongo("rm4",15000)
-def remote = m2.getDB("bb").getCollection("games")
+List home = (["a", "b"] as List) + (["c", "d"] as List)
+List away = (["e", "f"] as List) + (["g", "h"] as List)
 
 
-games.find().each {
-    remote.insert(it)
-}
+comb.mn(home as String[], 2);
+def homesub = comb.getCombList()
+
+comb.mn(away as String[], 2);
+def awaysub = comb.getCombList()
+
+allTeamMate.addAll(homesub)
+allTeamMate.addAll(awaysub)
+
+println(allTeamMate)
+
+home = (["e", "f"] as List) + (["g", "h"] as List)
+away = (["b","a","e"] as List) + (["c", "d"] as List)
+
+
+comb.mn(home as String[], 2);
+homesub = comb.getCombList()
+
+comb.mn(away as String[], 2);
+awaysub = comb.getCombList()
+
+allTeamMate.addAll(homesub)
+allTeamMate.addAll(awaysub)
+
+println(allTeamMate)

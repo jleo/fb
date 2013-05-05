@@ -24,6 +24,10 @@ class GenerateTrainingSamples {
     static private def allReserveAway
 
     static private def allReferee
+    static private def allTeamMate
+    static private def allOpponent
+
+    static private Combination comb
 
     public static void main(String[] args) {
         int seasonFrom = 2000
@@ -34,22 +38,42 @@ class GenerateTrainingSamples {
 
         allStartupAway = new TreeSet()
         allReserveAway = new TreeSet()
+        allTeamMate = new HashSet()
+        allOpponent = new HashSet()
 
         allReferee = new TreeSet()
 
         def allPlayers = new TreeSet()
+
+        comb = new Combination()
         (seasonFrom..seasonTo).each { season ->
             mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
-                if (it.get("homePlayerStart") == null)
-                    println "a"
                 allStartupHome.addAll(it.get("homePlayerStart"))
                 allReserveHome.addAll(it.get("homePlayerReserve"))
                 allStartupAway.addAll(it.get("awayPlayerStart"))
                 allReserveAway.addAll(it.get("awayPlayerReserve"))
                 allReferee.addAll(it.get("refrees"))
+
+                List home = (it.get("homePlayerStart") as List) + (it.get("homePlayerReserve") as List)
+                List away = (it.get("awayPlayerStart") as List) + (it.get("awayPlayerReserve") as List)
+
+                List startup = (it.get("homePlayerStart") as List) + (it.get("awayPlayerStart") as List)
+
+                def homesub = comb.mn(home as String[], 2).getCombList()
+                def awaysub = comb.mn(away as String[], 2).getCombList()
+                allOpponent.addAll(comb.mn(startup as String[], 2).getCombList() - homesub - awaysub)
+
+                allTeamMate.addAll(homesub)
+                allTeamMate.addAll(awaysub)
+
+//                allOpponent.addAll((home + away).subsequences() - homesub - awaysub)
             }
         }
-
+//        allTeamMate.findAll{
+//            it.contains("mingya01")
+//        }.each {
+//            println it
+//        }
         allPlayers.addAll(allStartupHome)
         allPlayers.addAll(allReserveHome)
         allPlayers.addAll(allStartupAway)
@@ -60,6 +84,13 @@ class GenerateTrainingSamples {
         allStartupAway = allStartupAway.toList()
         allReserveAway = allReserveAway.toList()
         allReferee = allReferee.toList()
+        allTeamMate = allTeamMate.toList()
+        allOpponent = allOpponent.toList()
+
+        println(allTeamMate.size())
+        println(allOpponent.size())
+
+
 
         players = allPlayers.toList()
 
@@ -83,7 +114,7 @@ class GenerateTrainingSamples {
     private static void generate(int season, file) {
         mongo.getDB("bb").getCollection("games").find([date: ["\$gt": season + "0930", "\$lt": season + 1 + "0425"]] as BasicDBObject).each {
             int size = players.size()
-            int[] record = new int[allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + 1]
+            int[] record = new int[allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() * 2 + allOpponent.size() + 1]
 
             int total = (it.get("fa") as int) + (it.get("fb") as int)
             record[0] = total
@@ -94,6 +125,15 @@ class GenerateTrainingSamples {
             def awayPlayerStart = it.get("awayPlayerStart")
             def awayPlayerReserve = it.get("awayPlayerReserve")
             def referees = it.get("refrees")
+
+            List home = (it.get("homePlayerStart") as List) + (it.get("homePlayerReserve") as List)
+            List away = (it.get("awayPlayerStart") as List) + (it.get("awayPlayerReserve") as List)
+
+            List startup = (it.get("homePlayerStart") as List) + (it.get("awayPlayerStart") as List)
+
+            def homesub = comb.mn(home as String[], 2).getCombList()
+            def awaysub = comb.mn(away as String[], 2).getCombList()
+            def opponent = comb.mn(startup as String[], 2).getCombList() - homesub - awaysub
 
             homePlayerStart.each { p ->
                 def ofp = allStartupHome.indexOf(p)
@@ -170,6 +210,21 @@ class GenerateTrainingSamples {
             referees.each { r ->
                 def ofr = allReferee.indexOf(r)
                 record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + ofr] = 1
+            }
+
+            homesub.each { combo ->
+                def homeCombo = allTeamMate.indexOf(combo)
+                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + homeCombo] = 1
+            }
+
+            awaysub.each { combo ->
+                def awayCombo = allTeamMate.indexOf(combo)
+                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() + awayCombo] = 1
+            }
+
+            opponent.each { combo ->
+                def awayCombo = allOpponent.indexOf(combo)
+                record[1 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size()*2 + awayCombo] = 1
             }
 
             file.append(record.toString()[1..-2] + "\n")

@@ -12,7 +12,7 @@ trainingSample <- read.table(file="/Users/jleo/Dropbox/nba/meta/training.txt",se
 
 trainingSample <- as.matrix(trainingSample)
 
-trainingSample <- trainingSample[,trainingSample[,1]>150 & trainingSample[,1]<235]
+trainingSample <- trainingSample[trainingSample[,1]>150 & trainingSample[,1]<235,]
 m <- dim(trainingSample)[1]
 
 grad <- function(x, y, theta) {
