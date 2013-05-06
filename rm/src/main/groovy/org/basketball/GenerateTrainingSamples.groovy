@@ -30,7 +30,7 @@ class GenerateTrainingSamples {
     static private Combination comb
 
     public static void main(String[] args) {
-        int seasonFrom = 2000
+        int seasonFrom = 2006
         int seasonTo = 2007
 
         allStartupHome = new TreeSet()
