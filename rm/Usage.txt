@@ -34,3 +34,21 @@ run GenerateTrainingSamples to generate samples
 #Enrich collection "log" bu running ScoreExtractor.groovy(add "score")
 
 
+
+
+
+
+
+copy theta.txt back(scp shaoli@rm4:/Users/jleo/Dropbox/nba/meta/theta.txt .)
+generate header by running GenerateTrainingSamples.groovy
+cat header.txt >> result.txt
+cat theta.txt >> result.txt
+
+Run Lab3.groovy to dump into mongodb
+
+Run FixEmptyTheta.groovy which will update default
+Run DumThetaBack.groovy ,check newTheta.txt
+
+
+
+

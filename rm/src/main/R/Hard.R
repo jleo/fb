@@ -33,8 +33,8 @@ grad <- function(x, y, theta) {
  
 # define gradient descent update algorithm
 grad.descent <- function(x, y, maxit){
-    theta <- matrix(data=c(0),nrow=1,ncol=dim(x)[2])
- 
+    # theta <- matrix(data=c(0),nrow=1,ncol=dim(x)[2])
+ 	theta <- matrix(scan("/Users/jleo/Dropbox/nba/meta/theta.txt", n = 1*120057),1, 120057, byrow = TRUE)
     alpha = 1
     lastCost <- 1000000
     for (i in 1:maxit) {
@@ -59,6 +59,7 @@ cost <- function(x,y,theta){
 y <- trainingSample[,1]
 x <- cbind(matrix(data=c(1),nrow=m,ncol=1), trainingSample[,2:(dim(trainingSample)[2])])
 rm(trainingSample)
+gc()
 # summary(lm(y ~ x[, 2:dim(trainingSample)[2]]))
 grad.descent(x,y,1000000)
 # stopCluster(cl)

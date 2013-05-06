@@ -94,6 +94,35 @@ class GenerateTrainingSamples {
 
         players = allPlayers.toList()
 
+//        def header = new StringBuilder()
+//
+//        header.append("theta0" + " ")
+//        allStartupHome.each {
+//            header.append(it + "-HomeStart ")
+//        }
+//        allReserveHome.each {
+//            header.append(it + "-HomeReserve ")
+//        }
+//        allStartupAway.each {
+//            header.append(it + "-AwayStart ")
+//        }
+//        allReserveAway.each {
+//            header.append(it + "-AwayReserve ")
+//        }
+//        allReferee.each {
+//            header.append(it + " ")
+//        }
+//        allTeamMate.each {
+//            header.append(it.join("-") + "-Home ")
+//        }
+//        allTeamMate.each {
+//            header.append(it.join("-") + "-Away ")
+//        }
+//        allOpponent.each {
+//            header.append(it.join("-") + " ")
+//        }
+//        new File("/Users/jleo/Dropbox/nba/meta/header.txt").write(header[0..-2])
+
         def file = new File("/Users/jleo/Dropbox/nba/meta/training.txt")
         if (file.exists())
             file.delete()
@@ -225,10 +254,10 @@ class GenerateTrainingSamples {
 
             opponent.each { combo ->
                 def awayCombo = allOpponent.indexOf(combo)
-                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size()*2 + awayCombo] = 1
+                record[2 + allStartupHome.size() + allReserveHome.size() + allStartupAway.size() + allReserveAway.size() + allReferee.size() + allTeamMate.size() * 2 + awayCombo] = 1
             }
-            
-            file.append(record.toString()[1..-2].replaceAll(",","") + "\n")
+
+            file.append(record.toString()[1..-2].replaceAll(",", "") + "\n")
         }
     }
 }
